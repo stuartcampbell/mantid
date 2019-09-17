@@ -64,7 +64,8 @@ const std::string EnggDiffractionViewQtGUI::g_settingsGroup =
  * @param parent Parent window (most likely the Mantid main app window).
  */
 EnggDiffractionViewQtGUI::EnggDiffractionViewQtGUI(QWidget *parent)
-    : UserSubWindow(parent), IEnggDiffractionView(), m_fittingWidget(nullptr),
+    : UserSubWindow(parent),
+      IEnggDiffractionView(), /*m_fittingWidget(nullptr),*/
       m_currentInst("ENGINX"), m_splashMsg(nullptr), m_presenter(nullptr) {}
 
 void EnggDiffractionViewQtGUI::initLayout() {
@@ -94,14 +95,15 @@ void EnggDiffractionViewQtGUI::initLayout() {
   // with Qt
   boost::shared_ptr<EnggDiffractionViewQtGUI> sharedView(
       this, [](EnggDiffractionViewQtGUI * /*unused*/) {});
-  m_fittingWidget =
-      new EnggDiffFittingViewQtWidget(m_ui.tabMain, sharedView, sharedView,
-                                      fullPres, fullPres, sharedView, fullPres);
-  m_ui.tabMain->addTab(m_fittingWidget, QString("Fitting"));
+  // m_fittingWidget =
+  //     new EnggDiffFittingViewQtWidget(m_ui.tabMain, sharedView, sharedView,
+  //                                     fullPres, fullPres, sharedView,
+  //                                     fullPres);
+  // m_ui.tabMain->addTab(m_fittingWidget, QString("Fitting"));
 
-  m_gsasWidget =
-      new EnggDiffGSASFittingViewQtWidget(sharedView, sharedView, fullPres);
-  m_ui.tabMain->addTab(m_gsasWidget, QString("GSAS-II Refinement"));
+  // m_gsasWidget =
+  //     new EnggDiffGSASFittingViewQtWidget(sharedView, sharedView, fullPres);
+  // m_ui.tabMain->addTab(m_gsasWidget, QString("GSAS-II Refinement"));
 
   QWidget *wSettings = new QWidget(m_ui.tabMain);
   m_uiTabSettings.setupUi(wSettings);
@@ -653,8 +655,8 @@ void EnggDiffractionViewQtGUI::enableCalibrateFocusFitUserActions(bool enable) {
   m_uiTabPreproc.pushButton_rebin_multiperiod->setEnabled(enable);
 
   // fitting
-  m_fittingWidget->enable(enable);
-  m_gsasWidget->setEnabled(enable);
+  // m_fittingWidget->enable(enable);
+  // m_gsasWidget->setEnabled(enable);
 }
 
 void EnggDiffractionViewQtGUI::enableTabs(bool enable) {
@@ -1097,7 +1099,7 @@ void EnggDiffractionViewQtGUI::openHelpWin() {
 
 void EnggDiffractionViewQtGUI::updateTabsInstrument(
     const std::string &newInstrument) {
-  m_fittingWidget->setCurrentInstrument(newInstrument);
+  // m_fittingWidget->setCurrentInstrument(newInstrument);
 }
 
 } // namespace CustomInterfaces
