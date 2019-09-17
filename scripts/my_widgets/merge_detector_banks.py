@@ -7,9 +7,12 @@
 # pylint: disable=invalid-name
 from __future__ import (absolute_import, division, print_function)
 
+import sys
+
 from qtpy import QtWidgets, QtCore
 
 from my_widgets import view
+from my_widgets import presenter
 
 
 class MergeDetectorBanks(QtWidgets.QMainWindow):
@@ -19,6 +22,7 @@ class MergeDetectorBanks(QtWidgets.QMainWindow):
         self.window = QtWidgets.QMainWindow()
 
         my_view = view.View(parent=self)
+        self.presenter = presenter.Presenter(view)
 
         # set the view for the main window
         self.setCentralWidget(my_view)
@@ -33,7 +37,8 @@ def qapp():
     return _app
 
 
-app = qapp()
-window = Demo()
-window.show()
-app.exec_()
+if __name__ == "__main__":
+    app = qapp()
+    window = MergeDetectorBanks()
+    window.show()
+    app.exec_()

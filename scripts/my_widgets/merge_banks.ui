@@ -13,32 +13,141 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1,0" columnstretch="1,2,2,2,2">
-   <item row="2" column="0">
-    <widget class="QPushButton" name="pushButton">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,2,0" columnstretch="1,1,1,1,1">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0" columnminimumwidth="1,0">
+     <item row="0" column="1">
+      <widget class="QComboBox" name="detector_bank"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Gradient</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Qmin</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>alpha</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Detector Bank</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Intercept</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Qmax</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="use_detector_bank">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Use Detector Bank</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="alpha">
+       <property name="text">
+        <string>1.0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="grad">
+       <property name="text">
+        <string>0.0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="intercept">
+       <property name="text">
+        <string>0.0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="q_min">
+       <property name="text">
+        <string>0.0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="q_max">
+       <property name="text">
+        <string>60.0</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="4">
+    <widget class="QPushButton" name="close_btn">
      <property name="text">
-      <string>Output merged workspace</string>
+      <string>Close</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="3" colspan="2">
-    <widget class="QOpenGLWidget" name="openGLWidget_2"/>
-   </item>
-   <item row="1" column="0" colspan="5">
-    <widget class="QOpenGLWidget" name="openGLWidget_3"/>
-   </item>
-   <item row="2" column="3">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="2" column="2">
     <spacer name="horizontalSpacer">
@@ -53,94 +162,15 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="4">
-    <widget class="QPushButton" name="pushButton_2">
+   <item row="0" column="1" colspan="2">
+    <layout class="QVBoxLayout" name="plt_1"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="output_merged_workspace_btn">
      <property name="text">
-      <string>Close</string>
+      <string>Output merged workspace</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0" columnminimumwidth="1,0">
-     <item row="0" column="1">
-      <widget class="QComboBox" name="detector_bank"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Gradient</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Qmin</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>alpha</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Detector Bank</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Intercept</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Qmax</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QCheckBox" name="use_detector_bank">
-       <property name="text">
-        <string>Use Detector Bank</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="alpha">
-       <property name="specialValueText">
-        <string>1.00</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QDoubleSpinBox" name="gradient"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="QDoubleSpinBox" name="intercept"/>
-     </item>
-     <item row="5" column="1">
-      <widget class="QDoubleSpinBox" name="qmin"/>
-     </item>
-     <item row="6" column="1">
-      <widget class="QDoubleSpinBox" name="qmax">
-       <property name="specialValueText">
-        <string>60.00</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="2" column="1">
     <spacer name="horizontalSpacer_3">
@@ -155,8 +185,24 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QOpenGLWidget" name="openGLWidget"/>
+   <item row="2" column="3">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="3" colspan="2">
+    <layout class="QVBoxLayout" name="plt_2"/>
+   </item>
+   <item row="1" column="0" colspan="5">
+    <layout class="QVBoxLayout" name="plt_3"/>
    </item>
   </layout>
  </widget>
