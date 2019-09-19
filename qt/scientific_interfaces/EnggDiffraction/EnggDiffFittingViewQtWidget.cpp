@@ -7,11 +7,12 @@
 #include "EnggDiffFittingViewQtWidget.h"
 #include "EnggDiffFittingModel.h"
 #include "EnggDiffFittingPresenter.h"
+#include "MantidAPI/Axis.h"
 #include "MantidAPI/FunctionFactory.h"
 #include "MantidAPI/IPeakFunction.h"
 
 #include "MantidQtWidgets/Common/AlgorithmInputHistory.h"
-#include "MantidQtWidgets/Plotting/Qwt/PeakPicker.h"
+#include "MantidQtWidgets/Plotting/PeakPicker.h"
 
 #include <array>
 #include <iomanip>
@@ -27,10 +28,6 @@
 #include <QFileDialog>
 #include <QHelpEvent>
 #include <QSettings>
-
-#include <qwt_plot_curve.h>
-#include <qwt_plot_zoomer.h>
-#include <qwt_symbol.h>
 
 using namespace Mantid::API;
 using namespace MantidQt::CustomInterfaces;
@@ -68,16 +65,6 @@ EnggDiffFittingViewQtWidget::EnggDiffFittingViewQtWidget(
 
 EnggDiffFittingViewQtWidget::~EnggDiffFittingViewQtWidget() {
   m_presenter->notify(IEnggDiffFittingPresenter::ShutDown);
-
-  for (auto curves : m_focusedDataVector) {
-    curves->detach();
-    delete curves;
-  }
-
-  for (auto curves : m_fittedDataVector) {
-    curves->detach();
-    delete curves;
-  }
 }
 
 void EnggDiffFittingViewQtWidget::initLayout() {
@@ -132,25 +119,25 @@ void EnggDiffFittingViewQtWidget::doSetup() {
   connect(m_ui.pushButton_remove_run, SIGNAL(released()), this,
           SLOT(removeRunClicked()));
 
-  m_ui.dataPlot->setCanvasBackground(Qt::white);
-  m_ui.dataPlot->setAxisTitle(QwtPlot::xBottom, "d-Spacing (A)");
-  m_ui.dataPlot->setAxisTitle(QwtPlot::yLeft, "Counts (us)^-1");
-  QFont font("MS Shell Dlg 2", 8);
-  m_ui.dataPlot->setAxisFont(QwtPlot::xBottom, font);
-  m_ui.dataPlot->setAxisFont(QwtPlot::yLeft, font);
+  m_ui.previewPlot->setCanvasColour(Qt::white);
+  // m_ui.previewPlot->setAxisTitle(QwtPlot::xBottom, "d-Spacing (A)");
+  // m_ui.dataPlot->setAxisTitle(QwtPlot::yLeft, "Counts (us)^-1");
+  // QFont font("MS Shell Dlg 2", 8);
+  // m_ui.dataPlot->setAxisFont(QwtPlot::xBottom, font);
+  // m_ui.dataPlot->setAxisFont(QwtPlot::yLeft, font);
 
   // constructor of the peakPicker
   // XXX: Being a QwtPlotItem, should get deleted when m_ui.plot gets deleted
   // (auto-delete option)
-  m_peakPicker = new MantidWidgets::PeakPicker(m_ui.dataPlot, Qt::red);
+  m_peakPicker = new MantidWidgets::PeakPicker(m_ui.previewPlot, Qt::red);
   setPeakPickerEnabled(false);
 
-  m_zoomTool =
-      new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft,
-                        QwtPicker::DragSelection | QwtPicker::CornerToCorner,
-                        QwtPicker::AlwaysOff, m_ui.dataPlot->canvas());
-  m_zoomTool->setRubberBandPen(QPen(Qt::black));
-  setZoomTool(false);
+  // m_zoomTool =
+  //     new QwtPlotZoomer(QwtPlot::xBottom, QwtPlot::yLeft,
+  //                       QwtPicker::DragSelection | QwtPicker::CornerToCorner,
+  //                       QwtPicker::AlwaysOff, m_ui.dataPlot->canvas());
+  // m_zoomTool->setRubberBandPen(QPen(Qt::black));
+  // setZoomTool(false);
 }
 
 void EnggDiffFittingViewQtWidget::readSettings() {
@@ -257,31 +244,22 @@ void EnggDiffFittingViewQtWidget::removeRunClicked() {
 }
 
 void EnggDiffFittingViewQtWidget::resetCanvas() {
-  // clear vector and detach curves to avoid plot crash
-  // when only plotting focused workspace
-  for (auto curves : m_fittedDataVector) {
-    if (curves) {
-      curves->detach();
-      delete curves;
-    }
-  }
-
-  if (m_fittedDataVector.size() > 0)
-    m_fittedDataVector.clear();
+  m_fittedDataVector.clear();
 
   // set it as false as there will be no valid workspace to plot
   m_ui.pushButton_plot_separate_window->setEnabled(false);
 }
 
 void EnggDiffFittingViewQtWidget::setDataVector(
-    std::vector<boost::shared_ptr<QwtData>> &data, bool focused,
-    bool plotSinglePeaks, const std::string &xAxisLabel) {
+    Mantid::API::MatrixWorkspace_sptr &data, bool focused, bool plotSinglePeaks,
+    const std::string &xAxisLabel) {
 
   if (!plotSinglePeaks) {
     // clear vector and detach curves to avoid plot crash
     resetCanvas();
   }
-  m_ui.dataPlot->setAxisTitle(QwtPlot::xBottom, xAxisLabel.c_str());
+  // m_ui.dataPlot->setAxisTitle(QwtPlot::xBottom, xAxisLabel.c_str());
+  data->getAxis(0)->setUnit("TOF");
 
   // when only plotting focused workspace
   if (focused) {
@@ -292,18 +270,15 @@ void EnggDiffFittingViewQtWidget::setDataVector(
 }
 
 void EnggDiffFittingViewQtWidget::dataCurvesFactory(
-    std::vector<boost::shared_ptr<QwtData>> &data,
-    std::vector<QwtPlotCurve *> &dataVector, bool focused) {
+    Mantid::API::MatrixWorkspace_sptr &data,
+    MantidQt::MantidWidgets::PreviewPlot &dataVector, bool focused) {
 
-  // clear vector
-  for (auto curves : dataVector) {
-    if (curves) {
-      curves->detach();
-      delete curves;
-    }
+  for (size_t i = 0u; i < data->getNumberHistograms(); ++i) {
+    const QString name("sp" + i);
+    m_ui.previewPlot->addSpectrum(name, data);
   }
 
-  if (dataVector.size() > 0)
+  /* if (dataVector.size() > 0)
     dataVector.clear();
   resetView();
 
@@ -339,20 +314,19 @@ void EnggDiffFittingViewQtWidget::dataCurvesFactory(
 
     dataVector[i]->setData(*peak);
     dataVector[i]->attach(m_ui.dataPlot);
-  }
-
-  m_ui.dataPlot->replot();
-  m_zoomTool->setZoomBase();
+  } */
+  m_ui.previewPlot->replot();
+  // m_zoomTool->setZoomBase();
   // enable zoom & select peak btn after the plotting on graph
   setZoomTool(true);
   m_ui.pushButton_select_peak->setEnabled(true);
-  data.clear();
+  // data.clear();
 }
 
 void EnggDiffFittingViewQtWidget::setPeakPickerEnabled(bool enabled) {
-  m_peakPicker->setEnabled(enabled);
-  m_peakPicker->setVisible(enabled);
-  m_ui.dataPlot->replot(); // PeakPicker might get hidden/shown
+  // m_peakPicker->setEnabled(enabled);
+  // m_peakPicker->setVisible(enabled);
+  m_ui.previewPlot->replot(); // PeakPicker might get hidden/shown
   m_ui.pushButton_add_peak->setEnabled(enabled);
   if (enabled) {
     QString btnText = "Reset Peak Selector";
@@ -363,7 +337,7 @@ void EnggDiffFittingViewQtWidget::setPeakPickerEnabled(bool enabled) {
 void EnggDiffFittingViewQtWidget::setPeakPicker(
     const IPeakFunction_const_sptr &peak) {
   m_peakPicker->setPeak(peak);
-  m_ui.dataPlot->replot();
+  m_ui.previewPlot->replot();
 }
 
 double EnggDiffFittingViewQtWidget::getPeakCentre() const {
@@ -373,21 +347,21 @@ double EnggDiffFittingViewQtWidget::getPeakCentre() const {
 }
 
 bool EnggDiffFittingViewQtWidget::peakPickerEnabled() const {
-  return m_peakPicker->isEnabled();
+  // return m_peakPicker->isEnabled();
+  return true;
 }
 
 void EnggDiffFittingViewQtWidget::setZoomTool(bool enabled) {
-  m_zoomTool->setEnabled(enabled);
+  // m_zoomTool->setEnabled(enabled);
 }
 
 void EnggDiffFittingViewQtWidget::resetView() {
   // Resets the view to a sensible default
   // Auto scale the axis
-  m_ui.dataPlot->setAxisAutoScale(QwtPlot::xBottom);
-  m_ui.dataPlot->setAxisAutoScale(QwtPlot::yLeft);
+  m_ui.previewPlot->resetView();
 
   // Set this as the default zoom level
-  m_zoomTool->setZoomBase(true);
+  // m_zoomTool->setZoomBase(true);
 }
 
 std::string EnggDiffFittingViewQtWidget::getPreviousDir() const {

@@ -8,13 +8,13 @@
 #define MANTIDQTCUSTOMINTERFACES_ENGGDIFFRACTION_IENGGDIFFRACTIONVIEWQTGUI_H_
 
 #include "DllConfig.h"
-// #include "EnggDiffFittingViewQtWidget.h"
+#include "EnggDiffFittingViewQtWidget.h"
 // #include "EnggDiffGSASFittingViewQtWidget.h"
 #include "IEnggDiffractionPresenter.h"
 #include "IEnggDiffractionView.h"
 #include "MantidAPI/IPeakFunction.h"
 #include "MantidQtWidgets/Common/UserSubWindow.h"
-// #include "MantidQtWidgets/Plotting/Qwt/PeakPicker.h"
+#include "MantidQtWidgets/Plotting/PeakPicker.h"
 
 #include "ui_EnggDiffractionQtGUI.h"
 #include "ui_EnggDiffractionQtTabCalib.h"
@@ -243,7 +243,7 @@ private:
   Ui::EnggDiffractionQtTabFocus m_uiTabFocus;
   Ui::EnggDiffractionQtTabPreproc m_uiTabPreproc;
   // Ui::EnggDiffractionQtTabFitting m_uiTabFitting;
-  // EnggDiffFittingViewQtWidget *m_fittingWidget;
+  EnggDiffFittingViewQtWidget *m_fittingWidget;
   // EnggDiffGSASFittingViewQtWidget *m_gsasWidget;
   Ui::EnggDiffractionQtTabSettings m_uiTabSettings;
 

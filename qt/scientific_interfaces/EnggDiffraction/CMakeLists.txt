@@ -1,8 +1,8 @@
 # Qt 4 implementation
 set(QT4_SRC_FILES
-    # EnggDiffFittingModel.cpp
-    # EnggDiffFittingPresenter.cpp
-    # EnggDiffFittingViewQtWidget.cpp
+    EnggDiffFittingModel.cpp
+    EnggDiffFittingPresenter.cpp
+    EnggDiffFittingViewQtWidget.cpp
     # EnggDiffGSASFittingModel.cpp
     # EnggDiffGSASFittingPresenter.cpp
     # EnggDiffGSASFittingViewQtWidget.cpp
@@ -59,9 +59,9 @@ set(QT4_INC_FILES
     RunMap.h)
 
 set(QT4_MOC_FILES
-    # EnggDiffFittingPresenter.h
-    # EnggDiffFittingPresWorker.h
-    # EnggDiffFittingViewQtWidget.h
+    EnggDiffFittingPresenter.h
+    EnggDiffFittingPresWorker.h
+    EnggDiffFittingViewQtWidget.h
     # EnggDiffGSASFittingModel.h
     # EnggDiffGSASFittingViewQtWidget.h
     # EnggDiffGSASFittingWorker.h
@@ -115,9 +115,9 @@ mtd_add_qt_library(TARGET_NAME MantidScientificInterfacesEnggDiffraction
 
 # Qt 5 Implementation
 set(SRC_FILES 
-    # EnggDiffFittingModel.cpp
-    # EnggDiffFittingPresenter.cpp
-    # EnggDiffFittingViewQtWidget.cpp
+    EnggDiffFittingModel.cpp
+    EnggDiffFittingPresenter.cpp
+    EnggDiffFittingViewQtWidget.cpp
     # EnggDiffGSASFittingModel.cpp
     # EnggDiffGSASFittingPresenter.cpp
     # EnggDiffGSASFittingViewQtWidget.cpp
@@ -134,9 +134,9 @@ set(SRC_FILES
     RunLabel.cpp)
 
 set(MOC_FILES
-    # EnggDiffFittingPresenter.h
-    # EnggDiffFittingPresWorker.h
-    # EnggDiffFittingViewQtWidget.h
+    EnggDiffFittingPresenter.h
+    EnggDiffFittingPresWorker.h
+    EnggDiffFittingViewQtWidget.h
     # EnggDiffGSASFittingModel.h
     # EnggDiffGSASFittingViewQtWidget.h
     # EnggDiffGSASFittingWorker.h
@@ -153,7 +153,7 @@ set(UI_FILES
     EnggDiffractionQtTabCalib.ui
     EnggDiffractionQtTabFocus.ui
     EnggDiffractionQtTabPreproc.ui
-    # EnggDiffractionQtTabFitting.ui
+    EnggDiffractionQtTabFitting.ui
     # EnggDiffractionQtTabGSAS.ui
     EnggDiffractionQtTabSettings.ui
     EnggDiffMultiRunFittingWidget.ui)

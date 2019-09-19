@@ -6,11 +6,13 @@
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "EnggDiffractionViewQtGUI.h"
 #include "EnggDiffractionPresenter.h"
+#include "MantidAPI/AnalysisDataService.h"
 #include "MantidKernel/ConfigService.h"
 #include "MantidQtWidgets/Common/AlgorithmInputHistory.h"
 #include "MantidQtWidgets/Common/AlgorithmRunner.h"
 #include "MantidQtWidgets/Common/HelpWindow.h"
 #include "MantidQtWidgets/Common/MWRunFiles.h"
+#include "MantidQtWidgets/MplCpp/Plot.h"
 
 #include <Poco/DirectoryIterator.h>
 #include <Poco/Path.h>
@@ -95,11 +97,10 @@ void EnggDiffractionViewQtGUI::initLayout() {
   // with Qt
   boost::shared_ptr<EnggDiffractionViewQtGUI> sharedView(
       this, [](EnggDiffractionViewQtGUI * /*unused*/) {});
-  // m_fittingWidget =
-  //     new EnggDiffFittingViewQtWidget(m_ui.tabMain, sharedView, sharedView,
-  //                                     fullPres, fullPres, sharedView,
-  //                                     fullPres);
-  // m_ui.tabMain->addTab(m_fittingWidget, QString("Fitting"));
+  m_fittingWidget =
+      new EnggDiffFittingViewQtWidget(m_ui.tabMain, sharedView, sharedView,
+                                      fullPres, fullPres, sharedView, fullPres);
+  m_ui.tabMain->addTab(m_fittingWidget, QString("Fitting"));
 
   // m_gsasWidget =
   //     new EnggDiffGSASFittingViewQtWidget(sharedView, sharedView, fullPres);
@@ -655,7 +656,7 @@ void EnggDiffractionViewQtGUI::enableCalibrateFocusFitUserActions(bool enable) {
   m_uiTabPreproc.pushButton_rebin_multiperiod->setEnabled(enable);
 
   // fitting
-  // m_fittingWidget->enable(enable);
+  m_fittingWidget->enable(enable);
   // m_gsasWidget->setEnabled(enable);
 }
 
@@ -722,13 +723,18 @@ void EnggDiffractionViewQtGUI::plotReplacingWindow(const std::string &wsName,
 }
 
 void EnggDiffractionViewQtGUI::plotCalibOutput(const std::string &pyCode) {
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   std::string status =
       runPythonCode(QString::fromStdString(pyCode), false).toStdString();
-
   m_logMsgs.push_back(
       "Plotted output calibration vanadium curves, with status string " +
       status);
+#else
+  const Mantid::API::Workspace_sptr workspace =
+      Mantid::API::AnalysisDataService::Instance()
+          .retrieveWS<Mantid::API::Workspace>("engggui_vanadium_curves");
+  plot(workspace);
+#endif
   m_presenter->notify(IEnggDiffractionPresenter::LogMsg);
 }
 
@@ -1099,7 +1105,7 @@ void EnggDiffractionViewQtGUI::openHelpWin() {
 
 void EnggDiffractionViewQtGUI::updateTabsInstrument(
     const std::string &newInstrument) {
-  // m_fittingWidget->setCurrentInstrument(newInstrument);
+  m_fittingWidget->setCurrentInstrument(newInstrument);
 }
 
 } // namespace CustomInterfaces

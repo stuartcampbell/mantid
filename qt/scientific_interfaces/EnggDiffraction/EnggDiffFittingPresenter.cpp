@@ -12,7 +12,6 @@
 #include "MantidAPI/MatrixWorkspace.h"
 #include "MantidAPI/Run.h"
 #include "MantidAPI/WorkspaceFactory.h"
-#include "MantidQtWidgets/Plotting/Qwt/QwtHelper.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -26,7 +25,6 @@ using namespace Mantid::API;
 using namespace MantidQt::CustomInterfaces;
 
 namespace MantidQt {
-namespace QwtHelper = API::QwtHelper;
 namespace CustomInterfaces {
 
 namespace {
@@ -671,7 +669,7 @@ void EnggDiffFittingPresenter::plotFocusedFile(
     bool plotSinglePeaks, MatrixWorkspace_sptr focusedPeaksWS) {
 
   try {
-    auto focusedData = QwtHelper::curveDataFromWs(focusedPeaksWS);
+    auto focusedData = focusedPeaksWS;
 
     // Check that the number of curves to plot isn't excessive
     // lets cap it at 20 to begin with - this number could need
@@ -680,7 +678,7 @@ void EnggDiffFittingPresenter::plotFocusedFile(
     // files which have 200+ curves to plot and will "freeze" Mantid
     constexpr int maxCurves = 20;
 
-    if (focusedData.size() > maxCurves) {
+    if (focusedData->getNumberHistograms() > maxCurves) {
       throw std::invalid_argument("Too many curves to plot."
                                   " Is this a focused file?");
     }
@@ -723,8 +721,7 @@ void EnggDiffFittingPresenter::plotAlignedWorkspace(
     if (plotFittedPeaks) {
       g_log.debug() << "single peaks fitting being plotted now.\n";
       auto singlePeaksWS = m_model->getFittedPeaksWS(runLabel);
-      auto singlePeaksData = QwtHelper::curveDataFromWs(singlePeaksWS);
-      m_view->setDataVector(singlePeaksData, false, true,
+      m_view->setDataVector(singlePeaksWS, false, true,
                             generateXAxisLabel(ws->getAxis(0)->unit()));
       m_view->showStatus("Peaks fitted successfully");
     }

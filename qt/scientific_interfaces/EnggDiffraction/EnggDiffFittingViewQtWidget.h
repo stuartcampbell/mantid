@@ -11,15 +11,14 @@
 #include "IEnggDiffFittingPresenter.h"
 #include "IEnggDiffFittingView.h"
 #include "MantidAPI/IPeakFunction.h"
+#include "MantidAPI/MatrixWorkspace.h"
+#include "MantidQtWidgets/Plotting/PreviewPlot.h"
 
 #include "ui_EnggDiffractionQtTabFitting.h"
 
 // Qt classes forward declarations
 class QMessageBox;
 class QMutex;
-
-class QwtPlotCurve;
-class QwtPlotZoomer;
 
 namespace MantidQt {
 
@@ -98,8 +97,8 @@ public:
 
   void resetCanvas() override;
 
-  void setDataVector(std::vector<boost::shared_ptr<QwtData>> &data,
-                     bool focused, bool plotSinglePeaks,
+  void setDataVector(Mantid::API::MatrixWorkspace_sptr &data, bool focused,
+                     bool plotSinglePeaks,
                      const std::string &xAxisLabel) override;
 
   void addRunNoItem(std::string runNo) override;
@@ -120,8 +119,9 @@ public:
 
   std::string getSaveFile(const std::string &prevPath) override;
 
-  void dataCurvesFactory(std::vector<boost::shared_ptr<QwtData>> &data,
-                         std::vector<QwtPlotCurve *> &dataVector, bool focused);
+  void dataCurvesFactory(Mantid::API::MatrixWorkspace_sptr &data,
+                         MantidQt::MantidWidgets::PreviewPlot &dataVector,
+                         bool focused);
 
   void setPeakPickerEnabled(bool enabled);
 
@@ -190,16 +190,16 @@ private:
   std::vector<std::string> m_logMsgs;
 
   /// Loaded focused workspace
-  std::vector<QwtPlotCurve *> m_focusedDataVector;
+  MantidQt::MantidWidgets::PreviewPlot m_focusedDataVector;
 
   /// Loaded data curves
-  std::vector<QwtPlotCurve *> m_fittedDataVector;
+  MantidQt::MantidWidgets::PreviewPlot m_fittedDataVector;
 
   /// Peak picker tool for fitting - only one on the plot at any given moment
   MantidWidgets::PeakPicker *m_peakPicker = nullptr;
 
   /// zoom-in/zoom-out tool for fitting
-  QwtPlotZoomer *m_zoomTool = nullptr;
+  // QwtPlotZoomer *m_zoomTool = nullptr;
 
   /// where to go and look for, in particular, focused runs to do fitting on
   boost::shared_ptr<IEnggDiffractionParam> m_fileSettings;

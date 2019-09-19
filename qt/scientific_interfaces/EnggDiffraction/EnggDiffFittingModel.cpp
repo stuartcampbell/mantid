@@ -134,7 +134,7 @@ void EnggDiffFittingModel::saveFitResultsToHDF5(
     const std::vector<RunLabel> &runLabels, const std::string &filename) const {
   std::vector<std::string> inputWorkspaces;
   inputWorkspaces.reserve(runLabels.size());
-  std::vector<std::string> runNumbers;
+  std::vector<long> runNumbers;
   runNumbers.reserve(runLabels.size());
   std::vector<long> bankIDs;
   bankIDs.reserve(runLabels.size());
@@ -145,7 +145,8 @@ void EnggDiffFittingModel::saveFitResultsToHDF5(
                               "_" + std::to_string(runLabel.bank);
     cloneWorkspace(ws, clonedWSName);
     inputWorkspaces.emplace_back(clonedWSName);
-    runNumbers.emplace_back(runLabel.runNumber);
+    // try
+    runNumbers.emplace_back(std::stol(runLabel.runNumber));
     bankIDs.emplace_back(static_cast<long>(runLabel.bank));
   }
 

@@ -11,13 +11,12 @@
 #include "IEnggDiffractionSettings.h"
 #include "IEnggDiffractionUserMsg.h"
 
+#include "MantidAPI/MatrixWorkspace.h"
 #include "MantidKernel/Unit.h"
 
 #include <boost/optional.hpp>
 #include <string>
 #include <vector>
-
-class QwtData;
 
 namespace MantidQt {
 namespace CustomInterfaces {
@@ -189,12 +188,12 @@ public:
   /**
    * generates and sets the curves on the fitting tab
    *
-   * @param data of the workspace to be passed as QwtData
+   * @param data of the workspace to be passed as a matrix workspace
    * @param focused to check whether focused workspace
    * @param plotSinglePeaks whether to plot single peak fitting ws
    * @param xAxisLabel Label specifying the x axis units
    */
-  virtual void setDataVector(std::vector<boost::shared_ptr<QwtData>> &data,
+  virtual void setDataVector(Mantid::API::MatrixWorkspace_sptr &data,
                              bool focused, bool plotSinglePeaks,
                              const std::string &xAxisLabel) = 0;
 
