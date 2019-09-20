@@ -27,7 +27,7 @@ where,
 
 :math:`\nu` (MHz) is the frequency,
 
-:math:`\phi` is the phase at time :math:`t=0`.
+and :math:`\phi` is the phase at time :math:`t=0`.
 
 .. figure:: /images/InternalBessel.png
 
