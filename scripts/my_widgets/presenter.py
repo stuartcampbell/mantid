@@ -93,18 +93,16 @@ class Presenter(object):
         q_min = self.active_bank.get_q_min()
         q_max = self.active_bank.get_q_max()
 
+        valid_index = np.where([(q_min <= x <= q_max) for x in q])
+
         self._view.axis_1.clear()
-        self._view.axis_1.set_xlim([q_min, q_max])
-        self._view.axis_1.set_ylim([min(total_s_2), max(total_s_2)])
-        self._view.axis_1.plot(q, total_s_2, 'b')
-        self._view.axis_1.plot(q, self_s_valid, 'r')
+        self._view.axis_1.plot(q[valid_index], total_s_2[valid_index], 'b')
+        self._view.axis_1.plot(q[valid_index], self_s_valid[valid_index], 'r')
         self._view.canvas_1.draw()
 
         self._view.axis_2.clear()
-        self._view.axis_2.set_xlim([q_min, q_max])
-        self._view.axis_1.set_ylim([min(distinct_s), max(distinct_s)])
-        self._view.axis_2.plot(q, distinct_s, 'b')
-        self._view.axis_2.plot(q, merged, 'r')
+        self._view.axis_2.plot(q[valid_index], distinct_s[valid_index], 'b')
+        self._view.axis_2.plot(q[valid_index], merged[valid_index], 'r')
         self._view.canvas_2.draw()
 
         self._view.axis_3.clear()
