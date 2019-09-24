@@ -6,7 +6,7 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 from __future__ import (absolute_import, division, print_function)
 
-from qtpy import QtWidgets
+from qtpy import QtWidgets, QtGui
 from mantidqt.utils.qt import load_ui
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -21,13 +21,22 @@ class View(QtWidgets.QWidget, Ui_MyWidget):
         self.setupUi(self)
 
         self.figure_1 = plt.figure()
+        self.axis_1 = self.figure_1.subplots()
         self.canvas_1 = FigureCanvas(self.figure_1)
         self.plt_1.addWidget(self.canvas_1)
 
         self.figure_2 = plt.figure()
+        self.axis_2 = self.figure_2.subplots()
         self.canvas_2 = FigureCanvas(self.figure_2)
         self.plt_2.addWidget(self.canvas_2)
 
         self.figure_3 = plt.figure()
+        self.axis_3 = self.figure_3.subplots()
         self.canvas_3 = FigureCanvas(self.figure_3)
         self.plt_3.addWidget(self.canvas_3)
+
+        self.alpha.setValidator(QtGui.QDoubleValidator())
+        self.grad.setValidator(QtGui.QDoubleValidator())
+        self.intercept.setValidator(QtGui.QDoubleValidator())
+        self.q_min.setValidator(QtGui.QDoubleValidator())
+        self.q_max.setValidator(QtGui.QDoubleValidator())

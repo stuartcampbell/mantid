@@ -22,7 +22,7 @@ class MergeDetectorBanks(QtWidgets.QMainWindow):
         self.window = QtWidgets.QMainWindow()
 
         my_view = view.View(parent=self)
-        self.presenter = presenter.Presenter(view)
+        self.presenter = presenter.Presenter(my_view)
 
         # set the view for the main window
         self.setCentralWidget(my_view)

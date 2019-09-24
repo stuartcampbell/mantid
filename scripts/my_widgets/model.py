@@ -10,43 +10,72 @@ import numpy as np
 
 class BankDataSet(object):
 
-    def __init__(self, name, q, dcs, slf):
+    def __init__(self, name, q, total_s, self_s):
         self.alpha = None
         self.grad = None
         self.intercept = None
         self.q_min = None
         self.q_max = None
-        self.dcs_2 = None
-        self.int = None
+        self.total_s_2 = np.array([])
+        self.distinct_s = np.array([])
 
         self.name = name
         self.q = q
-        self.dcs = dcs
-        self.slf = slf
+        self.total_s = total_s
+        self.self_s = self_s
 
         self.update_value(alpha=1.0, grad=0.0, intercept=0.0, q_min=min(q), q_max=max(q))
 
     def update_value(self, alpha=None, grad=None, intercept=None, q_min=None, q_max=None):
-        if alpha:
+        if alpha is not None:
             self.alpha = alpha
-        if grad:
+        if grad is not None:
             self.grad = grad
-        if intercept:
+        if intercept is not None:
             self.intercept = intercept
-        if q_min:
+        if q_min is not None:
             self.q_min = q_min
-        if q_max:
+        if q_max is not None:
             self.q_max = q_max
 
-        for x in self.q:
-            if x >= self.q_min & x <= self.q_max:
-                self.dcs_2 = np.add(self.alpha * self.dcs, self.grad * self.q + self.intercept)
-                self.int = np.subtract(self.dcs_2, self.slf)
+        self.total_s_2 = np.array([])
+        self.distinct_s = np.array([])
+        for x, total_s, self_s in zip(self.q, self.total_s, self.self_s):
+            total_s_2 = self.alpha * total_s + self.grad * x + self.intercept
+            distinct_s = total_s_2 - self_s
 
-    def plot_dcs_2(self):
-        x = np.array([])
-        y = np.array([])
-        for i in np.arange(self.q.size()):
-            if self.q[i] >= self.q_min & self.q[i] <= self.q_max:
-                np.append(x, self.q[i])
-                np.append(y, self.dcs_2[i])
+            self.total_s_2 = np.append(self.total_s_2, total_s_2)
+            self.distinct_s = np.append(self.distinct_s, distinct_s)
+
+    def get_alpha(self):
+        return self.alpha
+
+    def get_grad(self):
+        return self.grad
+
+    def get_intercept(self):
+        return self.intercept
+
+    def get_q_min(self):
+        return self.q_min
+
+    def get_q_max(self):
+        return self.q_max
+
+    def get_q(self):
+        return self.q
+
+    def get_self_s(self):
+        return self.self_s
+
+    def get_total_s_2(self, index=None):
+        if not index:
+            return self.total_s_2
+        else:
+            return self.total_s_2[index]
+
+    def get_distinct_s(self, index=-1):
+        if index < 0:
+            return self.distinct_s
+        else:
+            return self.distinct_s[index]
