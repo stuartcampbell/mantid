@@ -29,16 +29,5 @@ class MergeDetectorBanks(QtWidgets.QMainWindow):
         self.setWindowTitle("Merge Detector Banks")
 
 
-def qapp():
-    if QtWidgets.QApplication.instance():
-        _app = QtWidgets.QApplication.instance()
-    else:
-        _app = QtWidgets.QApplication(sys.argv)
-    return _app
-
-
-if __name__ == "__main__":
-    app = qapp()
-    window = MergeDetectorBanks()
-    window.show()
-    app.exec_()
+merge_detector_banks = MergeDetectorBanks()
+merge_detector_banks.show()
