@@ -9,9 +9,14 @@
 #
 from __future__ import (absolute_import, unicode_literals)
 
-# 3rd party imports
+from qtpy.QtGui import QFont
 
-# local imports
 from mantidqt.utils.qt import import_qt
 
-CodeEditor = import_qt('..._common', 'mantidqt.widgets.codeeditor', 'ScriptEditor')
+CodeEditor_cpp = import_qt('..._common', 'mantidqt.widgets.codeeditor', 'ScriptEditor')
+
+
+class CodeEditor(CodeEditor_cpp):
+
+    def __init__(self, lexer, font=QFont(), parent=None):
+        super(CodeEditor, self).__init__(lexer, font, parent)
