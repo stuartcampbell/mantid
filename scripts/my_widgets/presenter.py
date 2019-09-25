@@ -5,9 +5,10 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 from __future__ import (absolute_import, division, print_function)
-import numpy as np
+from mantid.simpleapi import CreateWorkspace
 from my_widgets import model
 import csv
+import numpy as np
 
 
 class Presenter(object):
@@ -30,6 +31,7 @@ class Presenter(object):
         self._view.q_min.editingFinished.connect(self.changed_q_min)
         self._view.q_max.editingFinished.connect(self.changed_q_max)
         self._view.detector_bank.currentIndexChanged.connect(self.changed_detector_bank)
+        self._view.output_merged_workspace_btn.clicked.connect(self.output_wksp)
 
     def changed_alpha(self):
         try:
@@ -143,5 +145,10 @@ class Presenter(object):
             slf = SLF[:, i+1]
             name = 'bank' + str(i)
             bank_list.append(model.BankDataSet(name, q, dcs, slf))
-
         return bank_list
+
+    def output_wksp(self):
+        CreateWorkspace(
+            OutputWorkspace="foobar",
+            DataX=self.active_bank.get_q(),
+            DataY=self.get_merged())
