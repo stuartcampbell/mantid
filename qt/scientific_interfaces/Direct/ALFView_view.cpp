@@ -10,24 +10,23 @@
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QRegExpValidator>
-#include <QSplitter>
 #include <QVBoxLayout>
 
 namespace MantidQt {
 namespace CustomInterfaces {
 
 ALFView_view::ALFView_view(QWidget *parent)
-    : QWidget(parent), m_run(nullptr), m_loadRunObservable(nullptr),
-      m_browseObservable(nullptr) {
-  QSplitter *MainLayout = new QSplitter(Qt::Vertical, this);
+    : QSplitter(Qt::Vertical,parent), m_mainLayout(nullptr), m_run(nullptr),
+      m_loadRunObservable(nullptr),
+      m_browseObservable(nullptr),m_instrument(nullptr) {
+
   QWidget *loadBar = new QWidget();
   m_loadRunObservable = new observable();
   m_browseObservable = new observable();
   generateLoadWidget(loadBar);
 
-  MainLayout->addWidget(loadBar);
-  //  MainLayout->addWidget(widgetSplitter);
-  // this->addWidget(MainLayout);
+  this->addWidget(loadBar);
+
 }
 
 void ALFView_view::generateLoadWidget(QWidget *loadBar) {
@@ -53,7 +52,7 @@ void ALFView_view::setRunQuietly(const QString runNumber) {
 
 void ALFView_view::runChanged() {
   m_loadRunObservable->notify();
-} // emit newRun(); }
+} 
 
 void ALFView_view::browse() {
   auto file =
@@ -61,8 +60,12 @@ void ALFView_view::browse() {
   if (file.isEmpty()) {
     return;
   }
-  // emit browsedToRun(file.toStdString());
   m_browseObservable->notify(file.toStdString());
+}
+
+void ALFView_view::setUpInstrument(std::string fileName) {
+  m_instrument = new MantidWidgets::InstrumentWidget("ALFData");
+  this->addWidget(m_instrument);
 }
 
 } // namespace CustomInterfaces

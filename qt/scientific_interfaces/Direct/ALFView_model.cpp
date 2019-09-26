@@ -9,7 +9,7 @@
 #include "MantidAPI/Algorithm.h"
 #include "MantidAPI/AlgorithmManager.h"
 #include "MantidAPI/AnalysisDataService.h"
-#include "MantidAPI/MatrixWorkspace.h"
+
 #include "MantidAPI/NumericAxis.h"
 
 #include "MantidGeometry/Instrument.h"
@@ -19,7 +19,6 @@
 #include <utility>
 
 namespace {
-const std::string tmpName = "ALF_tmp";
 const std::string instrumentName = "ALF";
 const std::string wsName = "ALFData";
 } // namespace
@@ -46,11 +45,9 @@ int ALFView_model::loadData(const std::string &name) {
       Mantid::API::AlgorithmManager::Instance().create("Load");
   alg->initialize();
   alg->setProperty("Filename", name);
-  alg->setProperty("OutputWorkspace", tmpName); // write to tmp ws
+  alg->setProperty("OutputWorkspace", wsName); // write to tmp ws
   alg->execute();
-  Mantid::API::MatrixWorkspace_sptr ws =
-      Mantid::API::AnalysisDataService::Instance()
-          .retrieveWS<Mantid::API::MatrixWorkspace>(tmpName);
+  Mantid::API::MatrixWorkspace_sptr ws = currentWS();
   return ws->getRunNumber();
 }
 /*
@@ -61,7 +58,7 @@ int ALFView_model::loadData(const std::string &name) {
 std::map<std::string, bool> ALFView_model::isDataValid() {
   Mantid::API::MatrixWorkspace_sptr ws =
       Mantid::API::AnalysisDataService::Instance()
-          .retrieveWS<Mantid::API::MatrixWorkspace>(tmpName);
+          .retrieveWS<Mantid::API::MatrixWorkspace>(wsName);
 
   bool isItALF = false;
   bool isItDSpace = false;
@@ -85,6 +82,7 @@ std::map<std::string, bool> ALFView_model::isDataValid() {
  * If already d-space does nothing.
  */
 void ALFView_model::transformData() {
+  return;
   Mantid::API::IAlgorithm_sptr normAlg =
       Mantid::API::AlgorithmManager::Instance().create("NormaliseByCurrent");
   normAlg->initialize();
@@ -101,23 +99,21 @@ void ALFView_model::transformData() {
   dSpacingAlg->execute();
 }
 
-void ALFView_model::rename() {
-  Mantid::API::AnalysisDataService::Instance().rename(tmpName, wsName);
-}
-void ALFView_model::remove() {
-  Mantid::API::AnalysisDataService::Instance().remove(tmpName);
-}
-
 int ALFView_model::currentRun() {
   try {
 
-    Mantid::API::MatrixWorkspace_sptr ws =
-        Mantid::API::AnalysisDataService::Instance()
-            .retrieveWS<Mantid::API::MatrixWorkspace>(wsName);
+    Mantid::API::MatrixWorkspace_sptr ws = currentWS();
     return ws->getRunNumber();
   } catch (...) {
     return -999; // special error code
   }
+}
+
+std::string ALFView_model::dataFileName() { return wsName; }
+
+Mantid::API::MatrixWorkspace_sptr ALFView_model::currentWS() {
+  return Mantid::API::AnalysisDataService::Instance()
+      .retrieveWS<Mantid::API::MatrixWorkspace>(wsName);
 }
 
 } // namespace CustomInterfaces

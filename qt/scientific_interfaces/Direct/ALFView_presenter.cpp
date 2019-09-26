@@ -34,16 +34,19 @@ void ALFView_presenter::initLayout() {
   std::function<void(std::string)> browseBinder = std::bind(
       &ALFView_presenter::loadBrowsedFile, this, std::placeholders::_1);
   m_browseObserver->setSlot(browseBinder);
+
+  // set up instrument
+  m_view->setUpInstrument(m_model->dataFileName());
 }
 
 void ALFView_presenter::loadAndAnalysis(const std::string &run) {
   int runNumber = m_model->loadData(run);
   auto bools = m_model->isDataValid();
   if (bools["IsValidInstrument"]) {
-    m_model->rename();
     m_currentRun = runNumber;
   } else {
-    m_model->remove();
+    loadAndAnalysis("ALF" + std::to_string(m_currentRun));
+    return;
   }
   // if the displayed run number is out of sinc
   if (m_view->getRunNumber() != m_currentRun) {
