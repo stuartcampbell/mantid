@@ -41,21 +41,15 @@
     <layout class="QVBoxLayout" name="plt_2"/>
    </item>
    <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0" columnminimumwidth="1,0">
-     <item row="0" column="1">
-      <widget class="QComboBox" name="detector_bank"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="grad">
        <property name="text">
-        <string>Gradient</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <string>0.0</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>Qmin</string>
@@ -65,15 +59,8 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>alpha</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="detector_bank"/>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_6">
@@ -85,7 +72,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Intercept</string>
@@ -95,7 +82,14 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="intercept">
+       <property name="text">
+        <string>0.0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Qmax</string>
@@ -105,64 +99,44 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="use_detector_bank">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <property name="tristate">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Use Detector Bank</string>
+        <string>Gradient</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="1" column="1">
       <widget class="QLineEdit" name="alpha">
        <property name="text">
         <string>1.0</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="grad">
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="q_max">
        <property name="text">
-        <string>0.0</string>
+        <string>60.0</string>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLineEdit" name="intercept">
-       <property name="text">
-        <string>0.0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
       <widget class="QLineEdit" name="q_min">
        <property name="text">
         <string>0.0</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="q_max">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>60.0</string>
+        <string>alpha</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -174,19 +148,6 @@
       <string>Output merged workspace</string>
      </property>
     </widget>
-   </item>
-   <item row="3" column="1">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>172</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="1" column="0">
     <spacer name="verticalSpacer">
@@ -203,6 +164,13 @@
    </item>
    <item row="0" column="1" rowspan="2" colspan="3">
     <layout class="QVBoxLayout" name="plt_3"/>
+   </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="save_correction_files_btn">
+     <property name="text">
+      <string>Save Correction files</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

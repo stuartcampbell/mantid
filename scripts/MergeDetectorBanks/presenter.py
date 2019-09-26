@@ -6,8 +6,7 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 from __future__ import (absolute_import, division, print_function)
 from mantid.simpleapi import CreateWorkspace
-from my_widgets import model
-import csv
+from MergeDetectorBanks import model
 import numpy as np
 
 
@@ -18,7 +17,8 @@ class Presenter(object):
         self.bank_list = None
 
         self._view = view
-        self.bank_list = self.get_bank_list()
+        self.bank_collection = model.BankDetectorCollection()
+        self.bank_list = self.bank_collection.get_bank_list()
         for bank in self.bank_list:
             self._view.detector_bank.addItem(bank.name)
         self.connect_view_signals()
@@ -32,28 +32,32 @@ class Presenter(object):
         self._view.q_max.editingFinished.connect(self.changed_q_max)
         self._view.detector_bank.currentIndexChanged.connect(self.changed_detector_bank)
         self._view.output_merged_workspace_btn.clicked.connect(self.output_wksp)
+        self._view.save_correction_files_btn.clicked.connect(self.save_correction)
 
     def changed_alpha(self):
         try:
             alpha = self._view.alpha.text()
-            self.active_bank.update_value(alpha=float(alpha))
-            self.update_plots()
+            if not alpha == self.active_bank.get_alpha():
+                self.active_bank.update_value(alpha=float(alpha))
+                self.update_plots()
         except TypeError:
-            self._view.alpha.setText(self.active_bank.alpha)
+            self._view.alpha.setText(self.active_bank.get_alpha())
 
     def changed_grad(self):
         try:
             grad = self._view.grad.text()
-            self.active_bank.update_value(grad=float(grad))
-            self.update_plots()
+            if not grad == self.active_bank.get_grad():
+                self.active_bank.update_value(grad=float(grad))
+                self.update_plots()
         except TypeError:
             self._view.grad.setText(self.active_bank.grad)
 
     def changed_intercept(self):
         try:
             intercept = self._view.intercept.text()
-            self.active_bank.update_value(intercept=float(intercept))
-            self.update_plots()
+            if not intercept == self.active_bank.get_intercept():
+                self.active_bank.update_value(intercept=float(intercept))
+                self.update_plots()
         except TypeError:
             self._view.intercept.setText(self.active_bank.intercept)
 
@@ -91,7 +95,7 @@ class Presenter(object):
         total_s_2 = self.active_bank.get_total_s_2()
         self_s_valid = self.active_bank.get_self_s()
         distinct_s = self.active_bank.get_distinct_s()
-        merged = self.get_merged()
+        merged = self.bank_collection.get_merged()
         q_min = self.active_bank.get_q_min()
         q_max = self.active_bank.get_q_max()
 
@@ -111,44 +115,13 @@ class Presenter(object):
         self._view.axis_3.plot(q, merged, 'r')
         self._view.canvas_3.draw()
 
-    def get_merged(self):
-        q = self.active_bank.get_q()
-        merged = np.zeros(q.size)
-        for i in np.arange(q.size):
-            merge_x = 0
-            n_detector = 0
-            for bank in self.bank_list:
-                q_min = bank.get_q_min()
-                q_max = bank.get_q_max()
-                if q_min <= q[i] <= q_max:
-                    n_detector += 1
-                    merge_x += bank.get_distinct_s(i)
-            if not n_detector == 0:
-                merged[i] = merge_x / n_detector
-        return merged
-
-    def get_bank_list(self):
-        # TODO replace dummy bank data with data loader
-
-        DCS_read = csv.reader(open("C:\\Users\\wey38795\\Documents\\DCS.csv", "rb"), delimiter=",")
-        DCS_list = list(DCS_read)
-        DCS = np.array(DCS_list).astype("float")
-
-        reader = csv.reader(open("C:\\Users\\wey38795\\Documents\\SLF.csv", "rb"), delimiter=",")
-        x = list(reader)
-        SLF = np.array(x).astype("float")
-
-        bank_list = []
-        q = DCS[:, 0]
-        for i in np.arange(DCS[0, :].size - 1):
-            dcs = DCS[:, i+1]
-            slf = SLF[:, i+1]
-            name = 'bank' + str(i)
-            bank_list.append(model.BankDataSet(name, q, dcs, slf))
-        return bank_list
-
     def output_wksp(self):
         CreateWorkspace(
             OutputWorkspace="foobar",
             DataX=self.active_bank.get_q(),
-            DataY=self.get_merged())
+            DataY=self.bank_collection.get_merged())
+
+    def save_correction(self):
+        alf = self.bank_collection.get_alpha_table()
+        lim = self.bank_collection.get_limit_table()
+        lin = self.bank_collection.get_linear_table()

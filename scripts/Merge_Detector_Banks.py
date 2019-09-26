@@ -9,10 +9,9 @@ from __future__ import (absolute_import, division, print_function)
 
 import sys
 
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets
 
-from my_widgets import view
-from my_widgets import presenter
+from MergeDetectorBanks import presenter, view
 
 
 class MergeDetectorBanks(QtWidgets.QMainWindow):
@@ -29,5 +28,11 @@ class MergeDetectorBanks(QtWidgets.QMainWindow):
         self.setWindowTitle("Merge Detector Banks")
 
 
+if QtWidgets.QApplication.instance():
+    app = QtWidgets.QApplication.instance()
+else:
+    app = QtWidgets.QApplication(sys.argv)
+
 merge_detector_banks = MergeDetectorBanks()
 merge_detector_banks.show()
+app.exec_()
