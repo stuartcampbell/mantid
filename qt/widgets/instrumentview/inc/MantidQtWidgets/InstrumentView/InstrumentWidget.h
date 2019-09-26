@@ -155,8 +155,12 @@ public:
   void loadFromProject(const std::string &lines);
   /// Save the widget to a Mantid projecy file.
   std::string saveToProject() const;
+  /// edit available tabs
+  void removeTab(const std::string &tabName);
+  void addTab(const std::string &tabName);
 
-signals:
+signals
+      :
   void enableLighting(bool /*_t1*/);
   void plot1D(const QString & /*_t1*/, const std::set<int> & /*_t2*/,
               bool /*_t3*/);
@@ -236,7 +240,7 @@ protected:
   QWidget *createInstrumentTreeTab(QTabWidget *ControlsTab);
   void createTabs(QSettings &settings);
   void saveSettings();
-
+  void addTabs();
   QString asString(const std::vector<int> &numbers) const;
   QString confirmDetectorOperation(const QString &opName,
                                    const QString &inputWS, int ndets);
@@ -330,6 +334,8 @@ private:
   void loadTabs(const std::string &lines) const;
   /// Save tabs on the widget to a string
   std::string saveTabs() const;
+  std::vector<std::pair<std::string,bool>> m_stateOfTabs;
+
 };
 
 } // namespace MantidWidgets

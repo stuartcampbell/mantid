@@ -65,7 +65,10 @@ void ALFView_view::browse() {
 
 void ALFView_view::setUpInstrument(std::string fileName) {
   m_instrument = new MantidWidgets::InstrumentWidget("ALFData");
+  m_instrument->removeTab("Render");
+  m_instrument->removeTab("Draw");
   this->addWidget(m_instrument);
+  m_instrument->addTab("Draw");
 }
 
 } // namespace CustomInterfaces
