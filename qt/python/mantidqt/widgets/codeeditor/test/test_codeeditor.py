@@ -13,6 +13,7 @@ from __future__ import (absolute_import, unicode_literals)
 import unittest
 
 # local imports
+from mantid.py3compat.mock import Mock, patch
 from mantidqt.widgets.codeeditor.editor import CodeEditor
 from mantidqt.utils.qt.testing import start_qapplication
 
@@ -69,6 +70,20 @@ class CodeEditorTest(unittest.TestCase):
         widget.setSelection(*selected)
         res = widget.getSelection()
         self.assertEqual(selected, res)
+
+    def test_completion_api_is_updated_with_numpy_completions_when_cursor_position_changed(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("import numpy as np\nnp.")
+        with patch.object(widget, 'updateCompletionAPI'):
+            widget._on_cursorPositionChanged(1, 3)
+            self.assertIn('abs', widget.updateCompletionAPI.call_args[0][0])
+
+    def test_completion_api_is_updated_with_mantid_api_when_cursor_position_changed(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("from mantid.simpleapi import *\nLo")
+        with patch.object(widget, 'updateCompletionAPI'):
+            widget._on_cursorPositionChanged(1, 2)
+            self.assertIn('Load', widget.updateCompletionAPI.call_args[0][0])
 
     # ---------------------------------------------------------------
     # Failure tests
