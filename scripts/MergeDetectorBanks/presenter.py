@@ -125,3 +125,6 @@ class Presenter(object):
         alf = self.bank_collection.get_alpha_table()
         lim = self.bank_collection.get_limit_table()
         lin = self.bank_collection.get_linear_table()
+        print(alf)
+        print(lim)
+        print(lin)
