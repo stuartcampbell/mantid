@@ -169,21 +169,7 @@ class PythonCodeExecution(QObject):
                 # compile so we can set the filename
                 code_obj = compile(block.code_str, filename, mode=COMPILE_MODE,
                                    dont_inherit=True)
-                exec (code_obj, self.globals_ns, self.globals_ns)
-
-    def generate_calltips(self):
-        """
-        Return a list of calltips for the current global scope. This is currently
-        very basic and only inspects the available functions and builtins at the current scope.
-
-        :return: A list of strings giving calltips for each global callable
-        """
-        calltips = []
-        for name, attr in iteritems(self._globals_ns):
-            if inspect.isfunction(attr) or inspect.isbuiltin(attr):
-                calltips.append(name + get_function_spec(attr))
-
-        return calltips
+                exec(code_obj, self.globals_ns, self.globals_ns)
 
     def reset_context(self):
         # create new context for execution

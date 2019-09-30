@@ -276,9 +276,6 @@ class PythonFileInterpreterPresenter(QObject):
         self._is_executing = False
         self._error_formatter = ErrorFormatter()
 
-        # If startup code was executed then populate autocomplete
-        self.view.editor.updateCompletionAPI(self.model.generate_calltips())
-
         # connect signals
         self.model.sig_exec_success.connect(self._on_exec_success)
         self.model.sig_exec_error.connect(self._on_exec_error)
@@ -329,7 +326,6 @@ class PythonFileInterpreterPresenter(QObject):
         return code_str, line_from
 
     def _on_exec_success(self, task_result):
-        self.view.editor.updateCompletionAPI(self.model.generate_calltips())
         self._finish(success=True, task_result=task_result)
 
     def _on_exec_error(self, task_error):

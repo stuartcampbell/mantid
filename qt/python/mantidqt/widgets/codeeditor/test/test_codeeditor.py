@@ -10,10 +10,11 @@
 from __future__ import (absolute_import, unicode_literals)
 
 # system imports
+import re
 import unittest
 
 # local imports
-from mantid.py3compat.mock import Mock, patch
+from mantid.py3compat.mock import patch
 from mantidqt.widgets.codeeditor.editor import CodeEditor
 from mantidqt.utils.qt.testing import start_qapplication
 
@@ -74,16 +75,47 @@ class CodeEditorTest(unittest.TestCase):
     def test_completion_api_is_updated_with_numpy_completions_when_cursor_position_changed(self):
         widget = CodeEditor(TEST_LANG)
         widget.setText("import numpy as np\nnp.")
-        with patch.object(widget, 'updateCompletionAPI'):
-            widget._on_cursorPositionChanged(1, 3)
-            self.assertIn('abs', widget.updateCompletionAPI.call_args[0][0])
+        with patch.object(widget, 'addToCompletionAPI'):
+            widget._on_cursor_position_changed(1, 3)
+            self.assertIn('abs', widget.addToCompletionAPI.call_args[0][0])
 
     def test_completion_api_is_updated_with_mantid_api_when_cursor_position_changed(self):
         widget = CodeEditor(TEST_LANG)
         widget.setText("from mantid.simpleapi import *\nLo")
-        with patch.object(widget, 'updateCompletionAPI'):
-            widget._on_cursorPositionChanged(1, 2)
-            self.assertIn('Load', widget.updateCompletionAPI.call_args[0][0])
+        with patch.object(widget, 'addToCompletionAPI'):
+            widget._on_cursor_position_changed(1, 2)
+            self.assertIn('Load', widget.addToCompletionAPI.call_args[0][0])
+
+    def test_call_tips_are_generated_with_the_correct_args_for_Load_function(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("from mantid.simpleapi import *\nLoad(")
+        call_tips = widget._generate_call_tips(2, 5)
+        self.assertIn("Load(*args, **kwargs)", call_tips)
+
+    def test_call_tips_are_still_visible_after_argument_inserted(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("import numpy as np\nnp.array(x, ")
+        joined_call_tips = ' '.join(widget._generate_call_tips(2, 12))
+        self.assertTrue(bool(re.search("array\(object, .*\)", joined_call_tips)))
+
+    def test_call_tips_are_not_generated_when_outside_a_function_call(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("import numpy as np\nnp.array(x)")
+        self.assertEqual(0, len(widget._generate_call_tips(2, 11)))
+
+    def test_that_generate_completions_list_is_not_called_when_cursor_is_inside_bracket(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("import numpy as np\nnp.array(    ")
+        with patch.object(widget, '_generate_completions_list'):
+            widget._on_cursor_position_changed(1, 11)
+            self.assertEqual(0, widget._generate_completions_list.call_count)
+
+    def test_that_generate_completions_list_is_called_after_closed_brackets(self):
+        widget = CodeEditor(TEST_LANG)
+        widget.setText("import numpy as np\nnp.array(x)    ")
+        with patch.object(widget, '_generate_completions_list'):
+            widget._on_cursor_position_changed(1, 11)
+            self.assertEqual(1, widget._generate_completions_list.call_count)
 
     # ---------------------------------------------------------------
     # Failure tests
