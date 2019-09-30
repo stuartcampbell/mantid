@@ -17,6 +17,7 @@ from qtpy.QtWidgets import QFileDialog, QMessageBox, QStatusBar, QVBoxLayout, QW
 
 from mantidqt.io import open_a_file_dialog
 from mantidqt.widgets.codeeditor.codecommenter import CodeCommenter
+from mantidqt.widgets.codeeditor.codecompleter import CodeCompleter
 from mantidqt.widgets.codeeditor.editor import CodeEditor
 from mantidqt.widgets.codeeditor.errorformatter import ErrorFormatter
 from mantidqt.widgets.codeeditor.execution import PythonCodeExecution
@@ -136,6 +137,7 @@ class PythonFileInterpreter(QWidget):
 
         self._presenter = PythonFileInterpreterPresenter(self, PythonCodeExecution(content))
         self.code_commenter = CodeCommenter(self.editor)
+        self.code_completer = CodeCompleter(self.editor, self._presenter.model.globals_ns)
 
         self.editor.modificationChanged.connect(self.sig_editor_modified)
         self.editor.fileNameChanged.connect(self.sig_filename_modified)
@@ -254,8 +256,6 @@ class PythonFileInterpreter(QWidget):
             editor.setFileName(filename)
         # Default content does not count as a modification
         editor.setModified(False)
-
-        editor.enableAutoCompletion(CodeEditor.AcsAll)
 
     def clear_key_binding(self, key_str):
         """Clear a keyboard shortcut bound to a Scintilla command"""
