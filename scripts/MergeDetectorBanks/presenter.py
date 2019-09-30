@@ -5,9 +5,12 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 from __future__ import (absolute_import, division, print_function)
-from mantid.simpleapi import CreateWorkspace
+import csv
 from MergeDetectorBanks import model
 import numpy as np
+from qtpy import QtWidgets, QtGui
+
+from mantid.simpleapi import CreateWorkspace
 
 
 class Presenter(object):
@@ -15,14 +18,10 @@ class Presenter(object):
     def __init__(self, view):
         self.active_bank = None
         self.bank_list = None
+        self.bank_collection = None
 
         self._view = view
-        self.bank_collection = model.BankDetectorCollection()
-        self.bank_list = self.bank_collection.get_bank_list()
-        for bank in self.bank_list:
-            self._view.detector_bank.addItem(bank.name)
         self.connect_view_signals()
-        self.set_active_bank(0)
 
     def connect_view_signals(self):
         self._view.alpha.editingFinished.connect(self.changed_alpha)
@@ -31,6 +30,7 @@ class Presenter(object):
         self._view.q_min.editingFinished.connect(self.changed_q_min)
         self._view.q_max.editingFinished.connect(self.changed_q_max)
         self._view.detector_bank.currentIndexChanged.connect(self.changed_detector_bank)
+        self._view.load_btn.clicked.connect(self.load_data)
         self._view.output_merged_workspace_btn.clicked.connect(self.output_wksp)
         self._view.save_correction_files_btn.clicked.connect(self.save_correction)
 
@@ -81,6 +81,48 @@ class Presenter(object):
         if not self.bank_list[i] == self.active_bank:
             self.set_active_bank(i)
 
+    def load_data(self):
+        try:
+            dcs_read = csv.reader(open(str(self._view.dcs_directory.text()), "rb"), delimiter=",")
+            dcs_all = np.array(list(dcs_read)).astype("float")
+        except IOError:
+            self.load_error(str(self._view.dcs_directory.text()))
+            return
+        try:
+            slf_read = csv.reader(open(str(self._view.slf_directory.text()), "rb"), delimiter=",")
+            slf_all = np.array(list(slf_read)).astype("float")
+        except IOError:
+            self.load_error(str(self._view.slf_directory.text()))
+            return
+
+        self.bank_collection = model.BankDetectorCollection(dcs_all, slf_all)
+        self.bank_list = self.bank_collection.get_bank_list()
+        for bank in self.bank_list:
+            self._view.detector_bank.addItem(bank.name)
+        self.set_active_bank(0)
+        self.enable_functions()
+
+    def enable_functions(self):
+        self._view.detector_bank.setEnabled(True)
+        self._view.alpha.setEnabled(True)
+        self._view.grad.setEnabled(True)
+        self._view.intercept.setEnabled(True)
+        self._view.q_min.setEnabled(True)
+        self._view.q_max.setEnabled(True)
+        self._view.output_merged_workspace_btn.setEnabled(True)
+        self._view.save_correction_files_btn.setEnabled(True)
+        # set output name to be the filename on the DCS file as default
+        run_name = str(self._view.dcs_directory.text()).split("\\")[-1].split('.')[0]
+        self._view.output_name.setText(run_name)
+
+    @staticmethod
+    def load_error(directory):
+        message_box = QtWidgets.QMessageBox()
+        message_box.setText("IOError: Cannot load " + directory)
+        message_box.setWindowTitle("IOError")
+        message_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        message_box.exec_()
+
     def set_active_bank(self, i):
         self.active_bank = self.bank_list[i]
         self._view.alpha.setText(str(self.active_bank.get_alpha()))
@@ -125,6 +167,22 @@ class Presenter(object):
         alf = self.bank_collection.get_alpha_table()
         lim = self.bank_collection.get_limit_table()
         lin = self.bank_collection.get_linear_table()
-        print(alf)
-        print(lim)
-        print(lin)
+        filename = str(self._view.output_name.text())
+        # save the files to the same directory as the DCS file
+        directory = ''
+        for i in str(self._view.dcs_directory.text()).split("\\")[:-1]:
+            directory += i + '\\'
+        self.save_table(alf, directory, filename, '.alf')
+        self.save_table(lim, directory, filename, '.lim')
+        self.save_table(lin, directory, filename, '.lin')
+
+    @staticmethod
+    def save_table(table, directory, filename, extension):
+        with open(directory + filename + extension, 'w') as f:
+            for line in table:
+                if type(line) == list:
+                    for item in line:
+                        f.write(" %s            " % item)
+                    f.write("\n")
+                else:
+                    f.write(" %s \n" % line)

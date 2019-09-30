@@ -11,26 +11,13 @@ import numpy as np
 
 class BankDetectorCollection(object):
 
-    def __init__(self):
+    def __init__(self, dcs_all, slf_all):
         self.bank_list = []
-        self.load_bank_list()
-        pass
 
-    def load_bank_list(self):
-        # TODO replace dummy bank data with data loader
-
-        DCS_read = csv.reader(open("C:\\Users\\wey38795\\Documents\\DCS.csv", "rb"), delimiter=",")
-        DCS_list = list(DCS_read)
-        DCS = np.array(DCS_list).astype("float")
-
-        reader = csv.reader(open("C:\\Users\\wey38795\\Documents\\SLF.csv", "rb"), delimiter=",")
-        x = list(reader)
-        SLF = np.array(x).astype("float")
-
-        q = DCS[:, 0]
-        for i in np.arange(DCS[0, :].size - 1):
-            dcs = DCS[:, i+1]
-            slf = SLF[:, i+1]
+        q = dcs_all[:, 0]
+        for i in np.arange(dcs_all[0, :].size - 1):
+            dcs = dcs_all[:, i + 1]
+            slf = slf_all[:, i + 1]
             name = 'bank' + str(i)
             self.bank_list.append(BankDataSet(name, q, dcs, slf))
 
@@ -56,7 +43,7 @@ class BankDetectorCollection(object):
     def get_alpha_table(self):
         table = [len(self.bank_list)]
         for i in np.arange(len(self.bank_list)):
-            table.append([i, self.bank_list[i].get_alpha()])
+            table.append([i+1, self.bank_list[i].get_alpha()])
         return table
 
     def get_limit_table(self):
@@ -65,9 +52,9 @@ class BankDetectorCollection(object):
             q_min = self.bank_list[i].get_q_min()
             q_max = self.bank_list[i].get_q_max()
             if q_min < q_max:
-                table.append([i, 1, q_min, q_max])
+                table.append([i+1, 1, q_min, q_max])
             else:
-                table.append([i, 0])
+                table.append([i+1, 0])
         return table
 
     def get_linear_table(self):
@@ -76,9 +63,9 @@ class BankDetectorCollection(object):
             grad = self.bank_list[i].get_grad()
             intercept = self.bank_list[i].get_intercept()
             if grad == 0 and intercept == 0:
-                table.append([i, 0])
+                table.append([i+1, 0])
             else:
-                table.append([i, 1, grad, intercept])
+                table.append([i+1, 1, grad, intercept])
         return table
 
 
