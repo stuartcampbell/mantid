@@ -158,6 +158,9 @@ public:
   /// edit available tabs
   void removeTab(const std::string &tabName);
   void addTab(const std::string &tabName);
+  void addToContextMenu(const std::string tab, QAction *action,
+      std::function<bool(std::map<std::string, bool>)> &actionCondition);
+  InstrumentWidgetPickTab *getPickTab() { return m_pickTab; };
 
 signals
       :

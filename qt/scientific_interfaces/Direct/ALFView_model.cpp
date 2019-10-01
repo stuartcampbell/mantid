@@ -21,6 +21,8 @@
 namespace {
 const std::string instrumentName = "ALF";
 const std::string wsName = "ALFData";
+const std::string extractedWS = "extractedTubes_";
+const std::string curves = "Curves";
 } // namespace
 
 namespace MantidQt {
@@ -116,5 +118,63 @@ Mantid::API::MatrixWorkspace_sptr ALFView_model::currentWS() {
       .retrieveWS<Mantid::API::MatrixWorkspace>(wsName);
 }
 
+void ALFView_model::storeSingleTube(const std::string &name) {
+  Mantid::API::IAlgorithm_sptr alg =
+      Mantid::API::AlgorithmManager::Instance().create("ScaleX");
+  alg->initialize();
+  alg->setProperty("InputWorkspace", curves);
+  alg->setProperty("OutputWorkspace", extractedWS + name);
+  alg->setProperty("Factor", 180. / M_PI); // convert to degrees
+  alg->execute();
+
+  Mantid::API::IAlgorithm_sptr histogramAlg =
+      Mantid::API::AlgorithmManager::Instance().create("ConvertToHistogram");
+  histogramAlg->initialize();
+  histogramAlg->setProperty("InputWorkspace", extractedWS + name);
+  histogramAlg->setProperty("OutputWorkspace", extractedWS + name);
+  histogramAlg->execute();
+
+  Mantid::API::AnalysisDataService::Instance().remove(curves);
+}
+
+void ALFView_model::averageTube(const int &oldTotalNumber,
+                                const std::string &name) {
+  // multiply up current average
+  Mantid::API::MatrixWorkspace_sptr ws =
+      Mantid::API::AnalysisDataService::Instance()
+          .retrieveWS<Mantid::API::MatrixWorkspace>(extractedWS + name);
+  ws->mutableY(0) * double(oldTotalNumber);
+
+  // get the data to add
+  storeSingleTube(name);
+  // rebin to match
+  Mantid::API::IAlgorithm_sptr rebin =
+      Mantid::API::AlgorithmManager::Instance().create("RebinToWorkspace");
+  rebin->initialize();
+  rebin->setProperty("WorkspaceToRebin", extractedWS + name);
+  rebin->setProperty("WorkspaceToMatch", ws);
+  rebin->setProperty("OutputWorkspace", extractedWS + name);
+  rebin->execute();
+
+  // add together
+  Mantid::API::IAlgorithm_sptr alg =
+      Mantid::API::AlgorithmManager::Instance().create("Plus");
+  alg->initialize();
+  alg->setProperty("LHSWorkspace", extractedWS + name);
+  alg->setProperty("RHSWorkspace", ws);
+  alg->setProperty("OutputWorkspace", extractedWS + name);
+  alg->execute();
+  // do division
+  ws = Mantid::API::AnalysisDataService::Instance()
+           .retrieveWS<Mantid::API::MatrixWorkspace>(extractedWS + name);
+  ws->mutableY(0) /= (double(oldTotalNumber) + 1.0);
+  Mantid::API::AnalysisDataService::Instance().addOrReplace(extractedWS + name,
+                                                            ws);
+}
+
+bool ALFView_model::hasTubeBeenExtracted(const std::string &name) {
+  return Mantid::API::AnalysisDataService::Instance().doesExist(extractedWS +
+                                                                name);
+}
 } // namespace CustomInterfaces
 } // namespace MantidQt

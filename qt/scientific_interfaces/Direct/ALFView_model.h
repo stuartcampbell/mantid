@@ -23,6 +23,10 @@ public:
   int currentRun();
   Mantid::API::MatrixWorkspace_sptr currentWS();
   std::string dataFileName();
+  void storeSingleTube(const std::string &name);
+  void averageTube(const int &oldTotalNumber, const std::string &name);
+  bool hasTubeBeenExtracted(const std::string &name);
+
 }; // namespace CustomInterfaces
 } // namespace CustomInterfaces
 } // namespace MantidQt

@@ -36,10 +36,10 @@ public:
   };
 };
 
-class loadObserver : public observer {
+class voidObserver : public observer {
 public:
-  loadObserver() : m_slot(nullptr){};
-  ~loadObserver(){};
+  voidObserver() : m_slot(nullptr){};
+  ~voidObserver(){};
   void setSlot(std::function<void()> &func) { m_slot = func; };
   void update() override { m_slot(); };
   void update(std::string) override { m_slot(); };

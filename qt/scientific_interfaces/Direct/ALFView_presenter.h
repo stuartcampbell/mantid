@@ -28,15 +28,23 @@ public:
 private slots:
   void loadRunNumber();
   void loadBrowsedFile(const std::string);
+  void extractSingleTube();
+  void averageTube();
 
 private:
   void loadAndAnalysis(const std::string &run);
+  bool extractTubeConditon(std::map<std::string, bool> tabBools);
+  bool averageTubeConditon(std::map<std::string, bool> tabBools);
+  void initInstrument();
 
   ALFView_view *m_view;
   ALFView_model *m_model;
   int m_currentRun;
-  loadObserver *m_loadRunObserver;
+  int m_numberOfTubesInAverage;
+  voidObserver *m_loadRunObserver;
   generalObserver *m_browseObserver;
+  voidObserver *m_extractSingleTubeObserver;
+  voidObserver *m_averageTubeObserver;
 };
 } // namespace CustomInterfaces
 } // namespace MantidQt

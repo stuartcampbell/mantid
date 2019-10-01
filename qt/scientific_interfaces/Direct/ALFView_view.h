@@ -8,9 +8,10 @@
 #define MANTIDQT_CUSTOMINTERFACES_ALFVIEW_VIEW_H_
 
 #include "DllConfig.h"
+#include "MantidQtWidgets/InstrumentView/InstrumentWidget.h"
 #include "observerPattern.h"
-#include "MantidQtWidgets/InstrumentView/InstrumentWidget.h" 
 
+#include <QAction>
 #include <QLineEdit>
 #include <QObject>
 #include <QPushButton>
@@ -33,13 +34,23 @@ public:
   void observeBrowse(observer *listner) {
     m_browseObservable->attach(listner);
   };
-  void setUpInstrument(const std::string fileName);
+  void observeExtractSingleTube(observer *listner) {
+    m_extractSingleTubeObservable->attach(listner);
+  }
+  void observeAverageTube(observer *listner) {
+    m_averageTubeObservable->attach(listner);
+  }
+  void setUpInstrument(
+      const std::string fileName,
+      std::function<bool(std::map<std::string, bool>)> &extractBinder,
+      std::function<bool(std::map<std::string, bool>)> &averageBinder);
 public slots:
   void runChanged();
   void browse();
+  void extractSingleTube();
+  void averageTube();
 
-signals:
-  void newRun();
+      signals : void newRun();
   void browsedToRun(std::string);
 
 private:
@@ -49,7 +60,11 @@ private:
   QPushButton *m_browse;
   observable *m_loadRunObservable;
   observable *m_browseObservable;
+  observable *m_extractSingleTubeObservable;
+  observable *m_averageTubeObservable;
   MantidWidgets::InstrumentWidget *m_instrument;
+  QAction *m_extractAction;
+  QAction *m_averageAction;
 };
 } // namespace CustomInterfaces
 } // namespace MantidQt

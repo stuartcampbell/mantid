@@ -1287,6 +1287,14 @@ void InstrumentWidget::addTab(const std::string &tabName) {
   addTabs();
 }
 
+void InstrumentWidget::addToContextMenu(const std::string tab,
+	QAction* action, std::function<bool(std::map<std::string, bool>)> &actionCondition) {
+  if (tab == "Pick") {
+    m_pickTab->addToContextMenu(action, actionCondition);
+  }
+ }
+
+
 /**
  * Return a name for a group in QSettings to store InstrumentWidget
  * configuration.
