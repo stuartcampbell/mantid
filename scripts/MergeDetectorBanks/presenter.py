@@ -40,7 +40,7 @@ class Presenter(object):
             if not alpha == self.active_bank.get_alpha():
                 self.active_bank.update_value(alpha=float(alpha))
                 self.update_plots()
-        except TypeError:
+        except ValueError:
             self._view.alpha.setText(self.active_bank.get_alpha())
 
     def changed_grad(self):
@@ -49,8 +49,8 @@ class Presenter(object):
             if not grad == self.active_bank.get_grad():
                 self.active_bank.update_value(grad=float(grad))
                 self.update_plots()
-        except TypeError:
-            self._view.grad.setText(self.active_bank.grad)
+        except ValueError:
+            self._view.grad.setText(self.active_bank.get_grad())
 
     def changed_intercept(self):
         try:
@@ -58,39 +58,42 @@ class Presenter(object):
             if not intercept == self.active_bank.get_intercept():
                 self.active_bank.update_value(intercept=float(intercept))
                 self.update_plots()
-        except TypeError:
-            self._view.intercept.setText(self.active_bank.intercept)
+        except ValueError:
+            self._view.intercept.setText(self.active_bank.get_intercept())
 
     def changed_q_min(self):
         try:
             q_min = self._view.q_min.text()
-            self.active_bank.update_value(q_min=float(q_min))
-            self.update_plots()
-        except TypeError:
-            self._view.q_min.setText(self.active_bank.q_min)
+            if not q_min == self.active_bank.get_q_min():
+                self.active_bank.update_value(q_min=float(q_min))
+                self.update_plots()
+        except ValueError:
+            self._view.q_min.setText(self.active_bank.get_q_min())
 
     def changed_q_max(self):
         try:
             q_max = self._view.q_max.text()
-            self.active_bank.update_value(q_max=float(q_max))
-            self.update_plots()
-        except TypeError:
-            self._view.q_max.setText(self.active_bank.q_max)
+            if not q_max == self.active_bank.get_q_max():
+                self.active_bank.update_value(q_max=float(q_max))
+                self.update_plots()
+        except ValueError:
+            self._view.q_max.setText(self.active_bank.get_q_max())
 
     def changed_detector_bank(self, i):
         if not self.bank_list[i] == self.active_bank:
             self.set_active_bank(i)
 
     def load_data(self):
+        # TODO replace with suitable loader for other format
         try:
-            dcs_read = csv.reader(open(str(self._view.dcs_directory.text()), "rb"), delimiter=",")
-            dcs_all = np.array(list(dcs_read)).astype("float")
+            dcs_read = csv.reader(open(str(self._view.dcs_directory.text()), 'rb'), delimiter=',')
+            dcs_all = np.array(list(dcs_read)).astype('float')
         except IOError:
             self.load_error(str(self._view.dcs_directory.text()))
             return
         try:
-            slf_read = csv.reader(open(str(self._view.slf_directory.text()), "rb"), delimiter=",")
-            slf_all = np.array(list(slf_read)).astype("float")
+            slf_read = csv.reader(open(str(self._view.slf_directory.text()), 'rb'), delimiter=',')
+            slf_all = np.array(list(slf_read)).astype('float')
         except IOError:
             self.load_error(str(self._view.slf_directory.text()))
             return
@@ -112,14 +115,14 @@ class Presenter(object):
         self._view.output_merged_workspace_btn.setEnabled(True)
         self._view.save_correction_files_btn.setEnabled(True)
         # set output name to be the filename on the DCS file as default
-        run_name = str(self._view.dcs_directory.text()).split("\\")[-1].split('.')[0]
+        run_name = str(self._view.dcs_directory.text()).split('\\')[-1].split('.')[0]
         self._view.output_name.setText(run_name)
 
     @staticmethod
     def load_error(directory):
         message_box = QtWidgets.QMessageBox()
-        message_box.setText("IOError: Cannot load " + directory)
-        message_box.setWindowTitle("IOError")
+        message_box.setText('IOError: Cannot load ' + directory)
+        message_box.setWindowTitle('IOError')
         message_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
         message_box.exec_()
 
@@ -158,8 +161,9 @@ class Presenter(object):
         self._view.canvas_3.draw()
 
     def output_wksp(self):
+        wksp_name = str(self._view.output_name.text()) + '_merged'
         CreateWorkspace(
-            OutputWorkspace="foobar",
+            OutputWorkspace=wksp_name,
             DataX=self.active_bank.get_q(),
             DataY=self.bank_collection.get_merged())
 
@@ -167,11 +171,11 @@ class Presenter(object):
         alf = self.bank_collection.get_alpha_table()
         lim = self.bank_collection.get_limit_table()
         lin = self.bank_collection.get_linear_table()
-        filename = str(self._view.output_name.text())
         # save the files to the same directory as the DCS file
         directory = ''
-        for i in str(self._view.dcs_directory.text()).split("\\")[:-1]:
+        for i in str(self._view.dcs_directory.text()).split('\\')[:-1]:
             directory += i + '\\'
+        filename = str(self._view.output_name.text())
         self.save_table(alf, directory, filename, '.alf')
         self.save_table(lim, directory, filename, '.lim')
         self.save_table(lin, directory, filename, '.lin')
@@ -179,10 +183,12 @@ class Presenter(object):
     @staticmethod
     def save_table(table, directory, filename, extension):
         with open(directory + filename + extension, 'w') as f:
+            file_string = ''
             for line in table:
                 if type(line) == list:
                     for item in line:
-                        f.write(" %s            " % item)
-                    f.write("\n")
+                        file_string += (' %s            ' % item)
+                    file_string += '\n'
                 else:
-                    f.write(" %s \n" % line)
+                    file_string += (' %s \n' % line)
+            f.write(file_string)
