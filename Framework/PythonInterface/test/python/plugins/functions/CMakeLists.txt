@@ -1,22 +1,22 @@
 # Tests for Fit functions
 
 set(TEST_PY_FILES
+    AttributeTest.py
     BesselTest.py
     CombGaussLorentzKTTest.py
     DSFinterp1DFitTest.py
     EISFDiffSphereTest.py
-    FmuFTest.py
     EISFDiffCylinderTest.py
     EISFDiffSphereAlkylTest.py
     Example1DFunctionTest.py
     ExamplePeakFunctionTest.py
-    StretchedExpFTTest.py
-    AttributeTest.py
+    FmuFTest.py
     MsdGaussTest.py
     MsdPetersTest.py
     MsdYiTest.py
     MuHTest.py
     SilverBaselineTest.py
+    StretchedExpFTTest.py
     TeixeiraWaterTest.py)
 
 check_tests_valid(${CMAKE_CURRENT_SOURCE_DIR} ${TEST_PY_FILES})
