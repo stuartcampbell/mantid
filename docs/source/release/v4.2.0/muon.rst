@@ -7,7 +7,37 @@ MuSR Changes
 
 New
 ###
-
+Fitting functions that have been added:
+- :ref:`CombGaussLorentszKT<algm-CombLorentzKT>`
+- :ref:`StretchedKT<algm-StretchedKT>`
+- :ref:`FmuF<algm-FmuF>`
+- :ref:`Bessel<algm-Bessel>`
+- :ref:`Meier<algm-Meier>`
+- :ref:`MuH<algm-MuH>`
+- :ref:`StandardSC<algm-StandardSC>`
+- :ref:`SilverBaseline<algm-SilverBaseline>`
+- :ref:`TFMuonium<algm-TFMuonium>`
+- :ref:`HighTFMuonium<algm-HighTFMuonium>`
+- :ref:`TriangleOsc<algm-TriangleOsc>`
+- :ref:`StaticLorentzianKT<algm-StaticLorentzianKT>`
+- :ref:`SpinGlass<algm-SpinGlass>`
+- :ref:`RFresonance<algm-RFresonance>`
+- :ref:`ZFMuonium<algm-ZFMuonium>`
+- :ref:`DampedBessel<algm-DampedBessel>`
+- :ref:`AFM_LF<algm-AFM_LF>`
+- :ref:`AFM_ZF<algm-AFM_ZF>`
+- :ref:`GausBroadGausKT<algm-GausBroadGausKT>`
+- :ref:`PCRmagRedfield<algm-PCRmagRedfield>`
+- :ref:`PCRmagnet<algm-PCRmagnet>`
+- :ref:`PCRmagnetfnorm<algm-PCRmagnetfnorm>`
+- :ref:`RedfielsCutoff<algm-RedfielsCutoff>`
+- :ref:`SCGapSwave<algm-SCGapSwave>`
+- :ref:`SCgapAnisoSWave<algm-ScgapAnisoSWave>`
+- :ref:`SCgapDwave<algm-SCgapDwave>`
+- :ref:`SCgapPwave<algm-SCgapPwave>`
+- :ref:`ZFelectronDipole<algm-ZFelectronDiple>`
+- :ref:`ZFprotonDipole<algm-ZFprotoDipole>`
+- :ref:`PCRmagnetZFKT<algm-PCRmagnetZFKT>`
 
 Improvements
 ############
