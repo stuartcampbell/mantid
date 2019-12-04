@@ -116,6 +116,7 @@ set(SRC_FILES
     src/LoadSPE.cpp
     src/LoadSampleDetailsFromRaw.cpp
     src/LoadSampleEnvironment.cpp
+    src/LoadSampleEnvironmentComplex.cpp
     src/LoadSampleShape.cpp
     src/LoadSassena.cpp
     src/LoadSpec.cpp
@@ -313,6 +314,7 @@ set(INC_FILES
     inc/MantidDataHandling/LoadSPE.h
     inc/MantidDataHandling/LoadSampleDetailsFromRaw.h
     inc/MantidDataHandling/LoadSampleEnvironment.h
+    inc/MantidDataHandling/LoadSampleEnvironmentComplex.h
     inc/MantidDataHandling/LoadSampleShape.h
     inc/MantidDataHandling/LoadSassena.h
     inc/MantidDataHandling/LoadShape.h

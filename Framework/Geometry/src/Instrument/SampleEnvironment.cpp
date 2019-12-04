@@ -83,9 +83,20 @@ Kernel::V3D
 SampleEnvironment::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
                                  const Geometry::BoundingBox &activeRegion,
                                  const size_t maxAttempts) const {
-  auto componentIndex = rng.nextInt(1, static_cast<int>(nelements())) - 1;
-  return m_components[componentIndex]->generatePointInObject(rng, activeRegion,
-                                                             maxAttempts);
+  for (int i = 0; i < maxAttempts; i++) {
+    Kernel::V3D point;
+    auto componentIndex = rng.nextInt(1, static_cast<int>(nelements())) - 1;
+    try {
+      point = m_components[componentIndex]->generatePointInObject(
+          rng, activeRegion, 1);
+    } catch (std::runtime_error) {
+      continue;
+    }
+    return point;
+  }
+  throw std::runtime_error("SampleEnvironment::generatePoint() - Unable to "
+                           "generate point in object after " +
+                           std::to_string(maxAttempts) + " attempts");
 }
 
 /**
