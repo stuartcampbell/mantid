@@ -7,7 +7,7 @@
 #ifndef MANTIDQT_CUSTOMINTERFACES_BASEINSTRUMENTPRESENTER_H_
 #define MANTIDQT_CUSTOMINTERFACES_BASEINSTRUMENTPRESENTER_H_
 
-#include "BaseInstrumentModel.h"
+#include "MantidQtWidgets/CustomInstrumentView/BaseInstrumentModel.h"
 #include "BaseInstrumentView.h"
 #include "PlotFitAnalysisPaneView.h"
 
@@ -25,7 +25,7 @@ class BaseInstrumentPresenter : public QObject {
   Q_OBJECT
 
 public:
-  BaseInstrumentPresenter(BaseInstrumentView *view, BaseInstrumentModel *model,
+  BaseInstrumentPresenter(BaseInstrumentView *view, MantidWidgets::BaseInstrumentModel *model,
                           QWidget *analysisView);
   ~BaseInstrumentPresenter() { delete m_loadRunObserver; };
 
@@ -54,7 +54,7 @@ private:
   std::pair<instrumentSetUp, instrumentObserverOptions> setupInstrument();
 
   BaseInstrumentView *m_view;
-  BaseInstrumentModel *m_model;
+  MantidWidgets::BaseInstrumentModel *m_model;
   int m_currentRun;
   std::string m_currentFile;
   VoidObserver *m_loadRunObserver;

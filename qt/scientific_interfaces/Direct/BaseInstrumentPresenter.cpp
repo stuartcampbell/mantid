@@ -6,6 +6,7 @@
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "BaseInstrumentPresenter.h"
 #include "BaseInstrumentView.h"
+#include "MantidQtWidgets/CustomInstrumentView/BaseInstrumentModel.h"
 #include "MantidAPI/FileFinder.h"
 
 #include <functional>
@@ -15,7 +16,7 @@ namespace MantidQt {
 namespace CustomInterfaces {
 
 BaseInstrumentPresenter::BaseInstrumentPresenter(BaseInstrumentView *view,
-                                                 BaseInstrumentModel *model,
+                                                 MantidWidgets::BaseInstrumentModel *model,
                                                  QWidget *analysisPaneView)
     : m_view(view), m_model(model), m_currentRun(0), m_currentFile(""),
       m_loadRunObserver(nullptr), m_analysisPaneView(analysisPaneView) {

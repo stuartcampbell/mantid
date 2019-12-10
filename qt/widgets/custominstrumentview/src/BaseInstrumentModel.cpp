@@ -5,7 +5,7 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 
-#include "BaseInstrumentModel.h"
+#include "MantidQtWidgets/CustomInstrumentView/BaseInstrumentModel.h"
 #include "MantidAPI/Algorithm.h"
 #include "MantidAPI/AlgorithmManager.h"
 #include "MantidAPI/AnalysisDataService.h"
@@ -21,8 +21,9 @@ const int ERRORCODE = -999;
 }
 
 using namespace Mantid::API;
+
 namespace MantidQt {
-namespace CustomInterfaces {
+namespace MantidWidgets {
 
 BaseInstrumentModel::BaseInstrumentModel()
     : m_currentRun(0), m_tmpName("tmp"), m_instrumentName("MUSR"),
@@ -82,5 +83,5 @@ bool BaseInstrumentModel::isErrorCode(const int run) {
   return (run == ERRORCODE);
 }
 
-} // namespace CustomInterfaces
+} // namespace MantidWidgets
 } // namespace MantidQt

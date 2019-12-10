@@ -3,7 +3,7 @@ set(SRC_FILES
     ALFView_view.cpp
     ALFView_presenter.cpp
     ALFView_model.cpp
-    BaseInstrumentModel.cpp
+    #BaseInstrumentModel.cpp
     BaseInstrumentView.cpp
     BaseInstrumentPresenter.cpp
     PlotFitAnalysisPaneView.cpp
@@ -14,7 +14,7 @@ set(MOC_FILES
     ALFView.h
     ALFView_view.h
     ALFView_presenter.h
-    BaseInstrumentView.h
+    #BaseInstrumentView.h
     BaseInstrumentView.h
     BaseInstrumentPresenter.h
     PlotFitAnalysisPaneView.h
@@ -49,6 +49,7 @@ mtd_add_qt_library(TARGET_NAME MantidScientificInterfacesDirect
                      Qwt5
                    MTD_QT_LINK_LIBS
                      MantidQtWidgetsCommon
+					 MantidQtWidgetsCustomInstrumentView
                      MantidQtWidgetsPlotting
                      MantidQtWidgetsInstrumentView
                    INSTALL_DIR_BASE
@@ -83,6 +84,7 @@ mtd_add_qt_library(TARGET_NAME MantidScientificInterfacesDirect
                      Qt5::OpenGL
                    MTD_QT_LINK_LIBS
                      MantidQtWidgetsCommon
+					 MantidQtWidgetsCustomInstrumentView
                      MantidQtWidgetsInstrumentView
 					 MantidQtWidgetsPlotting
                      MantidQtWidgetsMplCpp

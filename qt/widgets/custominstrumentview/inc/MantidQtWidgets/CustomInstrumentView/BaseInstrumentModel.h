@@ -9,8 +9,9 @@
 #include <map>
 #include <string>
 
+
 namespace MantidQt {
-namespace CustomInterfaces {
+namespace MantidWidgets {
 
 class BaseInstrumentModel {
 
@@ -35,7 +36,7 @@ protected:
   std::string m_wsName;
 };
 
-} // namespace CustomInterfaces
+} // namespace MantidWidgets
 } // namespace MantidQt
 
 #endif /* MANTIDQT_CUSTOMINTERFACES_BASEINSTRUMENTMODEL_H_ */
