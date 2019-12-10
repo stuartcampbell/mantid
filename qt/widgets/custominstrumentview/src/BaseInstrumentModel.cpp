@@ -79,7 +79,7 @@ int BaseInstrumentModel::currentRun() {
   }
 }
 
-bool BaseInstrumentModel::isErrorCode(const int run) {
+bool BaseInstrumentModel::isErrorCode(const int &run) {
   return (run == ERRORCODE);
 }
 

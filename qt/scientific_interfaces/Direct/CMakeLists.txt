@@ -49,7 +49,7 @@ mtd_add_qt_library(TARGET_NAME MantidScientificInterfacesDirect
                      Qwt5
                    MTD_QT_LINK_LIBS
                      MantidQtWidgetsCommon
-					 MantidQtWidgetsCustomInstrumentView
+                     MantidQtWidgetsCustomInstrumentView
                      MantidQtWidgetsPlotting
                      MantidQtWidgetsInstrumentView
                    INSTALL_DIR_BASE
@@ -84,7 +84,7 @@ mtd_add_qt_library(TARGET_NAME MantidScientificInterfacesDirect
                      Qt5::OpenGL
                    MTD_QT_LINK_LIBS
                      MantidQtWidgetsCommon
-					 MantidQtWidgetsCustomInstrumentView
+                     MantidQtWidgetsCustomInstrumentView
                      MantidQtWidgetsInstrumentView
 					 MantidQtWidgetsPlotting
                      MantidQtWidgetsMplCpp

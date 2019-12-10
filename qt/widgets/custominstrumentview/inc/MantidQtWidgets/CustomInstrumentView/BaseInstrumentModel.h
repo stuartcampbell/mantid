@@ -4,14 +4,15 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
-#ifndef MANTIDQT_CUSTOMINTERFACES_BASEINSTRUMENTMODEL_H_
-#define MANTIDQT_CUSTOMINTERFACES_BASEINSTRUMENTMODEL_H_
+#ifndef MANTIDQT_CUSTOMINSTRUMENTVIEW_BASEINSTRUMENTMODEL_H_
+#define MANTIDQT_CUSTOMINSTRUMENTVIEW_BASEINSTRUMENTMODEL_H_
 #include <map>
 #include <string>
 
 
 namespace MantidQt {
 namespace MantidWidgets {
+
 
 class BaseInstrumentModel {
 
@@ -26,7 +27,7 @@ public:
   void remove();
   std::string dataFileName();
   int currentRun();
-  bool isErrorCode(const int run);
+  bool isErrorCode(const int &run);
   const std::string getInstrument() { return m_instrumentName; };
 
 protected:
@@ -39,4 +40,4 @@ protected:
 } // namespace MantidWidgets
 } // namespace MantidQt
 
-#endif /* MANTIDQT_CUSTOMINTERFACES_BASEINSTRUMENTMODEL_H_ */
+#endif /* MANTIDQT_CUSTOMINSTRUMENTVIEW_BASEINSTRUMENTMODEL_H_ */
