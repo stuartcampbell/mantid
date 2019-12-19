@@ -63,7 +63,7 @@ public:
 
 private:
   const boost::shared_ptr<Geometry::IObject> m_sample;
-  Geometry::SampleEnvironment *m_env;
+  const Geometry::SampleEnvironment *m_env;
   const Geometry::BoundingBox m_activeRegion;
   const size_t m_maxScatterAttempts;
   Kernel::V3D generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
