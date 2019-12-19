@@ -54,8 +54,10 @@ public:
 
   int getName() const override { return m_shape->getName(); }
 
-  int interceptSurface(Geometry::Track &t) const override {
-    return m_shape->interceptSurface(t);
+  int interceptSurface(Geometry::Track &t, bool buildCache,
+                       scatterBeforeAfter stage = scatterBeforeAfter::scNone,
+                       int detectorID = -1) const override {
+    return m_shape->interceptSurface(t, buildCache, stage, detectorID);
   }
   double distance(const Geometry::Track &t) const override {
     return m_shape->distance(t);
@@ -79,14 +81,21 @@ public:
   int getPointInObject(Kernel::V3D &point) const override {
     return m_shape->getPointInObject(point);
   }
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const size_t i) const override {
-    return m_shape->generatePointInObject(rng, i);
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                        const size_t i, bool buildCache = false,
+                        Geometry::scatterBeforeAfter stage =
+                            scatterBeforeAfter::scNone) const override {
+    return m_shape->generatePointInObject(rng, i, buildCache, stage);
   }
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const BoundingBox &activeRegion,
-                                    const size_t i) const override {
-    return m_shape->generatePointInObject(rng, activeRegion, i);
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                        const BoundingBox &activeRegion, const size_t i,
+                        bool buildCache = false,
+                        Geometry::scatterBeforeAfter stage =
+                            scatterBeforeAfter::scNone) const override {
+    return m_shape->generatePointInObject(rng, activeRegion, i, buildCache,
+                                          stage);
   }
 
   detail::ShapeInfo::GeometryShape shape() const override {
@@ -114,6 +123,11 @@ public:
   }
   void setID(const std::string &id);
   const std::string &id() const override { return m_shape->id(); }
+
+  virtual void resetActiveElements(Geometry::scatterBeforeAfter stage,
+                                   int detectorID, bool active) const override {
+    m_shape->resetActiveElements(stage, detectorID, active);
+  }
 
 private:
   IObject_sptr m_shape;

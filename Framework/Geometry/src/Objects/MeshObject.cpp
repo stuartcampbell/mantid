@@ -13,18 +13,27 @@
 #include "MantidGeometry/Rendering/vtkGeometryCacheWriter.h"
 #include "MantidKernel/Exception.h"
 #include "MantidKernel/Material.h"
+#include "MantidKernel/PseudoRandomNumberGenerator.h"
 
 #include <boost/make_shared.hpp>
 
 namespace Mantid {
 namespace Geometry {
 
+int interceptSurface_ncalls = 0;
+int interceptSurface_nexcludedbybb = 0;
+
 MeshObject::MeshObject(const std::vector<uint32_t> &faces,
                        const std::vector<Kernel::V3D> &vertices,
                        const Kernel::Material material)
     : m_boundingBox(), m_id("MeshObject"), m_triangles(faces),
       m_vertices(vertices), m_material(material) {
-
+  m_activetrianglesbefore.resize(m_triangles.size() / 3, 0);
+  m_activetrianglesbefore.shrink_to_fit();
+  m_activetrianglesscatter.resize(m_triangles.size() / 3, 0);
+  m_activetrianglesscatter.shrink_to_fit();
+  //m_activetrianglesafter.resize(m_triangles.size() / 3, 0);
+  //m_activetrianglesafter.shrink_to_fit();
   initialize();
 }
 
@@ -33,13 +42,16 @@ MeshObject::MeshObject(std::vector<uint32_t> &&faces,
                        const Kernel::Material &&material)
     : m_boundingBox(), m_id("MeshObject"), m_triangles(std::move(faces)),
       m_vertices(std::move(vertices)), m_material(material) {
-
+  m_activetrianglesbefore.resize(m_triangles.size() / 3, 0);
+  m_activetrianglesscatter.resize(m_triangles.size() / 3, 0);
+  //m_activetrianglesafter.resize(m_triangles.size() / 3, 0);
   initialize();
 }
 
 // Do things that need to be done in constructor
 void MeshObject::initialize() {
-
+  interceptSurface_ncalls = 0;
+  interceptSurface_nexcludedbybb = 0;
   MeshObjectCommon::checkVertexLimit(m_vertices.size());
   m_handler = boost::make_shared<GeometryHandler>(*this);
 }
@@ -66,6 +78,16 @@ bool MeshObject::hasValidShape() const {
  * @returns true if point is within object or on surface
  */
 bool MeshObject::isValid(const Kernel::V3D &point) const {
+  return isValidWithCacheType(point, false, scatterBeforeAfter::scNone);
+}
+
+/**
+ * Determines whether point is within the object or on the surface
+ * @param point :: Point to be tested
+ * @returns true if point is within object or on surface
+ */
+bool MeshObject::isValidWithCacheType(const Kernel::V3D &point, bool buildCache,
+                                      scatterBeforeAfter stage) const {
 
   BoundingBox bb = getBoundingBox();
   if (!bb.isPointInside(point)) {
@@ -76,7 +98,8 @@ bool MeshObject::isValid(const Kernel::V3D &point) const {
   std::vector<Kernel::V3D> intersectionPoints;
   std::vector<TrackDirection> entryExitFlags;
 
-  getIntersections(point, direction, intersectionPoints, entryExitFlags);
+  getIntersections(point, direction, intersectionPoints, entryExitFlags,
+                   buildCache, stage, -1);
 
   if (intersectionPoints.empty()) {
     return false;
@@ -142,10 +165,14 @@ bool MeshObject::isOnSide(const Kernel::V3D &point) const {
  * @param UT :: Initial track
  * @return Number of segments added
  */
-int MeshObject::interceptSurface(Geometry::Track &UT) const {
+int MeshObject::interceptSurface(Geometry::Track &UT, bool buildCache,
+                                 Geometry::scatterBeforeAfter stage,
+                                 int detectorID) const {
+  interceptSurface_ncalls++;
   int originalCount = UT.count(); // Number of intersections original track
   BoundingBox bb = getBoundingBox();
   if (!bb.doesLineIntersect(UT)) {
+    interceptSurface_nexcludedbybb++;
     return 0;
   }
 
@@ -153,7 +180,7 @@ int MeshObject::interceptSurface(Geometry::Track &UT) const {
   std::vector<TrackDirection> entryExit;
 
   getIntersections(UT.startPoint(), UT.direction(), intersectionPoints,
-                   entryExit);
+                   entryExit, buildCache, stage, detectorID);
   if (intersectionPoints.empty())
     return 0; // Quit if no intersections found
 
@@ -195,23 +222,132 @@ double MeshObject::distance(const Track &track) const {
  * @param intersectionPoints :: Intersection points (not sorted)
  * @param entryExitFlags :: +1 ray enters -1 ray exits at corresponding point
  */
-void MeshObject::getIntersections(
-    const Kernel::V3D &start, const Kernel::V3D &direction,
-    std::vector<Kernel::V3D> &intersectionPoints,
-    std::vector<TrackDirection> &entryExitFlags) const {
+void MeshObject::getIntersections(const Kernel::V3D &start,
+                                  const Kernel::V3D &direction,
+                                  std::vector<Kernel::V3D> &intersectionPoints,
+                                  std::vector<TrackDirection> &entryExitFlags,
+                                  bool buildCache,
+                                  Geometry::scatterBeforeAfter stage,
+                                  int detectorID) const {
+
+  //if ((buildCache==false)&&(stage == scatterBeforeAfter::scBefore)) {
+  //  stage = scatterBeforeAfter::scNone;
+  //}
+
 
   Kernel::V3D vertex1, vertex2, vertex3, intersection;
   TrackDirection entryExit;
-  for (size_t i = 0; getTriangle(i, vertex1, vertex2, vertex3); ++i) {
+  std::vector<uint32_t> activetriangles;
+  // getTrianglesToSearch(stage, activetriangles);
+
+  size_t ntriangles = m_triangles.size() / 3;
+  for (size_t i = 0; i < ntriangles; ++i) {
+    if (isTriangleActive(buildCache, stage, detectorID, i)) {
+      getTriangle(i, vertex1, vertex2, vertex3);
+      if (MeshObjectCommon::rayIntersectsTriangle(start, direction, vertex1,
+                                                  vertex2, vertex3,
+                                                  intersection, entryExit)) {
+        intersectionPoints.emplace_back(intersection);
+        entryExitFlags.emplace_back(entryExit);
+        if (buildCache) {
+          addToCache(stage, i, detectorID);
+        }
+      }
+    }
+  }
+
+  /*for (size_t i = 0;
+       getTriangleNew(i, vertex1, vertex2, vertex3, activetriangles); ++i) {
     if (MeshObjectCommon::rayIntersectsTriangle(start, direction, vertex1,
                                                 vertex2, vertex3, intersection,
                                                 entryExit)) {
       intersectionPoints.emplace_back(intersection);
       entryExitFlags.emplace_back(entryExit);
     }
-  }
+  }*/
   // still need to deal with edge cases
 }
+
+bool MeshObject::isTriangleActive(bool buildCache,
+                                  Geometry::scatterBeforeAfter stage,
+                                  int detectorID, size_t i) const {
+  if (buildCache) {
+    switch (stage) {
+    case scatterBeforeAfter::scBefore:
+      return (m_activetrianglesbefore[i] ==
+              0); // only bother if the triangle isn't already cached
+    case scatterBeforeAfter::scScatter:
+      return true; // need to generate intersections even when generating the
+                   // cache
+    case scatterBeforeAfter::scAfter:
+      if (m_activetrianglesafteralldet.size() >= detectorID+1) {
+        return m_activetrianglesafteralldet[detectorID][i] == 0;
+      } else {
+        return true;
+      }
+      // return (m_activetrianglesafter[i] == 1);
+    default:
+      return true;
+    }
+  } else {
+
+    switch (stage) {
+    case scatterBeforeAfter::scBefore:
+      return (m_activetrianglesbefore[i] == 1);
+    case scatterBeforeAfter::scScatter:
+      return (m_activetrianglesscatter[i] == 1);
+    case scatterBeforeAfter::scAfter:
+      return m_activetrianglesafteralldet[detectorID][i] == 1;
+      // return (m_activetrianglesafter[i] == 1);
+    default:
+      return true;
+    }
+  }
+}
+
+void MeshObject::addToCache(Geometry::scatterBeforeAfter stage, int i,
+                            int detectorID) const {
+  std::vector<uint32_t> *m_activetriangles;
+  int *m_activetrianglescount;
+  switch (stage) {
+  case scatterBeforeAfter::scBefore:
+    m_activetriangles = &m_activetrianglesbefore;
+    m_activetrianglescount = &m_activetrianglesbeforecount;
+    break;
+  case scatterBeforeAfter::scScatter:
+    m_activetriangles = &m_activetrianglesscatter;
+    m_activetrianglescount = &m_activetrianglesscattercount;
+    break;
+  case scatterBeforeAfter::scAfter:
+    if (m_activetrianglesafteralldet.size() < detectorID + 1) {
+      m_activetrianglesafteralldet.push_back(
+          std::vector<uint32_t>(m_triangles.size() / 3, 0));
+    }
+    m_activetriangles = &(m_activetrianglesafteralldet[detectorID]);
+    m_activetrianglescount = &m_activetrianglesaftercount;
+  }
+  if ((*m_activetriangles)[i] == 0) {
+    (*m_activetriangles)[i] = 1;
+    (*m_activetrianglescount)++;
+  }
+}
+
+/*void MeshObject::getTrianglesToSearch(
+    scatterBeforeAfter stage, std::vector<uint32_t> &activeTriangles) const {
+  switch (stage) {
+  case scatterBeforeAfter::scBefore:
+    activeTriangles = m_activetrianglesbefored;
+    break;
+  case scatterBeforeAfter::scScatter:
+    activeTriangles = m_activetrianglesscatterd;
+    break;
+  case scatterBeforeAfter::scAfter:
+    activeTriangles = m_activetrianglesafterd;
+    break;
+  default:
+    activeTriangles = m_triangles;
+  }
+}*/
 
 /*
  * Get a triangle - useful for iterating over triangles
@@ -231,6 +367,18 @@ bool MeshObject::getTriangle(const size_t index, Kernel::V3D &vertex1,
   }
   return triangleExists;
 }
+
+/*bool MeshObject::getTriangleNew(
+    const size_t index, Kernel::V3D &vertex1, Kernel::V3D &vertex2,
+    Kernel::V3D &vertex3, std::vector<uint32_t> &trianglesToSearch) const {
+  bool triangleExists = index < trianglesToSearch.size() / 3;
+  if (triangleExists) {
+    vertex1 = m_vertices[trianglesToSearch[3 * index]];
+    vertex2 = m_vertices[trianglesToSearch[3 * index + 1]];
+    vertex3 = m_vertices[trianglesToSearch[3 * index + 2]];
+  }
+  return triangleExists;
+}*/
 
 /**
  * Calculate if a point PT is a valid point on the track
@@ -387,13 +535,14 @@ int MeshObject::getPointInObject(Kernel::V3D &point) const {
  */
 Kernel::V3D
 MeshObject::generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                  const size_t maxAttempts) const {
+                                  const size_t maxAttempts, bool buildCache,
+                                  Geometry::scatterBeforeAfter stage) const {
   const auto &bbox = getBoundingBox();
   if (bbox.isNull()) {
     throw std::runtime_error("Object::generatePointInObject() - Invalid "
                              "bounding box. Cannot generate new point.");
   }
-  return generatePointInObject(rng, bbox, maxAttempts);
+  return generatePointInObject(rng, bbox, maxAttempts, buildCache, stage);
 }
 
 /**
@@ -406,13 +555,35 @@ MeshObject::generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
  * @param maxAttempts The maximum number of attempts at generating a point
  * @return The newly generated point
  */
-Kernel::V3D
-MeshObject::generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                  const BoundingBox &activeRegion,
-                                  const size_t maxAttempts) const {
+Kernel::V3D MeshObject::generatePointInObject(
+    Kernel::PseudoRandomNumberGenerator &rng, const BoundingBox &activeRegion,
+                                  const size_t maxAttempts, bool buildCache,
+                                  Geometry::scatterBeforeAfter stage) const {
 
-  const auto point =
+  /*const auto point =
       RandomPoint::bounded(*this, rng, activeRegion, maxAttempts);
+  if (!point) {
+    throw std::runtime_error("Object::generatePointInObject() - Unable to "
+                             "generate point in object after " +
+                             std::to_string(maxAttempts) + " attempts");
+  }
+  return *point;*/
+
+  boost::optional<Kernel::V3D> point{boost::none};
+  if (activeRegion.isNull()) {
+    throw std::invalid_argument(
+        "Invalid bounding box. Cannot generate random point.");
+  }
+  for (size_t attempts{0}; attempts < maxAttempts; ++attempts) {
+    const double r1 = rng.nextValue();
+    const double r2 = rng.nextValue();
+    const double r3 = rng.nextValue();
+    auto pt = activeRegion.generatePointInside(r1, r2, r3);
+    if (isValidWithCacheType(pt, buildCache, stage)) {
+      point = pt;
+      break;
+    }
+  };
   if (!point) {
     throw std::runtime_error("Object::generatePointInObject() - Unable to "
                              "generate point in object after " +
@@ -560,5 +731,113 @@ void MeshObject::GetObjectGeom(detail::ShapeInfo::GeometryShape &type,
   m_handler->GetObjectGeom(type, vectors, innerRadius, radius, height);
 }
 
-} // NAMESPACE Geometry
+void MeshObject::resetActiveElements(Geometry::scatterBeforeAfter stage,
+                                     int detectorID, bool active) const {
+  switch (stage) {
+  case scatterBeforeAfter::scBefore:
+    std::fill(m_activetrianglesbefore.begin(), m_activetrianglesbefore.end(),
+              active ? 1 : 0);
+    m_activetrianglesbeforecount = 0;
+    // m_activetrianglesbefored.clear();
+    break;
+  case scatterBeforeAfter::scScatter:
+    std::fill(m_activetrianglesscatter.begin(), m_activetrianglesscatter.end(),
+              active ? 1 : 0);
+    m_activetrianglesscattercount = 0;
+    // m_activetrianglesscatterd.clear();
+  case scatterBeforeAfter::scAfter:
+    //std::fill(m_activetrianglesafter.begin(), m_activetrianglesafter.end(),
+    //          active ? 1 : 0);
+    m_activetrianglesaftercount = 0;
+    // m_activetrianglesafterd.clear();
+  }
+}
+
+/*void MeshObject::addActiveElementsForScatterPoint(
+    Kernel::PseudoRandomNumberGenerator &rng, const BoundingBox &activeRegion,
+    const size_t maxAttempts) {
+
+  boost::optional<Kernel::V3D> point{boost::none};
+  if (activeRegion.isNull()) {
+    throw std::invalid_argument(
+        "Invalid bounding box. Cannot generate random point.");
+  }
+  for (size_t attempts{0}; attempts < maxAttempts; ++attempts) {
+    const double r1 = rng.nextValue();
+    const double r2 = rng.nextValue();
+    const double r3 = rng.nextValue();
+    auto pt = activeRegion.generatePointInside(r1, r2, r3);
+    Kernel::V3D direction(0.0, 0.0, 1.0); // direction to look for intersections
+    Track scatterPointAlongZ(pt, direction);
+
+    std::vector<Kernel::V3D> intersectionPoints;
+    std::vector<TrackDirection> entryExit;
+
+    addActiveElementsForTrack(scatterPointAlongZ, intersectionPoints, entryExit,
+                              scatterBeforeAfter::scScatter, -1);
+
+    if (isValidWithCacheType(pt, true, scatterBeforeAfter::scScatter)) {
+      point = pt;
+      break;
+    }
+  };
+
+  if (!point) {
+    throw std::runtime_error(
+        "Object::addActiveElementsForScatterPoint() - Unable to "
+        "generate point in object after " +
+        std::to_string(maxAttempts) + " attempts");
+  }
+}
+
+void MeshObject::addActiveElementsForTrackExternal(
+    Geometry::Track &UT, Geometry::scatterBeforeAfter stage, int detectorID) {
+  std::vector<Kernel::V3D> intersectionPoints;
+  std::vector<TrackDirection> entryExit;
+  addActiveElementsForTrack(UT, intersectionPoints, entryExit, stage,
+                            detectorID);
+}
+
+void MeshObject::addActiveElementsForTrack(
+    Geometry::Track &UT, std::vector<Kernel::V3D> &intersectionPoints,
+    std::vector<TrackDirection> &entryExitFlags,
+    Geometry::scatterBeforeAfter stage, int detectorID) {
+  Kernel::V3D vertex1, vertex2, vertex3, intersection;
+  TrackDirection entryExit;
+  std::vector<uint32_t> *m_activetriangles;
+  int *m_activetrianglescount;
+  switch (stage) {
+  case scatterBeforeAfter::scBefore:
+    m_activetriangles = &m_activetrianglesbefore;
+    m_activetrianglescount = &m_activetrianglesbeforecount;
+    break;
+  case scatterBeforeAfter::scScatter:
+    m_activetriangles = &m_activetrianglesscatter;
+    m_activetrianglescount = &m_activetrianglesscattercount;
+    break;
+  case scatterBeforeAfter::scAfter:
+    if (m_activetrianglesafteralldet.size() < detectorID + 1) {
+      m_activetrianglesafteralldet.push_back(
+          std::vector<uint32_t>(m_triangles.size() / 3, 0));
+    }
+    m_activetriangles = &(m_activetrianglesafteralldet[detectorID]);
+    m_activetrianglescount = &m_activetrianglesaftercount;
+  }
+  size_t ntriangles = m_triangles.size() / 3;
+  for (size_t i = 0; i < ntriangles; ++i) {
+    if ((*m_activetriangles)[i] == 0) {
+      getTriangle(i, vertex1, vertex2, vertex3);
+      if (MeshObjectCommon::rayIntersectsTriangle(
+              UT.startPoint(), UT.direction(), vertex1, vertex2, vertex3,
+              intersection, entryExit)) {
+        (*m_activetriangles)[i] = 1;
+        (*m_activetrianglescount)++;
+        intersectionPoints.emplace_back(intersection);
+        entryExitFlags.emplace_back(entryExit);
+      }
+    }
+  }
+}*/
+
+} // namespace Geometry
 } // NAMESPACE Mantid

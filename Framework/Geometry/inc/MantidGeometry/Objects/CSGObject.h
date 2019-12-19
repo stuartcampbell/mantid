@@ -129,7 +129,9 @@ public:
   void write(std::ostream &) const; ///< MCNPX output
 
   // INTERSECTION
-  int interceptSurface(Geometry::Track &track) const override;
+  int interceptSurface(Geometry::Track &track, bool buildCache = false,
+                       scatterBeforeAfter stage = scatterBeforeAfter::scNone,
+                       int detectorID = -1) const override;
   double distance(const Track &track) const override;
 
   // Solid angle - uses triangleSolidAngle unless many (>30000) triangles
@@ -165,11 +167,15 @@ public:
   int getPointInObject(Kernel::V3D &point) const override;
 
   /// Select a random point within the object
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const size_t) const override;
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const BoundingBox &activeRegion,
-                                    const size_t) const override;
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
+                        bool buildCache,
+                        Geometry::scatterBeforeAfter stage) const override;
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                        const BoundingBox &activeRegion, const size_t,
+                        bool buildCache,
+                        Geometry::scatterBeforeAfter stage) const override;
 
   // Rendering member functions
   void draw() const override;

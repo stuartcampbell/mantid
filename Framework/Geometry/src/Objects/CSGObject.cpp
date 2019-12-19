@@ -1101,7 +1101,9 @@ int CSGObject::procString(const std::string &Line) {
  * @param track :: Initial track
  * @return Number of segments added
  */
-int CSGObject::interceptSurface(Geometry::Track &track) const {
+int CSGObject::interceptSurface(Geometry::Track &track, bool buildCache,
+                                scatterBeforeAfter stage,
+                                int detectorID) const {
   int originalCount = track.count(); // Number of intersections original track
   // Loop over all the surfaces.
   LineIntersectVisit LI(track.startPoint(), track.direction());
@@ -1985,7 +1987,8 @@ int CSGObject::getPointInObject(Kernel::V3D &point) const {
  * @return The generated point
  */
 V3D CSGObject::generatePointInObject(PseudoRandomNumberGenerator &rng,
-                                     const size_t maxAttempts) const {
+                                     const size_t maxAttempts, bool BuildCache,
+                                     Geometry::scatterBeforeAfter stage) const {
   V3D point;
   // If the shape fills its bounding box well enough then the most efficient
   // way to get the point is just brute force. We'll try that first with
@@ -2040,7 +2043,8 @@ V3D CSGObject::generatePointInObject(PseudoRandomNumberGenerator &rng,
  */
 V3D CSGObject::generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
                                      const BoundingBox &activeRegion,
-                                     const size_t maxAttempts) const {
+                                     const size_t maxAttempts, bool buildCache,
+                                     Geometry::scatterBeforeAfter stage) const {
   boost::optional<V3D> point{boost::none};
   // We'll first try brute force. If the shape fills its bounding box
   // well enough, this should be the fastest method.

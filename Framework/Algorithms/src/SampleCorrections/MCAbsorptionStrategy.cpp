@@ -13,6 +13,7 @@
 #include "MantidGeometry/Objects/CSGObject.h"
 
 namespace Mantid {
+using Kernel::DeltaEMode;
 using Kernel::PseudoRandomNumberGenerator;
 
 namespace Algorithms {
@@ -28,12 +29,34 @@ namespace Algorithms {
 MCAbsorptionStrategy::MCAbsorptionStrategy(const IBeamProfile &beamProfile,
                                            const API::Sample &sample,
                                            size_t nevents,
-                                           size_t maxScatterPtAttempts)
+                                           size_t maxScatterPtAttempts,
+                                           bool useCaching)
     : m_beamProfile(beamProfile),
       m_scatterVol(
           MCInteractionVolume(sample, beamProfile.defineActiveRegion(sample))),
       m_nevents(nevents), m_maxScatterAttempts(maxScatterPtAttempts),
-      m_error(1.0 / std::sqrt(m_nevents)) {}
+      m_error(1.0 / std::sqrt(m_nevents)), m_useCaching(useCaching) {}
+
+void MCAbsorptionStrategy::initialise(Kernel::PseudoRandomNumberGenerator &rng,
+                                      const Kernel::V3D &finalPos,
+                                      int detectorID) {
+  if (m_useCaching) {
+    const auto scatterBounds = m_scatterVol.getBoundingBox();
+    m_scatterVol.resetActiveElements(Geometry::scatterBeforeAfter::scAfter,
+                                     detectorID, false);
+    for (size_t i = 0; i < m_nevents; ++i) {
+      //m_scatterVol.addActiveElementsForScatterPoint(rng);
+      m_scatterVol.addActiveElementsForScatterPoint(rng);
+    }
+
+    for (size_t i = 0; i < m_nevents; ++i) {
+      const auto neutron = m_beamProfile.generatePoint(rng, scatterBounds);
+
+      m_scatterVol.addActiveElements(rng, neutron.startPos, finalPos,
+                                     detectorID);
+    }
+  }
+}
 
 /**
  * Compute the correction for a final position of the neutron and wavelengths
@@ -47,8 +70,9 @@ MCAbsorptionStrategy::MCAbsorptionStrategy(const IBeamProfile &beamProfile,
  */
 std::tuple<double, double>
 MCAbsorptionStrategy::calculate(Kernel::PseudoRandomNumberGenerator &rng,
-                                const Kernel::V3D &finalPos,
-                                double lambdaBefore, double lambdaAfter) const {
+                                const Kernel::V3D &finalPos, int detectorID,
+                                double lambdaBefore, double lambdaAfter) {
+  initialise(rng, finalPos, detectorID);
   const auto scatterBounds = m_scatterVol.getBoundingBox();
   double factor(0.0);
   for (size_t i = 0; i < m_nevents; ++i) {
@@ -56,11 +80,16 @@ MCAbsorptionStrategy::calculate(Kernel::PseudoRandomNumberGenerator &rng,
     do {
       const auto neutron = m_beamProfile.generatePoint(rng, scatterBounds);
 
-      const double wgt = m_scatterVol.calculateAbsorption(
-          rng, neutron.startPos, finalPos, lambdaBefore, lambdaAfter);
-      if (wgt < 0.0) {
+      Geometry::Track beforeScatter;
+      Geometry::Track afterScatter;
+      const bool success = m_scatterVol.calculateBeforeAfterTrack(
+          rng, neutron.startPos, finalPos, beforeScatter, afterScatter,
+          m_useCaching, detectorID);
+      if (!success) {
         ++attempts;
       } else {
+        const double wgt = m_scatterVol.calculateAbsorption(
+            beforeScatter, afterScatter, lambdaBefore, lambdaAfter);
         factor += wgt;
         break;
       }
@@ -76,6 +105,66 @@ MCAbsorptionStrategy::calculate(Kernel::PseudoRandomNumberGenerator &rng,
   }
   using std::make_tuple;
   return make_tuple(factor / static_cast<double>(m_nevents), m_error);
+}
+
+void MCAbsorptionStrategy::calculateAllLambdas(
+    Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &finalPos,
+    int detectorID, DeltaEMode::Type EMode,
+    Mantid::HistogramData::Points lambdas, const int lambdaStepSize,
+    double lambdaFixed, Mantid::HistogramData::HistogramY &attenuationFactors) {
+
+  initialise(rng, finalPos, detectorID);
+  const auto scatterBounds = m_scatterVol.getBoundingBox();
+  const auto nbins = static_cast<int>(lambdas.size());
+
+  for (size_t i = 0; i < m_nevents; ++i) {
+    size_t attempts(0);
+    do {
+      const auto neutron = m_beamProfile.generatePoint(rng, scatterBounds);
+
+      Geometry::Track beforeScatter;
+      Geometry::Track afterScatter;
+      const bool success = m_scatterVol.calculateBeforeAfterTrack(
+          rng, neutron.startPos, finalPos, beforeScatter, afterScatter,
+          m_useCaching, detectorID);
+      if (!success) {
+        ++attempts;
+      } else {
+        for (int j = 0; j < nbins; j += lambdaStepSize) {
+          const double lambdaStep = lambdas[j];
+          double lambdaIn(lambdaStep), lambdaOut(lambdaStep);
+          if (EMode == DeltaEMode::Direct) {
+            lambdaIn = lambdaFixed;
+          } else if (EMode == DeltaEMode::Indirect) {
+            lambdaOut = lambdaFixed;
+          } else {
+            // elastic case already initialized
+          }
+          const double wgt = m_scatterVol.calculateAbsorption(
+              beforeScatter, afterScatter, lambdaIn, lambdaOut);
+          attenuationFactors[j] += wgt;
+
+          // Ensure we have the last point for the interpolation
+          if (lambdaStepSize > 1 && j + lambdaStepSize >= nbins &&
+              j + 1 != nbins) {
+            j = nbins - lambdaStepSize - 1;
+          }
+        }
+
+        break;
+      }
+      if (attempts == m_maxScatterAttempts) {
+        throw std::runtime_error("Unable to generate valid track through "
+                                 "sample interaction volume after " +
+                                 std::to_string(m_maxScatterAttempts) +
+                                 " attempts. Try increasing the maximum "
+                                 "threshold or if this does not help then "
+                                 "please check the defined shape.");
+      }
+    } while (true);
+  }
+
+  attenuationFactors = attenuationFactors / static_cast<double>(m_nevents);
 }
 
 } // namespace Algorithms

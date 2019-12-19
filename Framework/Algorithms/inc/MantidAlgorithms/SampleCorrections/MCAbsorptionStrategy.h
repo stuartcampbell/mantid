@@ -9,6 +9,8 @@
 
 #include "MantidAlgorithms/DllConfig.h"
 #include "MantidAlgorithms/SampleCorrections/MCInteractionVolume.h"
+#include "MantidHistogramData/Histogram.h"
+#include "MantidKernel/DeltaEMode.h"
 #include <tuple>
 
 namespace Mantid {
@@ -35,18 +37,28 @@ class MANTID_ALGORITHMS_DLL MCAbsorptionStrategy {
 public:
   MCAbsorptionStrategy(const IBeamProfile &beamProfile,
                        const API::Sample &sample, size_t nevents,
-                       size_t maxScatterPtAttempts);
+                       size_t maxScatterPtAttempts, bool useCaching);
+  void initialise(Kernel::PseudoRandomNumberGenerator &rng,
+                  const Kernel::V3D &finalPos, int detectorID);
   std::tuple<double, double> calculate(Kernel::PseudoRandomNumberGenerator &rng,
                                        const Kernel::V3D &finalPos,
-                                       double lambdaBefore,
-                                       double lambdaAfter) const;
+                                       int detectorID, double lambdaBefore,
+                                       double lambdaAfter);
+  void
+  calculateAllLambdas(Kernel::PseudoRandomNumberGenerator &rng,
+                      const Kernel::V3D &finalPos, int detectorID,
+                      Mantid::Kernel::DeltaEMode::Type EMode,
+                      Mantid::HistogramData::Points lambdas,
+                      const int lambdaStepSize, double lambdaFixed,
+                      Mantid::HistogramData::HistogramY &attenuationFactors);
 
 private:
   const IBeamProfile &m_beamProfile;
-  const MCInteractionVolume m_scatterVol;
+  MCInteractionVolume m_scatterVol;
   const size_t m_nevents;
   const size_t m_maxScatterAttempts;
   const double m_error;
+  const bool m_useCaching;
 };
 
 } // namespace Algorithms

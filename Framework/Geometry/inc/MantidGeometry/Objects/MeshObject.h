@@ -71,6 +71,7 @@ public:
     return new MeshObject(m_triangles, m_vertices, material);
   }
 
+  void setID(const std::string &id) { m_id = id; }
   const std::string &id() const override { return m_id; }
 
   int getName() const override { return 0; }
@@ -82,11 +83,16 @@ public:
 
   bool
   isValid(const Kernel::V3D &) const override; ///< Check if a point is inside
+  bool isValidWithCacheType(const Kernel::V3D &point, bool buildCache,
+                            scatterBeforeAfter stage) const;
   bool isOnSide(const Kernel::V3D &) const override;
   int calcValidType(const Kernel::V3D &Pt, const Kernel::V3D &uVec) const;
 
   // INTERSECTION
-  int interceptSurface(Geometry::Track &) const override;
+  int interceptSurface(
+      Geometry::Track &, bool buildCache = false,
+      Geometry::scatterBeforeAfter stage = scatterBeforeAfter::scNone,
+      int detectorID = -1) const override;
   double distance(const Track &track) const override;
 
   // Solid angle - uses triangleSolidAngle unless many (>30000) triangles
@@ -110,11 +116,17 @@ public:
   int getPointInObject(Kernel::V3D &point) const override;
 
   /// Select a random point within the object
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const size_t) const override;
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const BoundingBox &activeRegion,
-                                    const size_t) const override;
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
+                        bool buildCache = false,
+                        Geometry::scatterBeforeAfter stage =
+                            scatterBeforeAfter::scNone) const override;
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                        const BoundingBox &activeRegion, const size_t,
+                        bool buildCache = false,
+                        Geometry::scatterBeforeAfter stage =
+                            scatterBeforeAfter::scNone) const override;
 
   // Rendering member functions
   void draw() const override;
@@ -143,17 +155,39 @@ public:
   void translate(const Kernel::V3D &);
   void updateGeometryHandler();
 
+  void resetActiveElements(Geometry::scatterBeforeAfter stage, int detectorID,
+                           bool active) const override;
+  /*void addActiveElementsForTrackExternal(Geometry::Track &UT,
+                                         Geometry::scatterBeforeAfter stage,
+                                         int detectorID) override;
+  void addActiveElementsForTrack(Geometry::Track &,
+                                 std::vector<Kernel::V3D> &intersectionPoints,
+                                 std::vector<TrackDirection> &entryExitFlags,
+                                 Geometry::scatterBeforeAfter stage,
+                                 int detectorID);
+  void
+  addActiveElementsForScatterPoint(Kernel::PseudoRandomNumberGenerator &rng,
+                                   const BoundingBox &activeRegion,
+                                   const size_t maxAttempts);*/
+
 private:
   void initialize();
   /// Get intersections
   void getIntersections(
       const Kernel::V3D &start, const Kernel::V3D &direction,
       std::vector<Kernel::V3D> &intersectionPoints,
-      std::vector<Mantid::Geometry::TrackDirection> &entryExitFlags) const;
+      std::vector<Mantid::Geometry::TrackDirection> &entryExitFlags,
+      bool buildCache = false,
+      Geometry::scatterBeforeAfter stage = scatterBeforeAfter::scNone,
+      int detectorID = -1) const;
 
   /// Get triangle
   bool getTriangle(const size_t index, Kernel::V3D &v1, Kernel::V3D &v2,
                    Kernel::V3D &v3) const;
+  bool isTriangleActive(bool buildCache, Geometry::scatterBeforeAfter stage,
+                        int detectorID, size_t i) const;
+  void addToCache(Geometry::scatterBeforeAfter stage, int i,
+                  int detectorID) const;
   /// Search object for valid point
   bool searchForObject(Kernel::V3D &point) const;
 
@@ -180,12 +214,24 @@ private:
   /// Contents
   /// Triangles are specified by indices into a list of vertices.
   std::vector<uint32_t> m_triangles;
+  // set of vectors to store the active triangles in the mesh
+  // vector<bool> seems to be v slow - esp in debug - so use int
+  mutable std::vector<uint32_t> m_activetrianglesbefore;
+  // std::vector<uint32_t> m_activetrianglesbefored;
+  mutable std::vector<uint32_t> m_activetrianglesscatter;
+  // std::vector<uint32_t> m_activetrianglesscatterd;
+  //mutable std::vector<uint32_t> m_activetrianglesafter;
+  // std::vector<uint32_t> m_activetrianglesafterd;
+  mutable std::vector<std::vector<uint32_t>> m_activetrianglesafteralldet;
+  mutable int m_activetrianglesbeforecount = 0;
+  mutable int m_activetrianglesscattercount = 0;
+  mutable int m_activetrianglesaftercount = 0;
   std::vector<Kernel::V3D> m_vertices;
   /// material composition
   Kernel::Material m_material;
 };
 
 } // NAMESPACE Geometry
-} // NAMESPACE Mantid
+} // namespace Mantid
 
 #endif /*MANTID_GEOMETRY_MESHOBJECT_H_*/

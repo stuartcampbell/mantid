@@ -8,7 +8,6 @@
 #include "MantidAPI/Sample.h"
 #include "MantidGeometry/Instrument/SampleEnvironment.h"
 #include "MantidGeometry/Objects/CSGObject.h"
-#include "MantidGeometry/Objects/Track.h"
 #include "MantidKernel/Material.h"
 #include "MantidKernel/PseudoRandomNumberGenerator.h"
 
@@ -57,6 +56,42 @@ const Geometry::BoundingBox &MCInteractionVolume::getBoundingBox() const {
 }
 
 /**
+ * Generate point randomly across one of the components of the environment
+ * including the sample itself in the selection
+ */
+Kernel::V3D
+MCInteractionVolume::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
+                                   const Geometry::BoundingBox &activeRegion,
+                                   const size_t maxAttempts, bool buildCache,
+                                   Geometry::scatterBeforeAfter stage) const {
+  for (int i = 0; i < maxAttempts; i++) {
+    Kernel::V3D point;
+    int componentIndex;
+    if (m_env) {
+      componentIndex = rng.nextInt(0, static_cast<int>(m_env->nelements())) - 1;
+    } else {
+      componentIndex = -1;
+    }
+    try {
+      if (componentIndex == -1) {
+        point = m_sample->generatePointInObject(rng, activeRegion, 1,
+                                                buildCache, stage);
+      } else {
+        point =
+            m_env->getComponent(componentIndex)
+                .generatePointInObject(rng, activeRegion, 1, buildCache, stage);
+      }
+    } catch (std::runtime_error) {
+      continue;
+    }
+    return point;
+  }
+  throw std::runtime_error("MCInteractionVolume::generatePoint() - Unable to "
+                           "generate point in object after " +
+                           std::to_string(maxAttempts) + " attempts");
+}
+
+/**
  * Calculate the attenuation correction factor the volume given a start and
  * end point.
  * @param rng A reference to a PseudoRandomNumberGenerator producing
@@ -69,9 +104,10 @@ const Geometry::BoundingBox &MCInteractionVolume::getBoundingBox() const {
  * @return The fraction of the beam that has been attenuated. A negative number
  * indicates the track was not valid.
  */
-double MCInteractionVolume::calculateAbsorption(
+bool MCInteractionVolume::calculateBeforeAfterTrack(
     Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &startPos,
-    const Kernel::V3D &endPos, double lambdaBefore, double lambdaAfter) const {
+    const Kernel::V3D &endPos, Track &beforeScatter, Track &afterScatter,
+    bool useCaching, int detectorID) const {
   // Generate scatter point. If there is an environment present then
   // first select whether the scattering occurs on the sample or the
   // environment. The attenuation for the path leading to the scatter point
@@ -79,24 +115,63 @@ double MCInteractionVolume::calculateAbsorption(
   // backwards for simplicity with how the Track object works. This avoids
   // having to understand exactly which object the scattering occurred in.
   V3D scatterPos;
-  if (m_env && (rng.nextValue() > 0.5)) {
-    scatterPos =
-        m_env->generatePoint(rng, m_activeRegion, m_maxScatterAttempts);
+
+  scatterPos =
+      generatePoint(rng, m_activeRegion, m_maxScatterAttempts, false,
+                    useCaching ? Geometry::scatterBeforeAfter::scScatter
+                               : Geometry::scatterBeforeAfter::scNone);
+
+  /*if (m_env && (rng.nextValue() > 0.5)) {
+    scatterPos = m_env->generatePoint(
+        rng, m_activeRegion, m_maxScatterAttempts, false,
+        useCaching ? Geometry::scatterBeforeAfter::scScatter
+                   : Geometry::scatterBeforeAfter::scNone);
   } else {
-    scatterPos = m_sample->generatePointInObject(rng, m_activeRegion,
-                                                 m_maxScatterAttempts);
-  }
+    scatterPos = m_sample->generatePointInObject(
+        rng, m_activeRegion, m_maxScatterAttempts, false,
+        useCaching ? Geometry::scatterBeforeAfter::scScatter
+                   : Geometry::scatterBeforeAfter::scNone);
+  }*/
   const auto toStart = normalize(startPos - scatterPos);
-  Track beforeScatter(scatterPos, toStart);
-  int nlinks = m_sample->interceptSurface(beforeScatter);
+  beforeScatter = Track(scatterPos, toStart);
+  int nlinks = m_sample->interceptSurface(
+      beforeScatter, false,
+      useCaching ? Geometry::scatterBeforeAfter::scBefore
+                 : Geometry::scatterBeforeAfter::scNone,
+      detectorID);
   if (m_env) {
-    nlinks += m_env->interceptSurfaces(beforeScatter);
+    nlinks += m_env->interceptSurfaces(
+        beforeScatter, false,
+        useCaching ? Geometry::scatterBeforeAfter::scBefore
+                   : Geometry::scatterBeforeAfter::scNone,
+        detectorID);
   }
   // This should not happen but numerical precision means that it can
   // occasionally occur with tracks that are very close to the surface
   if (nlinks == 0) {
-    return -1.0;
+    return false;
   }
+
+  // Now track to final destination
+  const V3D scatteredDirec = normalize(endPos - scatterPos);
+  afterScatter = Track(scatterPos, scatteredDirec);
+  m_sample->interceptSurface(afterScatter, false,
+                             useCaching ? Geometry::scatterBeforeAfter::scAfter
+                                        : Geometry::scatterBeforeAfter::scNone,
+                             detectorID);
+  if (m_env) {
+    m_env->interceptSurfaces(afterScatter, false,
+                             useCaching ? Geometry::scatterBeforeAfter::scAfter
+                                        : Geometry::scatterBeforeAfter::scNone,
+                             detectorID);
+  }
+  return true;
+}
+
+double MCInteractionVolume::calculateAbsorption(const Track &beforeScatter,
+                                                const Track &afterScatter,
+                                                double lambdaBefore,
+                                                double lambdaAfter) const {
 
   // Function to calculate total attenuation for a track
   auto calculateAttenuation = [](const Track &path, double lambda) {
@@ -109,15 +184,70 @@ double MCInteractionVolume::calculateAbsorption(
     return factor;
   };
 
-  // Now track to final destination
-  const V3D scatteredDirec = normalize(endPos - scatterPos);
-  Track afterScatter(scatterPos, scatteredDirec);
-  m_sample->interceptSurface(afterScatter);
-  if (m_env) {
-    m_env->interceptSurfaces(afterScatter);
-  }
   return calculateAttenuation(beforeScatter, lambdaBefore) *
          calculateAttenuation(afterScatter, lambdaAfter);
+}
+
+void MCInteractionVolume::resetActiveElements(
+    Geometry::scatterBeforeAfter stage, int detectorID, bool active) {
+  if (m_env) {
+    m_env->resetActiveElements(stage, detectorID, active);
+  }
+}
+
+void MCInteractionVolume::addActiveElementsForScatterPoint(
+    Kernel::PseudoRandomNumberGenerator &rng) {
+
+  generatePoint(rng, m_activeRegion, m_maxScatterAttempts, true,
+                Geometry::scatterBeforeAfter::scScatter);
+
+  /*if (m_env && (rng.nextValue() > 0.5)) {
+    m_env->generatePoint(rng, m_activeRegion, m_maxScatterAttempts, true,
+                         Geometry::scatterBeforeAfter::scScatter);
+  } else {
+    m_sample->generatePointInObject(rng, m_activeRegion, m_maxScatterAttempts,
+                                    true,
+                                    Geometry::scatterBeforeAfter::scScatter);
+  }*/
+}
+
+void MCInteractionVolume::addActiveElements(
+    Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &startPos,
+    const Kernel::V3D &endPos, int detectorID) {
+
+  V3D scatterPos;
+
+  // need to generate scatter point in order to generate the caches for the
+  // before\after tracks
+  if (m_env && (rng.nextValue() > 0.5)) {
+    scatterPos =
+        m_env->generatePoint(rng, m_activeRegion, m_maxScatterAttempts, false,
+                             Geometry::scatterBeforeAfter::scScatter);
+  } else {
+    scatterPos = m_sample->generatePointInObject(
+        rng, m_activeRegion, m_maxScatterAttempts, false,
+        Geometry::scatterBeforeAfter::scScatter);
+  }
+  const auto toStart = normalize(startPos - scatterPos);
+  Track beforeScatter(scatterPos, toStart);
+
+  m_sample->interceptSurface(
+      beforeScatter, true, Geometry::scatterBeforeAfter::scBefore, detectorID);
+  if (m_env) {
+    m_env->interceptSurfaces(beforeScatter, true,
+                             Geometry::scatterBeforeAfter::scBefore,
+                             detectorID);
+  }
+
+  const V3D scatteredDirec = normalize(endPos - scatterPos);
+  Track afterScatter(scatterPos, scatteredDirec);
+
+  m_sample->interceptSurface(afterScatter, true,
+                             Geometry::scatterBeforeAfter::scAfter, detectorID);
+  if (m_env) {
+    m_env->interceptSurfaces(afterScatter, true,
+                             Geometry::scatterBeforeAfter::scAfter, detectorID);
+  }
 }
 
 } // namespace Algorithms

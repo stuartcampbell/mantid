@@ -28,8 +28,7 @@ using Kernel::V3D;
  * @param name A human-readable name for the kit
  * @param container The object that represents the can
  */
-SampleEnvironment::SampleEnvironment(std::string name,
-                                     Container_const_sptr container)
+SampleEnvironment::SampleEnvironment(std::string name, Container_const_sptr container)
     : m_name(std::move(name)), m_components(1, container) {}
 
 const IObject &SampleEnvironment::getComponent(const size_t index) const {
@@ -64,9 +63,12 @@ Geometry::BoundingBox SampleEnvironment::boundingBox() const {
  */
 Kernel::V3D
 SampleEnvironment::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
-                                 const size_t maxAttempts) const {
+                                 const size_t maxAttempts,
+                                 bool buildCache,
+                                 Geometry::scatterBeforeAfter stage) const {
   auto componentIndex = rng.nextInt(1, static_cast<int>(nelements())) - 1;
-  return m_components[componentIndex]->generatePointInObject(rng, maxAttempts);
+  return m_components[componentIndex]->generatePointInObject(rng, maxAttempts,
+                                                             buildCache, stage);
 }
 
 /**
@@ -82,13 +84,15 @@ SampleEnvironment::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
 Kernel::V3D
 SampleEnvironment::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
                                  const Geometry::BoundingBox &activeRegion,
-                                 const size_t maxAttempts) const {
+                                 const size_t maxAttempts,
+                                 bool buildCache,
+                                 Geometry::scatterBeforeAfter stage) const {
   for (int i = 0; i < maxAttempts; i++) {
     Kernel::V3D point;
     auto componentIndex = rng.nextInt(1, static_cast<int>(nelements())) - 1;
     try {
       point = m_components[componentIndex]->generatePointInObject(
-          rng, activeRegion, 1);
+          rng, activeRegion, 1, buildCache, stage);
     } catch (std::runtime_error) {
       continue;
     }
@@ -116,11 +120,16 @@ bool SampleEnvironment::isValid(const V3D &point) const {
  *        environment
  * @return The total number of segments added to the track
  */
-int SampleEnvironment::interceptSurfaces(Track &track) const {
-  return std::accumulate(m_components.cbegin(), m_components.cend(), 0,
-                         [&track](int sum, const auto &component) {
-                           return sum + component->interceptSurface(track);
-                         });
+int SampleEnvironment::interceptSurfaces(Track &track, bool buildCache,
+                                         scatterBeforeAfter stage,
+                                         int detectorID) const {
+  return std::accumulate(
+      m_components.cbegin(), m_components.cend(), 0,
+                         [&track, &buildCache, &stage,
+                          &detectorID](int sum, const auto &component) {
+        return sum + component->interceptSurface(track, buildCache, stage,
+                                                 detectorID);
+      });
 }
 
 /**
@@ -129,5 +138,13 @@ int SampleEnvironment::interceptSurfaces(Track &track) const {
 void SampleEnvironment::add(const IObject_const_sptr &component) {
   m_components.emplace_back(component);
 }
+
+void SampleEnvironment::resetActiveElements(Geometry::scatterBeforeAfter stage,
+                                            int detectorID, bool active) const {
+  for (auto i : m_components) {
+    i->resetActiveElements(stage, detectorID, active);
+  }
+}
+
 } // namespace Geometry
 } // namespace Mantid

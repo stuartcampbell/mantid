@@ -9,6 +9,7 @@
 
 #include "MantidAlgorithms/DllConfig.h"
 #include "MantidGeometry/Objects/BoundingBox.h"
+#include "MantidGeometry/Objects/Track.h"
 
 namespace Mantid {
 namespace API {
@@ -17,6 +18,7 @@ class Sample;
 namespace Geometry {
 class IObject;
 class SampleEnvironment;
+enum class scatterBeforeAfter;
 } // namespace Geometry
 
 namespace Kernel {
@@ -42,16 +44,32 @@ public:
                       const Geometry::BoundingBox &&activeRegion) = delete;
 
   const Geometry::BoundingBox &getBoundingBox() const;
-  double calculateAbsorption(Kernel::PseudoRandomNumberGenerator &rng,
-                             const Kernel::V3D &startPos,
-                             const Kernel::V3D &endPos, double lambdaBefore,
-                             double lambdaAfter) const;
+  bool calculateBeforeAfterTrack(Kernel::PseudoRandomNumberGenerator &rng,
+                                 const Kernel::V3D &startPos,
+                                 const Kernel::V3D &endPos,
+                                 Geometry::Track &beforeScatter,
+                                 Geometry::Track &afterScatter, bool useCaching,
+                                 int detectorID) const;
+  double calculateAbsorption(const Geometry::Track &beforeScatter,
+                             const Geometry::Track &afterScatter,
+                             double lambdaBefore, double lambdaAfter) const;
+  void resetActiveElements(Geometry::scatterBeforeAfter stage, int dectectorID,
+                           bool active);
+  void addActiveElements(Kernel::PseudoRandomNumberGenerator &rng,
+                         const Kernel::V3D &startPos, const Kernel::V3D &endPos,
+                         int detectorID);
+  void
+  addActiveElementsForScatterPoint(Kernel::PseudoRandomNumberGenerator &rng);
 
 private:
   const boost::shared_ptr<Geometry::IObject> m_sample;
-  const Geometry::SampleEnvironment *m_env;
+  Geometry::SampleEnvironment *m_env;
   const Geometry::BoundingBox m_activeRegion;
   const size_t m_maxScatterAttempts;
+  Kernel::V3D generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
+                            const Geometry::BoundingBox &activeRegion,
+                            const size_t maxAttempts, bool buildCache,
+                            Geometry::scatterBeforeAfter stage) const;
 };
 
 } // namespace Algorithms

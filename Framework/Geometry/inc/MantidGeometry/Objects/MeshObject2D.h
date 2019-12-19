@@ -48,7 +48,9 @@ public:
   bool isValid(
       const Kernel::V3D &point) const override; ///< Check if a point is inside
   bool isOnSide(const Kernel::V3D &) const override;
-  int interceptSurface(Geometry::Track &ut) const override;
+  int interceptSurface(Geometry::Track &ut, bool buildCache = false,
+                       scatterBeforeAfter stage = scatterBeforeAfter::scNone,
+                       int detectorID = -1) const override;
   double distance(const Geometry::Track &ut) const override;
   MeshObject2D *clone() const override;
   MeshObject2D *
@@ -64,11 +66,15 @@ public:
   void getBoundingBox(double &xmax, double &ymax, double &zmax, double &xmin,
                       double &ymin, double &zmin) const override;
   int getPointInObject(Kernel::V3D &point) const override;
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const size_t) const override;
-  Kernel::V3D generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                                    const BoundingBox &activeRegion,
-                                    const size_t) const override;
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
+                        bool buildCache,
+                        Geometry::scatterBeforeAfter stage) const override;
+  Kernel::V3D
+  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                        const BoundingBox &activeRegion, const size_t,
+                        bool buildCache,
+                        Geometry::scatterBeforeAfter stage) const override;
   detail::ShapeInfo::GeometryShape shape() const override;
   const detail::ShapeInfo &shapeInfo() const override;
   void GetObjectGeom(detail::ShapeInfo::GeometryShape &type,

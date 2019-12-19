@@ -7,6 +7,9 @@ namespace Mantid {
 namespace Geometry {
 
 namespace MeshObjectCommon {
+
+int rayIntersectsTriangle_ncalls = 0;
+
 /**
  * getVertices converts vector Kernel::V3D to vector doubles. 3x size of input.
  * ordered x,y,z,x,y,z...
@@ -132,6 +135,7 @@ bool rayIntersectsTriangle(const Kernel::V3D &start,
                            const Kernel::V3D &v2, const Kernel::V3D &v3,
                            Kernel::V3D &intersection,
                            TrackDirection &entryExit) {
+  rayIntersectsTriangle_ncalls++;
   // Implements Moller Trumbore intersection algorithm
 
   // Eq line x = x0 + tV

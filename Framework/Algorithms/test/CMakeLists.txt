@@ -69,6 +69,8 @@ if(CXXTEST_FOUND)
 
   # Add to the 'FrameworkTests' group in VS
   set_property(TARGET AlgorithmsTest PROPERTY FOLDER "UnitTests")
+  
+  set_target_properties(AlgorithmsTest PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=${CMAKE_SOURCE_DIR}/external/src/ThirdParty/bin;%PATH%")
 endif()
 
 # python unit tests

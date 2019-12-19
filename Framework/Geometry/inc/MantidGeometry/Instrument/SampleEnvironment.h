@@ -52,15 +52,21 @@ public:
 
   Geometry::BoundingBox boundingBox() const;
   /// Select a random point within a component
-  Kernel::V3D generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
-                            const size_t maxAttempts) const;
+  Kernel::V3D generatePoint(
+      Kernel::PseudoRandomNumberGenerator &rng, const size_t maxAttempts,
+      bool buildCache = false,
+      Geometry::scatterBeforeAfter stage = scatterBeforeAfter::scNone) const;
   /// Select a random point within a component that is also bound by a
   /// given region
-  Kernel::V3D generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
-                            const BoundingBox &activeRegion,
-                            const size_t maxAttempts) const;
+  Kernel::V3D generatePoint(
+      Kernel::PseudoRandomNumberGenerator &rng, const BoundingBox &activeRegion,
+      const size_t maxAttempts, bool buildCache = false,
+      Geometry::scatterBeforeAfter stage = scatterBeforeAfter::scNone) const;
   bool isValid(const Kernel::V3D &point) const;
-  int interceptSurfaces(Track &track) const;
+  int interceptSurfaces(Track &track, bool buildCache, scatterBeforeAfter stage,
+                        int detectorID) const;
+  void resetActiveElements(Geometry::scatterBeforeAfter stage, int detectorID,
+                           bool active) const;
 
   void add(const IObject_const_sptr &component);
 
@@ -74,6 +80,7 @@ private:
 using SampleEnvironment_uptr = std::unique_ptr<SampleEnvironment>;
 // Typedef a unique_ptr to const
 using SampleEnvironment_const_uptr = std::unique_ptr<const SampleEnvironment>;
+
 } // namespace Geometry
 } // namespace Mantid
 

@@ -28,6 +28,7 @@
 #include <Poco/DOM/DOMParser.h>
 #include <Poco/DOM/Document.h>
 #include <Poco/DOM/Element.h>
+#include <Poco/Path.h>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
 
@@ -168,6 +169,8 @@ LoadSampleEnvironmentComplex::loadSTLFileForComponent(
     throw Exception::ParseError(
         "Could not read file, did not match either STL Format", STLFileName, 0);
   }
+
+  environmentMesh->setID(Poco::Path(STLFileName).getBaseName());
 
   environmentMesh = rotate(environmentMesh, compElem);
   environmentMesh = translate(environmentMesh, scaleType, compElem);
