@@ -31,6 +31,8 @@
 #include "MantidKernel/TimeSeriesProperty.h"
 #include "MantidKernel/VisibleWhenProperty.h"
 
+#include<ctime>
+
 #include <memory>
 #include <sstream>
 
@@ -251,8 +253,12 @@ std::map<std::string, std::string> FilterEvents::validateInputs() {
 /** Execution body
  */
 void FilterEvents::exec() {
+
+  std::time_t time0 = std::time(nullptr);
+
   // Process algorithm properties
   processAlgorithmProperties();
+  std::time_t time1 = std::time(nullptr);
 
   // Examine workspace for detectors
   examineAndSortEventWS();
@@ -335,6 +341,8 @@ void FilterEvents::exec() {
 
   m_progress = 1.0;
   progress(m_progress, "Completed");
+
+  g_log.notice() << "Total time = " << static_cast<double>(time0 - time1) * 1E-9 << "\n";
 }
 
 //----------------------------------------------------------------------------------------------
