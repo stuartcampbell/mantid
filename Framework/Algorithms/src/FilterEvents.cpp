@@ -31,7 +31,11 @@
 #include "MantidKernel/TimeSeriesProperty.h"
 #include "MantidKernel/VisibleWhenProperty.h"
 
+#include "MantidHistogramData/HistogramBuilder.h"
+#include "MantidIndexing/IndexInfo.h"
+
 #include<ctime>
+using namespace std::chrono;
 
 #include <memory>
 #include <sstream>
@@ -42,6 +46,7 @@ using namespace Mantid::API;
 using namespace Mantid::DataObjects;
 using namespace Mantid::HistogramData;
 using namespace Mantid::Geometry;
+using namespace Mantid::Indexing;
 using Types::Core::DateAndTime;
 
 using namespace std;
@@ -255,6 +260,9 @@ std::map<std::string, std::string> FilterEvents::validateInputs() {
 void FilterEvents::exec() {
 
   std::time_t time0 = std::time(nullptr);
+  milliseconds ms0 = duration_cast< milliseconds >(
+      system_clock::now().time_since_epoch()
+  );
 
   // Process algorithm properties
   processAlgorithmProperties();
@@ -274,6 +282,9 @@ void FilterEvents::exec() {
   else
     processMatrixSplitterWorkspace();
   std::time_t time3 = std::time(nullptr);
+  milliseconds ms3 = duration_cast< milliseconds >(
+      system_clock::now().time_since_epoch()
+  );
 
   // Create output workspaces
   m_progress = 0.1;
@@ -284,7 +295,11 @@ void FilterEvents::exec() {
     createOutputWorkspacesSplitters();
   else
     createOutputWorkspacesMatrixCase();
+
+  prototypeCreateHistogramWS();
+
   std::time_t time4 = std::time(nullptr);
+  milliseconds ms4 = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
   // clone the properties but TimeSeriesProperty
   std::vector<Kernel::TimeSeriesProperty<int> *> int_tsp_vector;
@@ -300,6 +315,7 @@ void FilterEvents::exec() {
   progress(m_progress, "Importing TOF corrections. ");
   setupDetectorTOFCalibration();
   std::time_t time6 = std::time(nullptr);
+  milliseconds ms6 = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
   // Filter Events
   m_progress = 0.30;
@@ -321,6 +337,7 @@ void FilterEvents::exec() {
     generateSplitterTSP(split_tsp_vector);
   }
   std::time_t time7 = std::time(nullptr);
+  milliseconds ms7 = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
   // assign split_tsp_vector to all the output workspaces!
   mapSplitterTSPtoWorkspaces(split_tsp_vector);
@@ -347,20 +364,27 @@ void FilterEvents::exec() {
   }
   setProperty("OutputWorkspaceNames", outputwsnames);
   std::time_t time9 = std::time(nullptr);
+  milliseconds ms9 = duration_cast< milliseconds >(
+      system_clock::now().time_since_epoch()
+  );
+
+  milliseconds total = ms9 - ms0;
 
   m_progress = 1.0;
   progress(m_progress, "Completed");
 
-  g_log.notice() << "Total time = " << static_cast<double>(time9 - time0) * 1E-9 << "\n";
-  g_log.notice() << "  Process properties time = " << static_cast<double>(time1 - time0) * 1E-9 << "\n";
-  g_log.notice() << "  Process EventWS    time = " << static_cast<double>(time2 - time1) * 1E-9 << "\n";
-  g_log.notice() << "  Process Splitters  time = " << static_cast<double>(time3 - time2) * 1E-9 << "\n";
-  g_log.notice() << "  Create output WS   time = " << static_cast<double>(time4 - time3) * 1E-9 << "\n";
-  g_log.notice() << "  Copy non-slit logs time = " << static_cast<double>(time5 - time4) * 1E-9 << "\n";
-  g_log.notice() << "  Set up calibration time = " << static_cast<double>(time6 - time5) * 1E-9 << "\n";
-  g_log.notice() << "  Filter events      time = " << static_cast<double>(time7 - time6) * 1E-9 << "\n";
-  g_log.notice() << "  Split TSp logs     time = " << static_cast<double>(time8 - time7) * 1E-9 << "\n";
-  g_log.notice() << "  Set outputs        time = " << static_cast<double>(time9 - time8) * 1E-9 << "\n";
+  g_log.notice() << "Total time = " << static_cast<double>(total.count()) * 1E-3 << "\n";
+  g_log.notice() << "  Process properties time = " << static_cast<double>(time1 - time0) << "\n";
+  g_log.notice() << "  Process EventWS    time = " << static_cast<double>(time2 - time1) << "\n";
+  g_log.notice() << "  Process Splitters  time = " << static_cast<double>(time3 - time2) << "\n";
+  milliseconds time_create_ws = ms4 - ms3;  //  static_cast<double>(time4 - time3)
+  g_log.notice() << "  Create output WS   time = " << static_cast<double>(time_create_ws.count()) * 1E-3 << "\n";
+  g_log.notice() << "  Copy non-slit logs time = " << static_cast<double>(time5 - time4) << "\n";
+  g_log.notice() << "  Set up calibration time = " << static_cast<double>(time6 - time5) << "\n";
+  milliseconds time_filtering = ms7 - ms6;  // time7 - time6
+  g_log.notice() << "  Filter events      time = " << static_cast<double>(time_filtering.count()) * 1E-3 << "\n";
+  g_log.notice() << "  Split TSp logs     time = " << static_cast<double>(time8 - time7) << "\n";
+  g_log.notice() << "  Set outputs        time = " << static_cast<double>(time9 - time8) << "\n";
 }
 
 //----------------------------------------------------------------------------------------------
@@ -2051,6 +2075,46 @@ std::vector<std::string> FilterEvents::getTimeSeriesLogNames() {
   }
 
   return lognames;
+}
+
+void FilterEvents::prototypeCreateHistogramWS() {
+
+    size_t num_matrix_ws = 50;
+
+    std::vector<MatrixWorkspace_sptr> wsvec(num_matrix_ws);
+
+    HistogramBuilder histogramBuilder;
+
+    std::vector<double> dataX(num_matrix_ws);
+    // dataX[0] = 0;
+    // dataX[1] = 1.;
+    histogramBuilder.setX(num_matrix_ws);
+    histogramBuilder.setY(num_matrix_ws);
+    histogramBuilder.setDistribution(false);
+
+    // Set big matrix
+            auto histogram = histogramBuilder.build();
+            auto storageMode = Parallel::fromString("Parallel::StorageMode::Cloned");
+            IndexInfo indexInfo(1024*1024, storageMode, communicator());
+            MatrixWorkspace_sptr optws = create<Workspace2D>(indexInfo, histogram);
+
+//    for (size_t i = 0; i < num_matrix_ws; ++i) {
+////    boost::shared_ptr<Workspace2D> optws =
+////        create<Workspace2D>(*m_eventWS);
+
+//        auto histogram = histogramBuilder.build();
+//        auto storageMode = Parallel::fromString("Parallel::StorageMode::Cloned");
+//        IndexInfo indexInfo(1024*1024, storageMode, communicator());
+//        MatrixWorkspace_sptr optws = create<Workspace2D>(indexInfo, histogram);
+
+//        // Clear Run without copying first.
+//        optws->setSharedRun(Kernel::make_cow<Run>());
+//        wsvec[i] = optws;
+//    }
+    g_log.notice() << "Create " << wsvec.size() << " Matrox workspace!\n";
+    g_log.notice() << "output ws: " << optws->getNumberHistograms() << "\n";
+    g_log.notice() << "spec length: " << optws->dataX(0).size() << "\n";
+
 }
 
 } // namespace Algorithms

@@ -158,6 +158,9 @@ private:
 
   void groupOutputWorkspace();
 
+  /// prototype create histogram workspace
+  void prototypeCreateHistogramWS();
+
   DataObjects::EventWorkspace_sptr m_eventWS;
   DataObjects::SplittersWorkspace_sptr m_splittersWorkspace;
   DataObjects::TableWorkspace_sptr m_splitterTableWorkspace;
