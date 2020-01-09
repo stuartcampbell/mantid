@@ -262,6 +262,7 @@ void FilterEvents::exec() {
 
   // Examine workspace for detectors
   examineAndSortEventWS();
+  std::time_t time2 = std::time(nullptr);
 
   // Parse splitters
   m_progress = 0.0;
@@ -272,6 +273,7 @@ void FilterEvents::exec() {
     processTableSplittersWorkspace();
   else
     processMatrixSplitterWorkspace();
+  std::time_t time3 = std::time(nullptr);
 
   // Create output workspaces
   m_progress = 0.1;
@@ -282,6 +284,7 @@ void FilterEvents::exec() {
     createOutputWorkspacesSplitters();
   else
     createOutputWorkspacesMatrixCase();
+  std::time_t time4 = std::time(nullptr);
 
   // clone the properties but TimeSeriesProperty
   std::vector<Kernel::TimeSeriesProperty<int> *> int_tsp_vector;
@@ -290,11 +293,13 @@ void FilterEvents::exec() {
   std::vector<Kernel::TimeSeriesProperty<string> *> string_tsp_vector;
   copyNoneSplitLogs(int_tsp_vector, dbl_tsp_vector, bool_tsp_vector,
                     string_tsp_vector);
+  std::time_t time5 = std::time(nullptr);
 
   // Optionall import corrections
   m_progress = 0.20;
   progress(m_progress, "Importing TOF corrections. ");
   setupDetectorTOFCalibration();
+  std::time_t time6 = std::time(nullptr);
 
   // Filter Events
   m_progress = 0.30;
@@ -315,12 +320,15 @@ void FilterEvents::exec() {
     filterEventsByVectorSplitters(progressamount);
     generateSplitterTSP(split_tsp_vector);
   }
+  std::time_t time7 = std::time(nullptr);
+
   // assign split_tsp_vector to all the output workspaces!
   mapSplitterTSPtoWorkspaces(split_tsp_vector);
 
   // split times series property: new way to split events
   splitTimeSeriesLogs(int_tsp_vector, dbl_tsp_vector, bool_tsp_vector,
                       string_tsp_vector);
+  std::time_t time8 = std::time(nullptr);
 
   // Optional to group detector
   groupOutputWorkspace();
@@ -338,11 +346,21 @@ void FilterEvents::exec() {
     outputwsnames.emplace_back(miter.second->getName());
   }
   setProperty("OutputWorkspaceNames", outputwsnames);
+  std::time_t time9 = std::time(nullptr);
 
   m_progress = 1.0;
   progress(m_progress, "Completed");
 
-  g_log.notice() << "Total time = " << static_cast<double>(time0 - time1) * 1E-9 << "\n";
+  g_log.notice() << "Total time = " << static_cast<double>(time9 - time0) * 1E-9 << "\n";
+  g_log.notice() << "  Process properties time = " << static_cast<double>(time1 - time0) * 1E-9 << "\n";
+  g_log.notice() << "  Process EventWS    time = " << static_cast<double>(time2 - time1) * 1E-9 << "\n";
+  g_log.notice() << "  Process Splitters  time = " << static_cast<double>(time3 - time2) * 1E-9 << "\n";
+  g_log.notice() << "  Create output WS   time = " << static_cast<double>(time4 - time3) * 1E-9 << "\n";
+  g_log.notice() << "  Copy non-slit logs time = " << static_cast<double>(time5 - time4) * 1E-9 << "\n";
+  g_log.notice() << "  Set up calibration time = " << static_cast<double>(time6 - time5) * 1E-9 << "\n";
+  g_log.notice() << "  Filter events      time = " << static_cast<double>(time7 - time6) * 1E-9 << "\n";
+  g_log.notice() << "  Split TSp logs     time = " << static_cast<double>(time8 - time7) * 1E-9 << "\n";
+  g_log.notice() << "  Set outputs        time = " << static_cast<double>(time9 - time8) * 1E-9 << "\n";
 }
 
 //----------------------------------------------------------------------------------------------
