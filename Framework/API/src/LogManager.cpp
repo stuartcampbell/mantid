@@ -9,6 +9,8 @@
 #include "MantidKernel/PropertyManager.h"
 #include "MantidKernel/PropertyNexus.h"
 #include "MantidKernel/TimeSeriesProperty.h"
+#include "MantidKernel/TimeSeriesProperty.h"
+#include "MantidKernel/ITimeSeriesProperty.h"
 
 #include <nexus/NeXusFile.hpp>
 
@@ -367,8 +369,31 @@ double LogManager::getPropertyAsSingleValue(
     const std::string &name, Kernel::Math::StatisticType statistic) const {
   double singleValue(0.0);
   const auto key = std::make_pair(name, statistic);
+
+  // check whether this is in the cache already
+  // m_singleValueCache->getCache() shall set cached value to singleValue
   if (!m_singleValueCache->getCache(key, singleValue)) {
+    // get property from log
     const Property *log = getProperty(name);
+
+    const ITimeSeriesProperty *tsplog = dynamic_cast<const ITimeSeriesProperty *>(log);
+    if (tsplog == nullptr)
+        g_log.notice("Yes!");
+
+    // separate the case with splitter
+    bool hassplitter = false;
+    TimeSeriesProperty<int> *splitterlog = nullptr;
+    if (statistic == Kernel::Math::StatisticType::TimeAveragedMean) {
+        std::vector<Property *> logs = m_manager->getProperties();
+        for (size_t i = 0; i < logs.size(); ++i) {
+            if (logs[i]->name() == "splitter") {
+                hassplitter = true;
+                splitterlog = dynamic_cast<TimeSeriesProperty<int> *>(logs[i]);
+                break;
+            }
+        }
+    }
+
     if (!convertPropertyToDouble(log, singleValue, statistic)) {
       if (const auto stringLog =
               dynamic_cast<const PropertyWithValue<std::string> *>(log)) {
