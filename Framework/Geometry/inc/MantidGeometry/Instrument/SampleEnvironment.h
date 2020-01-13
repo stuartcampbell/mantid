@@ -65,8 +65,8 @@ public:
   bool isValid(const Kernel::V3D &point) const;
   int interceptSurfaces(Track &track, bool buildCache, scatterBeforeAfter stage,
                         int detectorID) const;
-  void resetActiveElements(Geometry::scatterBeforeAfter stage, int detectorID,
-                           bool active) const;
+  void resetActiveElements(Geometry::scatterBeforeAfter stage,
+                           bool active, int nDetectors) const;
 
   void add(const IObject_const_sptr &component);
 

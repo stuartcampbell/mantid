@@ -116,17 +116,16 @@ public:
   int getPointInObject(Kernel::V3D &point) const override;
 
   /// Select a random point within the object
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
-                        bool buildCache = false,
-                        Geometry::scatterBeforeAfter stage =
-                            scatterBeforeAfter::scNone) const override;
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                        const BoundingBox &activeRegion, const size_t,
-                        bool buildCache = false,
-                        Geometry::scatterBeforeAfter stage =
-                            scatterBeforeAfter::scNone) const override;
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const size_t, Kernel::V3D &point,
+                             bool buildCache = false,
+                             Geometry::scatterBeforeAfter stage =
+                                 scatterBeforeAfter::scNone) const override;
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const BoundingBox &activeRegion, const size_t,
+                             Kernel::V3D &point, bool buildCache = false,
+                             Geometry::scatterBeforeAfter stage =
+                                 scatterBeforeAfter::scNone) const override;
 
   // Rendering member functions
   void draw() const override;
@@ -153,22 +152,12 @@ public:
 
   void rotate(const Kernel::Matrix<double> &);
   void translate(const Kernel::V3D &);
+  void multiply(const Kernel::Matrix <double> &);
+  void scale(const double scaleFactor);
   void updateGeometryHandler();
 
-  void resetActiveElements(Geometry::scatterBeforeAfter stage, int detectorID,
-                           bool active) const override;
-  /*void addActiveElementsForTrackExternal(Geometry::Track &UT,
-                                         Geometry::scatterBeforeAfter stage,
-                                         int detectorID) override;
-  void addActiveElementsForTrack(Geometry::Track &,
-                                 std::vector<Kernel::V3D> &intersectionPoints,
-                                 std::vector<TrackDirection> &entryExitFlags,
-                                 Geometry::scatterBeforeAfter stage,
-                                 int detectorID);
-  void
-  addActiveElementsForScatterPoint(Kernel::PseudoRandomNumberGenerator &rng,
-                                   const BoundingBox &activeRegion,
-                                   const size_t maxAttempts);*/
+  void resetActiveElements(Geometry::scatterBeforeAfter stage, bool active,
+                           int nDetectors) const override;
 
 private:
   void initialize();
@@ -186,7 +175,7 @@ private:
                    Kernel::V3D &v3) const;
   bool isTriangleActive(bool buildCache, Geometry::scatterBeforeAfter stage,
                         int detectorID, size_t i) const;
-  void addToCache(Geometry::scatterBeforeAfter stage, int i,
+  void addToCache(Geometry::scatterBeforeAfter stage, size_t i,
                   int detectorID) const;
   /// Search object for valid point
   bool searchForObject(Kernel::V3D &point) const;
@@ -220,9 +209,9 @@ private:
   // std::vector<uint32_t> m_activetrianglesbefored;
   mutable std::vector<uint32_t> m_activetrianglesscatter;
   // std::vector<uint32_t> m_activetrianglesscatterd;
-  //mutable std::vector<uint32_t> m_activetrianglesafter;
+  // mutable std::vector<uint32_t> m_activetrianglesafter;
   // std::vector<uint32_t> m_activetrianglesafterd;
-  mutable std::vector<std::vector<uint32_t>> m_activetrianglesafteralldet;
+  mutable std::map<int, std::vector<uint32_t>> m_activetrianglesafteralldet;
   mutable int m_activetrianglesbeforecount = 0;
   mutable int m_activetrianglesscattercount = 0;
   mutable int m_activetrianglesaftercount = 0;

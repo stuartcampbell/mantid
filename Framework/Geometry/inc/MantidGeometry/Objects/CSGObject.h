@@ -167,15 +167,13 @@ public:
   int getPointInObject(Kernel::V3D &point) const override;
 
   /// Select a random point within the object
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
-                        bool buildCache,
-                        Geometry::scatterBeforeAfter stage) const override;
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                        const BoundingBox &activeRegion, const size_t,
-                        bool buildCache,
-                        Geometry::scatterBeforeAfter stage) const override;
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const size_t, Kernel::V3D& point, bool buildCache,
+                             Geometry::scatterBeforeAfter stage) const override;
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const BoundingBox &activeRegion, const size_t,
+                             Kernel::V3D& point, bool buildCache,
+                             Geometry::scatterBeforeAfter stage) const override;
 
   // Rendering member functions
   void draw() const override;

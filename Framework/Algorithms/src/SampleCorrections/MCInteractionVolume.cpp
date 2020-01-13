@@ -10,6 +10,7 @@
 #include "MantidGeometry/Objects/CSGObject.h"
 #include "MantidKernel/Material.h"
 #include "MantidKernel/PseudoRandomNumberGenerator.h"
+#include <iomanip>
 
 namespace Mantid {
 using Geometry::Track;
@@ -45,6 +46,8 @@ MCInteractionVolume::MCInteractionVolume(
   } catch (std::runtime_error &) {
     // swallow this as no defined environment from getEnvironment
   }
+
+  m_envScatterPoints.resize(m_env->nelements());
 }
 
 /**
@@ -63,7 +66,7 @@ Kernel::V3D
 MCInteractionVolume::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
                                    const Geometry::BoundingBox &activeRegion,
                                    const size_t maxAttempts, bool buildCache,
-                                   Geometry::scatterBeforeAfter stage) const {
+                                   Geometry::scatterBeforeAfter stage) {
   for (int i = 0; i < maxAttempts; i++) {
     Kernel::V3D point;
     int componentIndex;
@@ -72,19 +75,24 @@ MCInteractionVolume::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
     } else {
       componentIndex = -1;
     }
-    try {
-      if (componentIndex == -1) {
-        point = m_sample->generatePointInObject(rng, activeRegion, 1,
-                                                buildCache, stage);
-      } else {
-        point =
-            m_env->getComponent(componentIndex)
-                .generatePointInObject(rng, activeRegion, 1, buildCache, stage);
-      }
-    } catch (std::runtime_error) {
-      continue;
+
+    bool pointGenerated;
+    if (componentIndex == -1) {
+      pointGenerated = m_sample->generatePointInObject(
+          rng, activeRegion, 1, point, buildCache, stage);
+    } else {
+      pointGenerated = m_env->getComponent(componentIndex)
+                           .generatePointInObject(rng, activeRegion, 1, point,
+                                                  buildCache, stage);
     }
-    return point;
+    if (pointGenerated) {
+      if (componentIndex == -1) {
+        m_sampleScatterPoints++;
+      } else {
+        m_envScatterPoints[componentIndex]++;
+      }
+      return point;
+    }
   }
   throw std::runtime_error("MCInteractionVolume::generatePoint() - Unable to "
                            "generate point in object after " +
@@ -107,7 +115,7 @@ MCInteractionVolume::generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
 bool MCInteractionVolume::calculateBeforeAfterTrack(
     Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &startPos,
     const Kernel::V3D &endPos, Track &beforeScatter, Track &afterScatter,
-    bool useCaching, int detectorID) const {
+    bool useCaching, int detectorID) {
   // Generate scatter point. If there is an environment present then
   // first select whether the scattering occurs on the sample or the
   // environment. The attenuation for the path leading to the scatter point
@@ -121,17 +129,6 @@ bool MCInteractionVolume::calculateBeforeAfterTrack(
                     useCaching ? Geometry::scatterBeforeAfter::scScatter
                                : Geometry::scatterBeforeAfter::scNone);
 
-  /*if (m_env && (rng.nextValue() > 0.5)) {
-    scatterPos = m_env->generatePoint(
-        rng, m_activeRegion, m_maxScatterAttempts, false,
-        useCaching ? Geometry::scatterBeforeAfter::scScatter
-                   : Geometry::scatterBeforeAfter::scNone);
-  } else {
-    scatterPos = m_sample->generatePointInObject(
-        rng, m_activeRegion, m_maxScatterAttempts, false,
-        useCaching ? Geometry::scatterBeforeAfter::scScatter
-                   : Geometry::scatterBeforeAfter::scNone);
-  }*/
   const auto toStart = normalize(startPos - scatterPos);
   beforeScatter = Track(scatterPos, toStart);
   int nlinks = m_sample->interceptSurface(
@@ -189,9 +186,10 @@ double MCInteractionVolume::calculateAbsorption(const Track &beforeScatter,
 }
 
 void MCInteractionVolume::resetActiveElements(
-    Geometry::scatterBeforeAfter stage, int detectorID, bool active) {
+    Geometry::scatterBeforeAfter stage, bool active, int nDetectors) {
+  m_sample->resetActiveElements(stage, active, nDetectors);
   if (m_env) {
-    m_env->resetActiveElements(stage, detectorID, active);
+    m_env->resetActiveElements(stage, active, nDetectors);
   }
 }
 
@@ -200,44 +198,39 @@ void MCInteractionVolume::addActiveElementsForScatterPoint(
 
   generatePoint(rng, m_activeRegion, m_maxScatterAttempts, true,
                 Geometry::scatterBeforeAfter::scScatter);
-
-  /*if (m_env && (rng.nextValue() > 0.5)) {
-    m_env->generatePoint(rng, m_activeRegion, m_maxScatterAttempts, true,
-                         Geometry::scatterBeforeAfter::scScatter);
-  } else {
-    m_sample->generatePointInObject(rng, m_activeRegion, m_maxScatterAttempts,
-                                    true,
-                                    Geometry::scatterBeforeAfter::scScatter);
-  }*/
 }
 
-void MCInteractionVolume::addActiveElements(
-    Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &startPos,
-    const Kernel::V3D &endPos, int detectorID) {
+void MCInteractionVolume::addActiveElementsForBeforeScatter(
+    Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &startPos) {
 
   V3D scatterPos;
 
   // need to generate scatter point in order to generate the caches for the
   // before\after tracks
-  if (m_env && (rng.nextValue() > 0.5)) {
-    scatterPos =
-        m_env->generatePoint(rng, m_activeRegion, m_maxScatterAttempts, false,
+  scatterPos = generatePoint(rng, m_activeRegion, m_maxScatterAttempts, false,
                              Geometry::scatterBeforeAfter::scScatter);
-  } else {
-    scatterPos = m_sample->generatePointInObject(
-        rng, m_activeRegion, m_maxScatterAttempts, false,
-        Geometry::scatterBeforeAfter::scScatter);
-  }
+
   const auto toStart = normalize(startPos - scatterPos);
   Track beforeScatter(scatterPos, toStart);
 
-  m_sample->interceptSurface(
-      beforeScatter, true, Geometry::scatterBeforeAfter::scBefore, detectorID);
+  m_sample->interceptSurface(beforeScatter, true,
+                             Geometry::scatterBeforeAfter::scBefore, -1);
   if (m_env) {
     m_env->interceptSurfaces(beforeScatter, true,
-                             Geometry::scatterBeforeAfter::scBefore,
-                             detectorID);
+                             Geometry::scatterBeforeAfter::scBefore, -1);
   }
+}
+
+void MCInteractionVolume::addActiveElementsForAfterScatter(
+    Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &endPos,
+    int detectorID) {
+
+  V3D scatterPos;
+
+  // need to generate scatter point in order to generate the caches for the
+  // before\after tracks
+  scatterPos = generatePoint(rng, m_activeRegion, m_maxScatterAttempts, false,
+                             Geometry::scatterBeforeAfter::scScatter);
 
   const V3D scatteredDirec = normalize(endPos - scatterPos);
   Track afterScatter(scatterPos, scatteredDirec);
@@ -248,6 +241,36 @@ void MCInteractionVolume::addActiveElements(
     m_env->interceptSurfaces(afterScatter, true,
                              Geometry::scatterBeforeAfter::scAfter, detectorID);
   }
+}
+
+std::string MCInteractionVolume::printScatterPointCounts() {
+  std::stringstream scatterPointSummary;
+  scatterPointSummary << std::fixed;
+  scatterPointSummary << std::setprecision(2);
+
+  scatterPointSummary << "Scatter point counts:" << std::endl;
+
+  int totalScatterPoints = m_sampleScatterPoints;
+  for (int i = 0; i < m_envScatterPoints.size(); i++) {
+    totalScatterPoints += m_envScatterPoints[i];
+  }
+  scatterPointSummary << "Total scatter points: " << totalScatterPoints
+                      << std::endl;
+
+  double percentage =
+      static_cast<double>(m_sampleScatterPoints) / totalScatterPoints * 100;
+  scatterPointSummary << "Sample: " << m_sampleScatterPoints << " ("
+                      << percentage << "%)" << std::endl;
+
+  for (int i = 0; i < m_envScatterPoints.size(); i++) {
+    percentage =
+        static_cast<double>(m_envScatterPoints[i]) / totalScatterPoints * 100;
+    scatterPointSummary << "Environment part " << i << " ("
+                        << m_env->getComponent(i).id()
+                        << "): " << m_envScatterPoints[i] << " (" << percentage
+                        << "%)" << std::endl;
+  }
+  return scatterPointSummary.str();
 }
 
 } // namespace Algorithms

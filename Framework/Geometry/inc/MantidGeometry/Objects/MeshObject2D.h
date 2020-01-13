@@ -66,15 +66,13 @@ public:
   void getBoundingBox(double &xmax, double &ymax, double &zmax, double &xmin,
                       double &ymin, double &zmin) const override;
   int getPointInObject(Kernel::V3D &point) const override;
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
-                        bool buildCache,
-                        Geometry::scatterBeforeAfter stage) const override;
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                        const BoundingBox &activeRegion, const size_t,
-                        bool buildCache,
-                        Geometry::scatterBeforeAfter stage) const override;
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const size_t, Kernel::V3D& point, bool buildCache,
+                             Geometry::scatterBeforeAfter stage) const override;
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const BoundingBox &activeRegion, const size_t,
+                             Kernel::V3D& point, bool buildCache,
+                             Geometry::scatterBeforeAfter stage) const override;
   detail::ShapeInfo::GeometryShape shape() const override;
   const detail::ShapeInfo &shapeInfo() const override;
   void GetObjectGeom(detail::ShapeInfo::GeometryShape &type,

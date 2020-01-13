@@ -9,6 +9,7 @@
 
 #include "LoadShape.h"
 #include "MantidAPI/Algorithm.h"
+#include "MantidAPI/Run.h"
 #include "MantidAPI/Sample.h"
 #include "MantidKernel/Matrix.h"
 #include <Poco/DOM/Element.h>
@@ -23,6 +24,7 @@ struct ComponentInfo {
   std::string STLFileName;
   std::string scale;
   std::string chemicalFormula;
+  bool Sample;
   double sampleMassDensity = EMPTY_DBL();
   double xDegrees = 0;
   double yDegrees = 0;
@@ -83,12 +85,21 @@ private:
   void exec() override;
   Kernel::V3D createScaledV3D(double xVal, double yVal, double zVal,
                               ScaleUnits scaleType);
+  void loadEnvironmentFromXML(API::MatrixWorkspace_const_sptr inputWS,
+                              const std::string filename, API::Sample &sample,
+                              const bool add, std::string debugString);
+  void loadEnvironmentFrom3MF(API::MatrixWorkspace_const_sptr inputWS,
+                              const std::string filename, API::Sample &sample,
+                              const bool add, std::string debugString);
   void parseXML(std::string filename);
+  void parse3MF(std::string filename, std::vector<ComponentInfo> envComponents);
   boost::shared_ptr<Geometry::MeshObject>
-  loadSTLFileForComponent(const ComponentInfo &compElem);
+  loadSTLFileForComponent(API::MatrixWorkspace_const_sptr inputWS,
+                          const ComponentInfo &compElem);
   std::vector<double> parseTranslationVector(std::string translationVectorStr);
   void LoadOptionalDoubleFromXML(Poco::XML::Element *componentElement,
-                          std::string elementName, double &targetVariable);
+                                 std::string elementName,
+                                 double &targetVariable);
 };
 
 } // end namespace DataHandling

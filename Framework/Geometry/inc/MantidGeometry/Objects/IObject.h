@@ -34,24 +34,6 @@ class vtkGeometryCacheWriter;
 
 enum class scatterBeforeAfter { scNone, scBefore, scScatter, scAfter };
 
-/*class GeometryCache {
-public:
-  /// Constructor
-  GeometryCache(const IObject &GeometryObject) {
-    m_GeometryObject = GeometryObject;
-  };
-  // set of vectors to store the active triangles in the mesh
-  // vector<bool> seems to be v slow - esp in debug - so use int
-  std::vector<uint32_t> m_activetrianglesbefore;
-  std::vector<uint32_t> m_activetrianglesscatter;
-  std::vector<uint32_t> m_activetrianglesafter;
-  std::vector<std::vector<uint32_t>> m_activetrianglesafteralldet;
-  int m_activetrianglesbeforecount = 0;
-  int m_activetrianglesscattercount = 0;
-  int m_activetrianglesaftercount = 0;
-  IObject &m_GeometryObject;
-};*/
-
 /** IObject : Interface for geometry objects
  */
 
@@ -92,17 +74,17 @@ public:
   virtual double volume() const = 0;
 
   virtual int getPointInObject(Kernel::V3D &point) const = 0;
-  virtual Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng, const size_t,
-                        bool buildCache = false,
-                        Geometry::scatterBeforeAfter stage =
-                            scatterBeforeAfter::scNone) const = 0;
-  virtual Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                        const BoundingBox &activeRegion, const size_t,
-                        bool buildCache = false,
-                        Geometry::scatterBeforeAfter stage =
-                            scatterBeforeAfter::scNone) const = 0;
+  virtual bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                                     const size_t, Kernel::V3D& point,
+                                     bool buildCache = false,
+                                     Geometry::scatterBeforeAfter stage =
+                                         scatterBeforeAfter::scNone) const = 0;
+  virtual bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                                     const BoundingBox &activeRegion,
+                                     const size_t, Kernel::V3D& point,
+                                     bool buildCache = false,
+                                     Geometry::scatterBeforeAfter stage =
+                                         scatterBeforeAfter::scNone) const = 0;
 
   virtual detail::ShapeInfo::GeometryShape shape() const = 0;
   virtual const detail::ShapeInfo &shapeInfo() const = 0;
@@ -120,7 +102,7 @@ public:
   virtual boost::shared_ptr<GeometryHandler> getGeometryHandler() const = 0;
 
   virtual void resetActiveElements(Geometry::scatterBeforeAfter stage,
-                                   int detectorID, bool active) const {};
+                                   bool active, int nDetectors) const {};
 };
 
 /// Typdef for a shared pointer

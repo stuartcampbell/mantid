@@ -47,6 +47,10 @@ private:
   void init() override;
   void exec() override;
 
+  void mergeSampleEnvironmentIntoSingleMesh(
+      const Mantid::Geometry::MeshObject &sample,
+      const std::vector<const Mantid::Geometry::MeshObject *>
+          &environmentPieces);
   void addMeshToVector(const Mantid::Geometry::MeshObject &mesh);
   size_t addMeshToVector(const Mantid::Geometry::MeshObject &mesh,
                          size_t offset);

@@ -248,8 +248,9 @@ MatrixWorkspace_uptr MonteCarloAbsorption::doSimulation(
   const std::string reportMsg = "Computing corrections";
 
   // Configure strategy
-  MCAbsorptionStrategy strategy(*beamProfile, inputWS.sample(), nevents,
-                                maxScatterPtAttempts, cacheMeshElements);
+  MersenneTwister rng_setup(seed);
+  MCAbsorptionStrategy strategy(rng_setup, *beamProfile, inputWS.sample(), nevents,
+                                maxScatterPtAttempts, cacheMeshElements, nhists);
 
   const auto &spectrumInfo = simulationWS.spectrumInfo();
 
@@ -273,8 +274,10 @@ MatrixWorkspace_uptr MonteCarloAbsorption::doSimulation(
     auto &outY = simulationWS.mutableY(i);
     const auto lambdas = simulationWS.points(i);
     
+    std::string debugString;
     strategy.calculateAllLambdas(rng, detPos, i, efixed.emode(), lambdas,
-                                 lambdaStepSize, lambdaFixed, outY);
+                                 lambdaStepSize, lambdaFixed, outY, debugString);
+    g_log.debug(debugString);
     prog.report(reportMsg);
     
     // Simulation for each requested wavelength point

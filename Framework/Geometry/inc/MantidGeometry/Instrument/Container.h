@@ -81,21 +81,20 @@ public:
   int getPointInObject(Kernel::V3D &point) const override {
     return m_shape->getPointInObject(point);
   }
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                        const size_t i, bool buildCache = false,
-                        Geometry::scatterBeforeAfter stage =
-                            scatterBeforeAfter::scNone) const override {
-    return m_shape->generatePointInObject(rng, i, buildCache, stage);
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const size_t i, Kernel::V3D &point,
+                             bool buildCache = false,
+                             Geometry::scatterBeforeAfter stage =
+                                 scatterBeforeAfter::scNone) const override {
+    return m_shape->generatePointInObject(rng, i, point, buildCache, stage);
   }
-  Kernel::V3D
-  generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
-                        const BoundingBox &activeRegion, const size_t i,
-                        bool buildCache = false,
-                        Geometry::scatterBeforeAfter stage =
-                            scatterBeforeAfter::scNone) const override {
-    return m_shape->generatePointInObject(rng, activeRegion, i, buildCache,
-                                          stage);
+  bool generatePointInObject(Kernel::PseudoRandomNumberGenerator &rng,
+                             const BoundingBox &activeRegion, const size_t i,
+                             Kernel::V3D &point, bool buildCache = false,
+                             Geometry::scatterBeforeAfter stage =
+                                 scatterBeforeAfter::scNone) const override {
+    return m_shape->generatePointInObject(rng, activeRegion, i, point,
+                                          buildCache, stage);
   }
 
   detail::ShapeInfo::GeometryShape shape() const override {
@@ -125,8 +124,8 @@ public:
   const std::string &id() const override { return m_shape->id(); }
 
   virtual void resetActiveElements(Geometry::scatterBeforeAfter stage,
-                                   int detectorID, bool active) const override {
-    m_shape->resetActiveElements(stage, detectorID, active);
+                                   bool active, int nDetectors) const override {
+    m_shape->resetActiveElements(stage, active, nDetectors);
   }
 
 private:

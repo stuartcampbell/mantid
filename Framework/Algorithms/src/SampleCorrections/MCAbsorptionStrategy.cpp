@@ -5,6 +5,7 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "MantidAlgorithms/SampleCorrections/MCAbsorptionStrategy.h"
+#include "MantidAPI/Sample.h"
 #include "MantidAlgorithms/SampleCorrections/IBeamProfile.h"
 #include "MantidKernel/PseudoRandomNumberGenerator.h"
 #include "MantidKernel/V3D.h"
@@ -26,34 +27,45 @@ namespace Algorithms {
  * @param maxScatterPtAttempts The maximum number of tries to generate a random
  * point within the object.
  */
-MCAbsorptionStrategy::MCAbsorptionStrategy(const IBeamProfile &beamProfile,
-                                           const API::Sample &sample,
-                                           size_t nevents,
-                                           size_t maxScatterPtAttempts,
-                                           bool useCaching)
+MCAbsorptionStrategy::MCAbsorptionStrategy(
+    Kernel::PseudoRandomNumberGenerator &rng, const IBeamProfile &beamProfile,
+    const API::Sample &sample, size_t nevents, size_t maxScatterPtAttempts,
+    bool useCaching, int nDetectors)
     : m_beamProfile(beamProfile),
       m_scatterVol(
           MCInteractionVolume(sample, beamProfile.defineActiveRegion(sample))),
       m_nevents(nevents), m_maxScatterAttempts(maxScatterPtAttempts),
-      m_error(1.0 / std::sqrt(m_nevents)), m_useCaching(useCaching) {}
+      m_error(1.0 / std::sqrt(m_nevents)), m_useCaching(useCaching) {
+
+  m_scatterVol.resetActiveElements(Geometry::scatterBeforeAfter::scBefore,
+                                   false, nDetectors);
+  m_scatterVol.resetActiveElements(Geometry::scatterBeforeAfter::scScatter,
+                                   false, nDetectors);
+  m_scatterVol.resetActiveElements(Geometry::scatterBeforeAfter::scAfter, false,
+                                   nDetectors);
+  // populate the caches for the before scatter track and scatter point
+  if (m_useCaching) {
+    const auto scatterBounds = m_scatterVol.getBoundingBox();
+    for (size_t i = 0; i < m_nevents; ++i) {
+      m_scatterVol.addActiveElementsForScatterPoint(rng);
+    }
+    for (size_t i = 0; i < m_nevents; ++i) {
+      const auto neutron = m_beamProfile.generatePoint(rng, scatterBounds);
+      m_scatterVol.addActiveElementsForBeforeScatter(rng, neutron.startPos);
+    }
+  }
+}
 
 void MCAbsorptionStrategy::initialise(Kernel::PseudoRandomNumberGenerator &rng,
                                       const Kernel::V3D &finalPos,
                                       int detectorID) {
   if (m_useCaching) {
-    const auto scatterBounds = m_scatterVol.getBoundingBox();
-    m_scatterVol.resetActiveElements(Geometry::scatterBeforeAfter::scAfter,
-                                     detectorID, false);
     for (size_t i = 0; i < m_nevents; ++i) {
-      //m_scatterVol.addActiveElementsForScatterPoint(rng);
       m_scatterVol.addActiveElementsForScatterPoint(rng);
     }
 
     for (size_t i = 0; i < m_nevents; ++i) {
-      const auto neutron = m_beamProfile.generatePoint(rng, scatterBounds);
-
-      m_scatterVol.addActiveElements(rng, neutron.startPos, finalPos,
-                                     detectorID);
+      m_scatterVol.addActiveElementsForAfterScatter(rng, finalPos, detectorID);
     }
   }
 }
@@ -111,7 +123,8 @@ void MCAbsorptionStrategy::calculateAllLambdas(
     Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &finalPos,
     int detectorID, DeltaEMode::Type EMode,
     Mantid::HistogramData::Points lambdas, const int lambdaStepSize,
-    double lambdaFixed, Mantid::HistogramData::HistogramY &attenuationFactors) {
+    double lambdaFixed, Mantid::HistogramData::HistogramY &attenuationFactors,
+    std::string& debugString) {
 
   initialise(rng, finalPos, detectorID);
   const auto scatterBounds = m_scatterVol.getBoundingBox();
@@ -130,6 +143,7 @@ void MCAbsorptionStrategy::calculateAllLambdas(
       if (!success) {
         ++attempts;
       } else {
+        m_attemptsCounts[attempts]++;
         for (int j = 0; j < nbins; j += lambdaStepSize) {
           const double lambdaStep = lambdas[j];
           double lambdaIn(lambdaStep), lambdaOut(lambdaStep);
@@ -165,6 +179,8 @@ void MCAbsorptionStrategy::calculateAllLambdas(
   }
 
   attenuationFactors = attenuationFactors / static_cast<double>(m_nevents);
+
+  debugString += m_scatterVol.printScatterPointCounts();
 }
 
 } // namespace Algorithms

@@ -49,17 +49,21 @@ public:
                                  const Kernel::V3D &endPos,
                                  Geometry::Track &beforeScatter,
                                  Geometry::Track &afterScatter, bool useCaching,
-                                 int detectorID) const;
+                                 int detectorID) ;
   double calculateAbsorption(const Geometry::Track &beforeScatter,
                              const Geometry::Track &afterScatter,
                              double lambdaBefore, double lambdaAfter) const;
-  void resetActiveElements(Geometry::scatterBeforeAfter stage, int dectectorID,
-                           bool active);
-  void addActiveElements(Kernel::PseudoRandomNumberGenerator &rng,
-                         const Kernel::V3D &startPos, const Kernel::V3D &endPos,
-                         int detectorID);
+  void resetActiveElements(Geometry::scatterBeforeAfter stage, bool active,
+                           int nDetectors);
+  void
+  addActiveElementsForBeforeScatter(Kernel::PseudoRandomNumberGenerator &rng,
+                                    const Kernel::V3D &startPos);
+  void
+  addActiveElementsForAfterScatter(Kernel::PseudoRandomNumberGenerator &rng,
+                                   const Kernel::V3D &endPos, int detectorID);
   void
   addActiveElementsForScatterPoint(Kernel::PseudoRandomNumberGenerator &rng);
+  std::string printScatterPointCounts();
 
 private:
   const boost::shared_ptr<Geometry::IObject> m_sample;
@@ -69,7 +73,9 @@ private:
   Kernel::V3D generatePoint(Kernel::PseudoRandomNumberGenerator &rng,
                             const Geometry::BoundingBox &activeRegion,
                             const size_t maxAttempts, bool buildCache,
-                            Geometry::scatterBeforeAfter stage) const;
+                            Geometry::scatterBeforeAfter stage);
+  int m_sampleScatterPoints = 0;
+  std::vector<int> m_envScatterPoints;
 };
 
 } // namespace Algorithms

@@ -35,22 +35,23 @@ class IBeamProfile;
 */
 class MANTID_ALGORITHMS_DLL MCAbsorptionStrategy {
 public:
-  MCAbsorptionStrategy(const IBeamProfile &beamProfile,
+  MCAbsorptionStrategy(Kernel::PseudoRandomNumberGenerator &rng,
+                       const IBeamProfile &beamProfile,
                        const API::Sample &sample, size_t nevents,
-                       size_t maxScatterPtAttempts, bool useCaching);
+                       size_t maxScatterPtAttempts, bool useCaching,
+                       int nDetectors);
   void initialise(Kernel::PseudoRandomNumberGenerator &rng,
                   const Kernel::V3D &finalPos, int detectorID);
   std::tuple<double, double> calculate(Kernel::PseudoRandomNumberGenerator &rng,
                                        const Kernel::V3D &finalPos,
                                        int detectorID, double lambdaBefore,
                                        double lambdaAfter);
-  void
-  calculateAllLambdas(Kernel::PseudoRandomNumberGenerator &rng,
-                      const Kernel::V3D &finalPos, int detectorID,
-                      Mantid::Kernel::DeltaEMode::Type EMode,
-                      Mantid::HistogramData::Points lambdas,
-                      const int lambdaStepSize, double lambdaFixed,
-                      Mantid::HistogramData::HistogramY &attenuationFactors);
+  void calculateAllLambdas(
+      Kernel::PseudoRandomNumberGenerator &rng, const Kernel::V3D &finalPos,
+      int detectorID, Mantid::Kernel::DeltaEMode::Type EMode,
+      Mantid::HistogramData::Points lambdas, const int lambdaStepSize,
+      double lambdaFixed, Mantid::HistogramData::HistogramY &attenuationFactors,
+      std::string& debugString);
 
 private:
   const IBeamProfile &m_beamProfile;
@@ -59,6 +60,7 @@ private:
   const size_t m_maxScatterAttempts;
   const double m_error;
   const bool m_useCaching;
+  std::map<size_t, int> m_attemptsCounts;
 };
 
 } // namespace Algorithms

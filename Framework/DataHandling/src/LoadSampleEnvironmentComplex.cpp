@@ -7,15 +7,16 @@
 #include "MantidDataHandling/LoadSampleEnvironmentComplex.h"
 #include "MantidDataHandling/LoadAsciiStl.h"
 #include "MantidDataHandling/LoadBinaryStl.h"
+#include "MantidDataHandling/Mantid3MFFileIO.h"
 #include "MantidDataHandling/ReadMaterial.h"
 #include "MantidGeometry/Instrument/Container.h"
+#include "MantidGeometry/Instrument/Goniometer.h"
 #include "MantidGeometry/Instrument/SampleEnvironment.h"
 #include "MantidGeometry/Objects/MeshObject.h"
 
 #include "MantidAPI/FileProperty.h"
 #include "MantidAPI/InstrumentValidator.h"
 #include "MantidAPI/MatrixWorkspace.h"
-#include "MantidAPI/Sample.h"
 
 #include "MantidKernel/ArrayProperty.h"
 #include "MantidKernel/BoundedValidator.h"
@@ -55,7 +56,7 @@ void LoadSampleEnvironmentComplex::init() {
                   "the Environment");
 
   // Environment file
-  const std::vector<std::string> extensions{".xml"};
+  const std::vector<std::string> extensions{".xml", ".3mf"};
   declareProperty(std::make_unique<FileProperty>(
                       "Filename", "", FileProperty::Load, extensions),
                   "The path name of the file containing the Environment");
@@ -71,6 +72,45 @@ void LoadSampleEnvironmentComplex::init() {
 
   // New Can or Add
   declareProperty("Add", false);
+}
+
+void LoadSampleEnvironmentComplex::loadEnvironmentFromXML(
+    MatrixWorkspace_const_sptr inputWS, const std::string filename,
+    Sample &sample, const bool add, std::string debugString) {
+  std::unique_ptr<Geometry::SampleEnvironment> environment = nullptr;
+  parseXML(filename);
+
+  boost::shared_ptr<MeshObject> environmentMesh = nullptr;
+  boost::shared_ptr<MeshObject> sampleMesh = nullptr;
+  std::string name = getProperty("EnvironmentName");
+
+  for (auto compElem : m_compElems) {
+
+    if (compElem.Sample) {
+      sampleMesh = loadSTLFileForComponent(inputWS, compElem);
+      sample.setShape(sampleMesh);
+    } else {
+      environmentMesh = loadSTLFileForComponent(inputWS, compElem);
+      if (!environment) {
+        if (add) {
+          environment =
+              std::make_unique<SampleEnvironment>(sample.getEnvironment());
+          environment->add(environmentMesh);
+        } else {
+          auto can = boost::make_shared<Container>(environmentMesh);
+          environment = std::make_unique<SampleEnvironment>(name, can);
+        }
+      } else {
+        environment->add(environmentMesh);
+      }
+    }
+
+    debugString +=
+        "Mesh has: " + std::to_string(environment->nelements()) + " elements.";
+  }
+
+  // Put Environment into sample.
+  sample.setEnvironment(std::move(environment));
 }
 
 void LoadSampleEnvironmentComplex::parseXML(std::string filename) {
@@ -99,12 +139,28 @@ void LoadSampleEnvironmentComplex::parseXML(std::string filename) {
       globalOffsetElement->getChildElement("TranslationVector")->innerText());
 
   std::vector<Poco::XML::Element *> compElems;
+  bool sampleSet = false;
   for (auto pNode = pRootElem->firstChild(); pNode != nullptr;
        pNode = pNode->nextSibling()) {
     auto pElem = dynamic_cast<Poco::XML::Element *>(pNode);
     if (pElem) {
       if (pElem->tagName() == "Component") {
         ComponentInfo EnvComponent = {};
+        auto childElement = pElem->getChildElement("Sample");
+        std::string sampleYN;
+        if (childElement) {
+          sampleYN = childElement->innerText();
+          boost::to_upper(sampleYN);
+        }
+        if ((sampleYN == "YES") || (sampleYN == "1")) {
+          if (sampleSet) {
+            throw "Environment XML contains more than one sample";
+          }
+          EnvComponent.Sample = true;
+          sampleSet = true;
+        } else {
+          EnvComponent.Sample = false;
+        }
         EnvComponent.STLFileName =
             pElem->getChildElement("STLFileName")->innerText();
         EnvComponent.scale = pElem->getChildElement("Scale")->innerText();
@@ -145,7 +201,7 @@ void LoadSampleEnvironmentComplex::LoadOptionalDoubleFromXML(
 
 boost::shared_ptr<MeshObject>
 LoadSampleEnvironmentComplex::loadSTLFileForComponent(
-    const ComponentInfo &compElem) {
+    MatrixWorkspace_const_sptr inputWS, const ComponentInfo &compElem) {
   std::unique_ptr<LoadAsciiStl> asciiStlReader = nullptr;
   std::unique_ptr<LoadBinaryStl> binaryStlReader = nullptr;
   auto scaleProperty = compElem.scale;
@@ -160,22 +216,27 @@ LoadSampleEnvironmentComplex::loadSTLFileForComponent(
   asciiStlReader =
       std::make_unique<LoadAsciiStl>(STLFileName, scaleType, params);
 
-  boost::shared_ptr<MeshObject> environmentMesh = nullptr;
+  boost::shared_ptr<MeshObject> mesh = nullptr;
   if (binaryStlReader->isBinarySTL(STLFileName)) {
-    environmentMesh = binaryStlReader->readStl();
+    mesh = binaryStlReader->readStl();
   } else if (asciiStlReader->isAsciiSTL(STLFileName)) {
-    environmentMesh = asciiStlReader->readStl();
+    mesh = asciiStlReader->readStl();
   } else {
     throw Exception::ParseError(
         "Could not read file, did not match either STL Format", STLFileName, 0);
   }
 
-  environmentMesh->setID(Poco::Path(STLFileName).getBaseName());
+  mesh->setID(Poco::Path(STLFileName).getBaseName());
 
-  environmentMesh = rotate(environmentMesh, compElem);
-  environmentMesh = translate(environmentMesh, scaleType, compElem);
+  if (compElem.Sample) {
+    mesh->rotate(inputWS->run().getGoniometer().getR());
+  } else {
+    mesh = rotate(mesh, compElem);
+  }
 
-  auto translatedVertices = environmentMesh->getVertices();
+  mesh = translate(mesh, scaleType, compElem);
+
+  auto translatedVertices = mesh->getVertices();
   if (g_log.is(Logger::Priority::PRIO_DEBUG)) {
     int i = 0;
     for (double vertex : translatedVertices) {
@@ -187,37 +248,28 @@ LoadSampleEnvironmentComplex::loadSTLFileForComponent(
     }
   }
 
-  return environmentMesh;
+  return mesh;
 }
 
-void LoadSampleEnvironmentComplex::exec() {
-
-  MatrixWorkspace_const_sptr inputWS = getProperty("InputWorkspace");
-  MatrixWorkspace_sptr outputWS = getProperty("OutputWorkspace");
-
-  if (inputWS != outputWS) {
-    outputWS = inputWS->clone();
-  }
-
-  const std::string filename = getProperty("Filename");
-  const std::ifstream file(filename.c_str());
-  if (!file) {
-    g_log.error("Unable to open file: " + filename);
-    throw Exception::FileError("Unable to open file: ", filename);
-  }
-
-  parseXML(filename);
-
-  std::string name = getProperty("EnvironmentName");
-  const bool add = getProperty("Add");
-  Sample &sample = outputWS->mutableSample();
+void LoadSampleEnvironmentComplex::loadEnvironmentFrom3MF(
+    MatrixWorkspace_const_sptr inputWS, const std::string filename,
+    Sample &sample, const bool add, std::string debugString) {
   std::unique_ptr<Geometry::SampleEnvironment> environment = nullptr;
+  Mantid3MFFileIO MeshLoader;
+  MeshLoader.LoadFile(filename);
+
   boost::shared_ptr<MeshObject> environmentMesh = nullptr;
-  std::string debugString;
+  std::string name = getProperty("EnvironmentName");
 
-  for (auto compElem : m_compElems) {
+  std::vector<boost::shared_ptr<Geometry::MeshObject>> environmentMeshes;
+  boost::shared_ptr<Geometry::MeshObject> sampleMesh;
+  MeshLoader.readMeshObjects(environmentMeshes, sampleMesh);
+  if (sampleMesh) {
+    sampleMesh->rotate(inputWS->run().getGoniometer().getR());
+    sample.setShape(sampleMesh);
+  }
 
-    environmentMesh = loadSTLFileForComponent(compElem);
+  for (auto environmentMesh : environmentMeshes) {
 
     if (!environment) {
       if (add) {
@@ -239,6 +291,38 @@ void LoadSampleEnvironmentComplex::exec() {
 
   // Put Environment into sample.
   sample.setEnvironment(std::move(environment));
+}
+
+void LoadSampleEnvironmentComplex::exec() {
+
+  MatrixWorkspace_const_sptr inputWS = getProperty("InputWorkspace");
+  MatrixWorkspace_sptr outputWS = getProperty("OutputWorkspace");
+
+  if (inputWS != outputWS) {
+    outputWS = inputWS->clone();
+  }
+
+  const std::string filename = getProperty("Filename");
+  const std::ifstream file(filename.c_str());
+  if (!file) {
+    g_log.error("Unable to open file: " + filename);
+    throw Exception::FileError("Unable to open file: ", filename);
+  }
+
+  std::unique_ptr<Geometry::SampleEnvironment> environment = nullptr;
+  const bool add = getProperty("Add");
+  std::string debugString;
+  Sample &sample = outputWS->mutableSample();
+
+  std::string fileExt = Poco::Path(filename).getExtension();
+  std::transform(fileExt.begin(), fileExt.end(), fileExt.begin(), toupper);
+  if (fileExt == "XML") {
+    loadEnvironmentFromXML(inputWS, filename, sample, add, debugString);
+  } else if (fileExt == "3MF") {
+    loadEnvironmentFrom3MF(inputWS, filename, sample, add, debugString);
+  } else {
+    throw "Invalid file extension";
+  }
 
   // get the material name and number density for debug
   const auto outMaterial =
@@ -307,6 +391,7 @@ boost::shared_ptr<MeshObject> LoadSampleEnvironmentComplex::translate(
 boost::shared_ptr<MeshObject> LoadSampleEnvironmentComplex::rotate(
     boost::shared_ptr<MeshObject> environmentMesh, ComponentInfo EnvComponent) {
   const std::vector<double> rotationMatrix = generateMatrix(EnvComponent);
+
   environmentMesh->rotate(rotationMatrix);
   return environmentMesh;
 }
@@ -320,6 +405,15 @@ Matrix<double>
 LoadSampleEnvironmentComplex::generateMatrix(ComponentInfo EnvComponent) {
   Kernel::Matrix<double> xMatrix = generateXRotation(EnvComponent.xDegrees);
   Kernel::Matrix<double> yMatrix = generateYRotation(EnvComponent.yDegrees);
+  auto temp = yMatrix[0][0];
+  auto temp1 = yMatrix[1][0];
+  auto temp2 = yMatrix[2][0];
+  auto temp3 = yMatrix[0][1];
+  auto temp4 = yMatrix[1][1];
+  auto temp5 = yMatrix[2][1];
+  auto temp6 = yMatrix[0][2];
+  auto temp7 = yMatrix[1][2];
+  auto temp8 = yMatrix[2][2];
   Kernel::Matrix<double> zMatrix = generateZRotation(EnvComponent.zDegrees);
 
   return zMatrix * yMatrix * xMatrix;
