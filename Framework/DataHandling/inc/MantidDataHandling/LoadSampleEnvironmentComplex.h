@@ -11,6 +11,7 @@
 #include "MantidAPI/Algorithm.h"
 #include "MantidAPI/Run.h"
 #include "MantidAPI/Sample.h"
+#include "MantidKernel/Material.h"
 #include "MantidKernel/Matrix.h"
 #include <Poco/DOM/Element.h>
 
@@ -23,9 +24,11 @@ namespace DataHandling {
 struct ComponentInfo {
   std::string STLFileName;
   std::string scale;
-  std::string chemicalFormula;
+  //std::string chemicalFormula;
   bool Sample;
-  double sampleMassDensity = EMPTY_DBL();
+  Kernel::Material mat;
+  std::string materialID;
+  //double sampleMassDensity = EMPTY_DBL();
   double xDegrees = 0;
   double yDegrees = 0;
   double zDegrees = 0;
@@ -78,8 +81,11 @@ public:
   Kernel::Matrix<double> generateZRotation(double zDegrees);
 
 private:
+    // Convenience definitions
+  using MaterialsIndex = std::unordered_map<std::string, Kernel::Material>;
   std::vector<ComponentInfo> m_compElems;
   std::vector<double> m_globalOffset;
+  MaterialsIndex m_materials;
   // Implement abstract Algorithm methods
   void init() override;
   void exec() override;
@@ -92,6 +98,8 @@ private:
                               const std::string filename, API::Sample &sample,
                               const bool add, std::string debugString);
   void parseXML(std::string filename);
+  void parseMaterials(Poco::XML::Element *element);
+  void parseAndAddComponents(Poco::XML::Element *element);
   void parse3MF(std::string filename, std::vector<ComponentInfo> envComponents);
   boost::shared_ptr<Geometry::MeshObject>
   loadSTLFileForComponent(API::MatrixWorkspace_const_sptr inputWS,

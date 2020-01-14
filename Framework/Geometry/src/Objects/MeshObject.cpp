@@ -61,6 +61,10 @@ void MeshObject::initialize() {
  */
 const Kernel::Material &MeshObject::material() const { return m_material; }
 
+void MeshObject::setMaterial(const Kernel::Material &material) {
+  m_material = material;
+}
+
 /**
  * Returns whether this object has a valid shape
  * @returns True if the entire MeshObject may enclose

@@ -24,14 +24,30 @@
 #include "MantidKernel/Exception.h"
 #include "MantidKernel/ListValidator.h"
 #include "MantidKernel/MandatoryValidator.h"
+#include "MantidKernel/MaterialXMLParser.h"
 #include "MantidKernel/Strings.h"
 
+#include "Poco/DOM/NodeFilter.h"
+#include "Poco/DOM/NodeIterator.h"
 #include <Poco/DOM/DOMParser.h>
 #include <Poco/DOM/Document.h>
 #include <Poco/DOM/Element.h>
 #include <Poco/Path.h>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
+
+namespace {
+std::string MATERIALS_TAG = "materials";
+std::string COMPONENTS_TAG = "components";
+std::string COMPONENT_TAG = "component";
+std::string GLOBAL_OFFSET_TAG = "globaloffset";
+std::string TRANSLATION_VECTOR_TAG = "translationvector";
+std::string STL_FILENAME_TAG = "stlfilename";
+std::string SCALE_TAG = "scale";
+std::string XDEGREES_TAG = "xdegrees";
+std::string YDEGREES_TAG = "ydegrees";
+std::string ZDEGREES_TAG = "zdegrees";
+} // namespace
 
 namespace Mantid {
 namespace DataHandling {
@@ -134,17 +150,53 @@ void LoadSampleEnvironmentComplex::parseXML(std::string filename) {
                                                filename);
   }
 
-  auto globalOffsetElement = pRootElem->getChildElement("GlobalOffset");
+  Poco::XML::NodeIterator nodeIter(pRootElem,
+                                   Poco::XML::NodeFilter::SHOW_ELEMENT);
+  Poco::XML::Node *node = nodeIter.nextNode();
+
+  while (node) {
+    auto *childElement = static_cast<Poco::XML::Element *>(node);
+    if (node->nodeName() == MATERIALS_TAG) {
+      parseMaterials(childElement);
+    } else if (node->nodeName() == COMPONENTS_TAG) {
+      parseAndAddComponents(childElement);
+    }
+    node = nodeIter.nextNode();
+  }
+}
+
+void LoadSampleEnvironmentComplex::parseMaterials(Poco::XML::Element *element) {
+  using Kernel::MaterialXMLParser;
+
+  m_materials.clear();
+  Poco::XML::NodeIterator nodeIter(element,
+                                   Poco::XML::NodeFilter::SHOW_ELEMENT);
+  // Points at <materials>
+  nodeIter.nextNode();
+  // Points at first <material>
+  Poco::XML::Node *node = nodeIter.nextNode();
+  MaterialXMLParser parser;
+  while (node) {
+    auto material = parser.parse(static_cast<Poco::XML::Element *>(node));
+    m_materials.emplace(material.name(), material);
+    node = nodeIter.nextNode();
+  }
+}
+
+void LoadSampleEnvironmentComplex::parseAndAddComponents(
+    Poco::XML::Element *element) {
+  auto globalOffsetElement = element->getChildElement(GLOBAL_OFFSET_TAG);
   m_globalOffset = parseTranslationVector(
-      globalOffsetElement->getChildElement("TranslationVector")->innerText());
+      globalOffsetElement->getChildElement(TRANSLATION_VECTOR_TAG)
+          ->innerText());
 
   std::vector<Poco::XML::Element *> compElems;
   bool sampleSet = false;
-  for (auto pNode = pRootElem->firstChild(); pNode != nullptr;
+  for (auto pNode = element->firstChild(); pNode != nullptr;
        pNode = pNode->nextSibling()) {
     auto pElem = dynamic_cast<Poco::XML::Element *>(pNode);
     if (pElem) {
-      if (pElem->tagName() == "Component") {
+      if (pElem->tagName() == COMPONENT_TAG) {
         ComponentInfo EnvComponent = {};
         auto childElement = pElem->getChildElement("Sample");
         std::string sampleYN;
@@ -162,19 +214,28 @@ void LoadSampleEnvironmentComplex::parseXML(std::string filename) {
           EnvComponent.Sample = false;
         }
         EnvComponent.STLFileName =
-            pElem->getChildElement("STLFileName")->innerText();
-        EnvComponent.scale = pElem->getChildElement("Scale")->innerText();
-        EnvComponent.chemicalFormula =
-            pElem->getChildElement("ChemicalFormula")->innerText();
+            pElem->getChildElement(STL_FILENAME_TAG)->innerText();
+        EnvComponent.scale = pElem->getChildElement(SCALE_TAG)->innerText();
 
-        LoadOptionalDoubleFromXML(pElem, "SampleMassDensity",
-                                  EnvComponent.sampleMassDensity);
-        LoadOptionalDoubleFromXML(pElem, "XDegrees", EnvComponent.xDegrees);
-        LoadOptionalDoubleFromXML(pElem, "YDegrees", EnvComponent.yDegrees);
-        LoadOptionalDoubleFromXML(pElem, "ZDegrees", EnvComponent.zDegrees);
+        auto materialID = pElem->getAttribute("material");
+        auto iter = m_materials.find(materialID);
+        Kernel::Material mat;
+        if (iter != m_materials.end()) {
+          mat = iter->second;
+        } else {
+          throw std::runtime_error(
+              "LoadSampleEnvironmentComplex::parseAndAddComponents() - "
+              "Unable to find material with id=" +
+              materialID);
+        }
+        EnvComponent.mat = mat;
+
+        LoadOptionalDoubleFromXML(pElem, XDEGREES_TAG, EnvComponent.xDegrees);
+        LoadOptionalDoubleFromXML(pElem, YDEGREES_TAG, EnvComponent.yDegrees);
+        LoadOptionalDoubleFromXML(pElem, ZDEGREES_TAG, EnvComponent.zDegrees);
 
         EnvComponent.translationVector =
-            pElem->getChildElement("TranslationVector")->innerText();
+            pElem->getChildElement(TRANSLATION_VECTOR_TAG)->innerText();
         m_compElems.emplace_back(EnvComponent);
       }
     }
@@ -208,13 +269,8 @@ LoadSampleEnvironmentComplex::loadSTLFileForComponent(
   const std::string STLFileName = compElem.STLFileName;
   const ScaleUnits scaleType = getScaleType(scaleProperty);
 
-  ReadMaterial::MaterialParameters params;
-  params.chemicalSymbol = compElem.chemicalFormula;
-  params.sampleMassDensity = compElem.sampleMassDensity;
-  binaryStlReader =
-      std::make_unique<LoadBinaryStl>(STLFileName, scaleType, params);
-  asciiStlReader =
-      std::make_unique<LoadAsciiStl>(STLFileName, scaleType, params);
+  binaryStlReader = std::make_unique<LoadBinaryStl>(STLFileName, scaleType);
+  asciiStlReader = std::make_unique<LoadAsciiStl>(STLFileName, scaleType);
 
   boost::shared_ptr<MeshObject> mesh = nullptr;
   if (binaryStlReader->isBinarySTL(STLFileName)) {
@@ -226,6 +282,7 @@ LoadSampleEnvironmentComplex::loadSTLFileForComponent(
         "Could not read file, did not match either STL Format", STLFileName, 0);
   }
 
+  mesh->setMaterial(compElem.mat);
   mesh->setID(Poco::Path(STLFileName).getBaseName());
 
   if (compElem.Sample) {
@@ -405,15 +462,6 @@ Matrix<double>
 LoadSampleEnvironmentComplex::generateMatrix(ComponentInfo EnvComponent) {
   Kernel::Matrix<double> xMatrix = generateXRotation(EnvComponent.xDegrees);
   Kernel::Matrix<double> yMatrix = generateYRotation(EnvComponent.yDegrees);
-  auto temp = yMatrix[0][0];
-  auto temp1 = yMatrix[1][0];
-  auto temp2 = yMatrix[2][0];
-  auto temp3 = yMatrix[0][1];
-  auto temp4 = yMatrix[1][1];
-  auto temp5 = yMatrix[2][1];
-  auto temp6 = yMatrix[0][2];
-  auto temp7 = yMatrix[1][2];
-  auto temp8 = yMatrix[2][2];
   Kernel::Matrix<double> zMatrix = generateZRotation(EnvComponent.zDegrees);
 
   return zMatrix * yMatrix * xMatrix;
