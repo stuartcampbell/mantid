@@ -316,6 +316,10 @@ void IntegrateEllipsoids::init() {
   declareProperty("SatelliteBackgroundOuterSize", .09, mustBePositive,
                   "Half-length of major axis for outer ellipsoidal surface of "
                   "satellite background region");
+
+  declareProperty("UseExistingUB", false,
+                  "If this option is enabled the UB matrix of the peak "
+                  "workspace will be used (if present)");
 }
 
 //---------------------------------------------------------------------
@@ -355,6 +359,7 @@ void IntegrateEllipsoids::exec() {
   double sate_back_inner_radius = getProperty("SatelliteBackgroundInnerSize");
   double back_outer_radius = getProperty("BackgroundOuterSize");
   double sate_back_outer_radius = getProperty("SatelliteBackgroundOuterSize");
+  bool useExistingUB = getProperty("UseExistingUB");
   bool hkl_integ = getProperty("IntegrateInHKL");
   bool integrateEdge = getProperty("IntegrateIfOnEdge");
   bool adaptiveQBackground = getProperty("AdaptiveQBackground");
@@ -425,20 +430,24 @@ void IntegrateEllipsoids::exec() {
   Matrix<double> modUB(3, 3, false);
   Matrix<double> modHKL(3, 3, false);
 
-  bool useExistingUB = true;
+  std::vector<double> DEBUG_UBvect;
+
   int maxOrder = 0;
   bool CT = false;
   if (peak_ws->sample().hasOrientedLattice()) {
     OrientedLattice lattice = peak_ws->mutableSample().getOrientedLattice();
+    
     if (useExistingUB) {
       UB = lattice.getUB();
-      modUB = lattice.getModUB();
-
+      DEBUG_UBvect = UB.getVector();
+      auto modUB = lattice.getModUB(); // doesn't like this line wiithout auto
+                                       // (null pointer?)  - IS ModUB ever used?
     } else {
       Geometry::IndexingUtils::Optimize_6dUB(UB, modUB, hkl_vectors,
                                              mnp_vectors, ModDim, peak_q_list);
       lattice.setUB(UB);
-      lattice.setModUB(modUB);
+      DEBUG_UBvect = UB.getVector();
+      lattice.setModUB(modUB);      
     }
     modHKL = lattice.getModHKL();
     maxOrder = lattice.getMaxOrder();
@@ -446,7 +455,7 @@ void IntegrateEllipsoids::exec() {
   } else {
     Geometry::IndexingUtils::Optimize_6dUB(UB, modUB, hkl_vectors, mnp_vectors,
                                            ModDim, peak_q_list);
-  }
+  } 
 
   Matrix<double> UBinv(UB);
   UBinv.Invert();
