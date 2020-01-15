@@ -435,7 +435,7 @@ void IntegrateEllipsoids::exec() {
   int maxOrder = 0;
   bool CT = false;
   if (peak_ws->sample().hasOrientedLattice()) {
-    OrientedLattice lattice = peak_ws->mutableSample().getOrientedLattice();
+    OrientedLattice &lattice = peak_ws->mutableSample().getOrientedLattice();
     
     if (useExistingUB) {
       UB = lattice.getUB();
@@ -447,7 +447,8 @@ void IntegrateEllipsoids::exec() {
                                              mnp_vectors, ModDim, peak_q_list);
       lattice.setUB(UB);
       DEBUG_UBvect = UB.getVector();
-      lattice.setModUB(modUB);      
+      lattice.setModUB(modUB);
+         
     }
     modHKL = lattice.getModHKL();
     maxOrder = lattice.getMaxOrder();
