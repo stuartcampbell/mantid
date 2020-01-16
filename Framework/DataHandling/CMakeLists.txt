@@ -126,6 +126,7 @@ set(SRC_FILES
     src/LoadStl.cpp
     src/LoadSwans.cpp
     src/LoadTBL.cpp
+    src/Mantid3MFFileIO.cpp
     src/LoadTOFRawNexus.cpp
     src/MaskDetectors.cpp
     src/MaskDetectorsInShape.cpp
@@ -326,6 +327,7 @@ set(INC_FILES
     inc/MantidDataHandling/LoadSwans.h
     inc/MantidDataHandling/LoadTBL.h
     inc/MantidDataHandling/LoadTOFRawNexus.h
+    inc/MantidDataHandling/Mantid3MFFileIO.h
     inc/MantidDataHandling/MaskDetectors.h
     inc/MantidDataHandling/MaskDetectorsInShape.h
     inc/MantidDataHandling/MaskSpectra.h
