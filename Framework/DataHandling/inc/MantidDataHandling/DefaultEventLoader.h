@@ -88,6 +88,7 @@ private:
   /// Map detector IDs to event lists.
   template <class T>
   void makeMapToEventLists(std::vector<std::vector<T>> &vectors);
+  std::pair<int32_t, int32_t> getMinMaxDetID();
 
   friend class ProcessBankData;
   friend class LoadBankFromDiskTask;
@@ -129,8 +130,8 @@ void DefaultEventLoader::makeMapToEventLists(
       }
     }
   } else {
-    int32_t minEventID;
-    m_ws.getInstrument()->getMinMaxDetectorIDs(minEventID, m_maxEventID);
+    auto [minEventID, maxEventID] = getMinMaxDetID();
+    m_maxEventID = maxEventID;
 
     // Make an array where index = pixel ID
     // Set the value to NULL by default
