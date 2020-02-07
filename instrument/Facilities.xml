@@ -402,7 +402,7 @@
       <technique>technique</technique>
    </instrument>
 
-   <instrument name="HB2B">
+   <instrument name="HB2B" shortname="NRSF2">
       <technique>technique</technique>
    </instrument>
 
