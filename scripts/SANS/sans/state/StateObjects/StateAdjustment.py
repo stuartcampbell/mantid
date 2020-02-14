@@ -29,6 +29,8 @@ class StateAdjustment(with_metaclass(JsonSerializable)):
         self.wavelength_and_pixel_adjustment = None  # : StateWavelengthAndPixelAdjustment
         self.wide_angle_correction = False  # : Bool
 
+        self.calibration = None  # : Str()
+
     def validate(self):
         is_invalid = {}
 

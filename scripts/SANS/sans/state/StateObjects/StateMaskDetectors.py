@@ -367,19 +367,18 @@ class StateMaskBuilder(object):
         return copy.copy(self.state)
 
 
-def get_mask_builder(data_info):
+def get_mask_builder(instrument):
     # The data state has most of the information that we require to define the mask. For the factory method, only
     # the facility/instrument is of relevance.
-    instrument = data_info.instrument
 
     if instrument is SANSInstrument.SANS2D:
-        return StateMaskBuilder(data_info, StateMaskSANS2D())
+        return StateMaskBuilder(StateMaskSANS2D())
     elif instrument is SANSInstrument.LOQ:
-        return StateMaskBuilder(data_info, StateMaskLOQ())
+        return StateMaskBuilder(StateMaskLOQ())
     elif instrument is SANSInstrument.LARMOR:
-        return StateMaskBuilder(data_info, StateMaskLARMOR())
+        return StateMaskBuilder(StateMaskLARMOR())
     elif instrument is SANSInstrument.ZOOM:
-        return StateMaskBuilder(data_info, StateMaskZOOM())
+        return StateMaskBuilder(StateMaskZOOM())
     else:
         raise NotImplementedError("StateMaskBuilder: Could not find any valid mask builder for the "
-                                  "specified StateData object {0}".format(str(data_info)))
+                                  "specified StateData object {0}".format(str(instrument)))

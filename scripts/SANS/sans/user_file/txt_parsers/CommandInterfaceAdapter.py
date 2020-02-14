@@ -8,8 +8,8 @@ from sans.user_file.txt_parsers.ParsedDictConverter import ParsedDictConverter
 
 
 class CommandInterfaceAdapter(ParsedDictConverter):
-    def __init__(self, data_info, processed_state, ):
-        super(CommandInterfaceAdapter, self).__init__(data_info=data_info)
+    def __init__(self, instrument, processed_state):
+        super(CommandInterfaceAdapter, self).__init__(instrument=instrument)
         self._processed_state = processed_state
 
     def _get_input_dict(self):

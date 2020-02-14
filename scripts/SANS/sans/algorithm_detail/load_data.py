@@ -692,12 +692,12 @@ def load_isis(data_type, file_information, period, use_cached, calibration_file_
 class SANSLoadData(with_metaclass(ABCMeta, object)):
     """ Base class for all SANSLoad implementations."""
     @abstractmethod
-    def do_execute(self, data_info, use_cached, publish_to_ads, progress, parent_alg):
+    def do_execute(self, data_info, use_cached, publish_to_ads, progress, parent_alg, adjustment_info):
         pass
 
-    def execute(self, data_info, use_cached, publish_to_ads, progress, parent_alg):
+    def execute(self, data_info, use_cached, publish_to_ads, progress, parent_alg, adjustment_info):
         SANSLoadData._validate(data_info)
-        return self.do_execute(data_info, use_cached, publish_to_ads, progress, parent_alg)
+        return self.do_execute(data_info, use_cached, publish_to_ads, progress, parent_alg, adjustment_info)
 
     @staticmethod
     def _validate(data_info):
@@ -710,7 +710,7 @@ class SANSLoadData(with_metaclass(ABCMeta, object)):
 class SANSLoadDataISIS(SANSLoadData):
     """Load implementation of SANSLoad for ISIS data"""
 
-    def do_execute(self, data_info, use_cached, publish_to_ads, progress, parent_alg):
+    def do_execute(self, data_info, use_cached, publish_to_ads, progress, parent_alg, adjustment_info):
         # Get all entries from the state file
         file_infos, period_infos = get_file_and_period_information_from_data(data_info)
 
@@ -722,10 +722,7 @@ class SANSLoadDataISIS(SANSLoadData):
         workspaces = {}
         workspace_monitors = {}
 
-        if data_info.calibration is not None:
-            calibration_file = data_info.calibration
-        else:
-            calibration_file = ""
+        calibration_file = adjustment_info.calibration if adjustment_info else ""
 
         for key, value in list(file_infos.items()):
             # Loading

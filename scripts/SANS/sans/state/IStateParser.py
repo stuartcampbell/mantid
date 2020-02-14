@@ -14,7 +14,6 @@ from sans.state.AllStates import AllStates
 class IStateParser(with_metaclass(ABCMeta)):
     def get_all_states(self):  # -> AllStates
         all_states = AllStates()
-        all_states.data = self.get_state_data()
         all_states.move = self.get_state_move_detectors()
         all_states.reduction = self.get_state_reduction_mode()
         all_states.slice = self.get_state_slice_event()

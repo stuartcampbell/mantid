@@ -7,12 +7,12 @@
 import abc
 import collections
 
-from sans.common.enums import DetectorType, RangeStepType, RebinType, FitType, DataType, FitModeForMerge
+from sans.common.enums import DetectorType, RangeStepType, RebinType, FitType, DataType, FitModeForMerge, SANSInstrument
 from sans.common.general_functions import get_ranges_from_event_slice_setting, get_ranges_for_rebin_setting, \
     get_ranges_for_rebin_array
 from sans.state.IStateParser import IStateParser
 from sans.state.StateObjects.StateAdjustment import StateAdjustment
-from sans.state.StateObjects.StateCalculateTransmission import get_calculate_transmission_builder
+from sans.state.StateObjects.StateCalculateTransmission import get_calculate_transmission
 from sans.state.StateObjects.StateCompatibility import StateCompatibility
 from sans.state.StateObjects.StateConvertToQ import StateConvertToQ
 from sans.state.StateObjects.StateData import StateData
@@ -33,6 +33,9 @@ from sans.user_file.settings_tags import TubeCalibrationFileId, MaskId, LimitsId
 class ParsedDictConverter(IStateParser):
     def __init__(self, data_info):
         super(ParsedDictConverter, self).__init__()
+        assert isinstance(data_info, StateData),\
+            "Expected StateData, got %r" % data_info
+
         self._cached_result = None
         self._data_info = data_info
 
@@ -61,10 +64,12 @@ class ParsedDictConverter(IStateParser):
         state.normalize_to_monitor = self.get_state_normalize_to_monitor()
         state.wavelength_and_pixel_adjustment = self.get_state_wavelength_and_pixel_adjustment()
 
+        state.calibration = _get_last_element(self._input_dict.get(TubeCalibrationFileId.FILE))
+
         return state
 
     def get_state_calculate_transmission(self):  # -> StateCalculateTransmission:
-        state_builder = get_calculate_transmission_builder(data_info=self._data_info)
+        state_builder = get_calculate_transmission(instrument=self._instrument)
 
         self._set_single_entry(state_builder.state, "transmission_radius_on_detector", TransId.RADIUS,
                                apply_to_value=_convert_mm_to_m)
@@ -262,7 +267,7 @@ class ParsedDictConverter(IStateParser):
 
     # We have taken the implementation originally provided, so we can't help the complexity
     def get_state_mask_detectors(self):  # noqa: C901
-        state_builder = get_mask_builder(data_info=self._data_info)
+        state_builder = get_mask_builder(instrument=self._data_info.instrument)
 
         if MaskId.LINE in self._input_dict:
             mask_lines = self._input_dict[MaskId.LINE]

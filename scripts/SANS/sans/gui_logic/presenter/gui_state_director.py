@@ -76,7 +76,8 @@ class GuiStateDirector(object):
 
         # 4. Create the rest of the state based on the builder.
         settings = copy.deepcopy(state_gui_model.settings)
-        command_interface = CommandInterfaceAdapter(data_info=data, processed_state=settings)
+        instrument = data.instrument
+        command_interface = CommandInterfaceAdapter(instrument=instrument, processed_state=settings)
         run_data_builder = RunDataStateBuilder(file_information=file_information)
 
         state = StateBuilder(run_data_builder=run_data_builder, i_state_parser=command_interface).get_all_states()

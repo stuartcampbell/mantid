@@ -54,7 +54,9 @@ class StateConvertToQ(with_metaclass(JsonSerializable)):
         self.moderator_file = None  # : Str()
 
         # Circular aperture settings
+        # Source aperture diameter
         self.q_resolution_a1 = None  # : Float (Positive)
+        # Sample aperture diameter
         self.q_resolution_a2 = None  # : Float (Positive)
 
         # Rectangular aperture settings
