@@ -7,7 +7,7 @@
 #ifndef NEXUSIOHELPER_H
 #define NEXUSIOHELPER_H
 
-#include "MantidIndexing/DllConfig.h"
+#include "MantidNexus/DllConfig.h"
 #include <algorithm>
 #include <boost/any.hpp>
 #include <nexus/NeXusFile.hpp>
@@ -189,7 +189,7 @@ T readNexusValue(::NeXus::File &file, std::string entry = "") {
                              file, info_and_close.second);
 }
 
-_declspec(dllexport) const std::string readStartTimeOffset(::NeXus::File &file);
+MANTID_NEXUS_DLL const std::string readStartTimeOffset(::NeXus::File &file);
 } // namespace NeXusIOHelper
 } // namespace NeXus
 } // namespace Mantid
