@@ -80,11 +80,13 @@ Improvements
 - The context menu for WorkspaceGroups now contains plotting options so you can plot all of the workspaces in the group.
 - Most changes in the settings dialog now take place immediately, no longer needing a restart, such as hiding algorithm categories, interfaces or choosing wether to see invisible workspaces.
 - A warning now appears if you attempt to plot more than ten spectra.
+- We have limited the maximum rate of algorithm progress updates to the progress bar to 1000/second.  This has resulted in a workbench completing certain intensive python scripts 4 times faster.
 - Algorithm dialogs will now use the selected workspace as the InputWorkspace when running an algorithm from the algorithms toolbox, as MantidPlot did.
 - Toggle Whitespace in the editor now shows line endings as well as spaces and tabs
 - The Save menu action in the workspaces toolbox to save using version 1 of the SaveAscii algorithm has been removed as no one was using it and it only added confusion. The option to save using the most recent version of SaveASCII is still available.
 - You can now search for functions when doing fits.
 - A help button has been added to the fitting add function dialog.
+- The progress reporting for scripts has been vastly improved and now reports at the line level.
 
 Bugfixes
 ########
@@ -100,5 +102,8 @@ Bugfixes
 - MonitorLiveData now appears promptly in the algorithm details window, allowing live data sessions to be cancelled.
 - Figure options on bin plots open without throwing an error.
 - The help button in fitting now finds the relevant page.
+- Fixed an issue where fitting a distribution workspace was normalised twice.
+- Overplots will be normalized by bin width if they are overplotting a curve from a workspace which is a distribution.
+- Several bugs in the way Python scripts were parsed and executed, including blank lines after a colon and tabs in strings, have been fixed.
 
 :ref:`Release 4.3.0 <v4.3.0>`

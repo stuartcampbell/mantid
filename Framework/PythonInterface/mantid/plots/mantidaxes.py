@@ -657,11 +657,13 @@ class MantidAxes(Axes):
 
             workspace = args[0]
             spec_num = self.get_spec_number_or_bin(workspace, kwargs)
-            is_normalized, kwargs = get_normalize_by_bin_width(workspace, self, **kwargs)
+            normalize_by_bin_width, kwargs = get_normalize_by_bin_width(workspace, self, **kwargs)
+            is_normalized = normalize_by_bin_width or workspace.isDistribution()
 
             with autoscale_on_update(self, autoscale_on):
                 artist = self.track_workspace_artist(workspace,
-                                                     axesfunctions.errorbar(self, *args, **kwargs),
+                                                     axesfunctions.errorbar(self, normalize_by_bin_width = is_normalized,
+                                                                            *args, **kwargs),
                                                      _data_update, spec_num, is_normalized,
                                                      MantidAxes.is_axis_of_type(MantidAxType.SPECTRUM, kwargs))
             return artist
@@ -1071,7 +1073,6 @@ class MantidAxes(Axes):
         """
         cb = colorbar
         cb.mappable = mappable
-        cb.set_clim(mappable.get_clim())
         mappable.colorbar = cb
         mappable.colorbar_cid = mappable.callbacksSM.connect('changed', cb.on_mappable_changed)
         cb.update_normal(mappable)
