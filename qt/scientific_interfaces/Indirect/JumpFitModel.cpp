@@ -273,7 +273,14 @@ void JumpFitModel::setActiveWidth(std::size_t widthIndex,
   if (parametersIt != m_jumpParameters.end() &&
       parametersIt->second.widthSpectra.size() > widthIndex) {
     const auto &widthSpectra = parametersIt->second.widthSpectra;
-    setSpectra(createSpectra(widthSpectra), dataIndex);
+    // if (multiData) {
+
+    setSpectra(
+        createSpectra(std::vector<std::size_t>({widthSpectra[widthIndex]})),
+        dataIndex);
+    // } else {
+    //   setSpectra(createSpectra(widthSpectra), dataIndex);
+    // }
   } else
     throw std::runtime_error("Invalid width index specified.");
 }
@@ -284,7 +291,14 @@ void JumpFitModel::setActiveEISF(std::size_t eisfIndex,
   if (parametersIt != m_jumpParameters.end() &&
       parametersIt->second.eisfSpectra.size() > eisfIndex) {
     const auto &eisfSpectra = parametersIt->second.eisfSpectra;
-    setSpectra(createSpectra(eisfSpectra), dataIndex);
+    // if (multiData) {
+    setSpectra(
+        createSpectra(std::vector<std::size_t>({eisfSpectra[eisfIndex]})),
+        dataIndex);
+    // } else {
+    //   setSpectra(createSpectra(eisfSpectra),
+    //       dataIndex);
+    // }
   } else
     throw std::runtime_error("Invalid EISF index specified.");
 }
