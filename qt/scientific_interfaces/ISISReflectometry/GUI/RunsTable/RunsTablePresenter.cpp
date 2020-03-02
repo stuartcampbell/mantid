@@ -868,7 +868,6 @@ void RunsTablePresenter::notifyRowStateChanged() {
     }
     ++groupIndex;
   }
-  m_mainPresenter->notifyTableChanged();
 }
 
 void RunsTablePresenter::notifyRowStateChanged(
