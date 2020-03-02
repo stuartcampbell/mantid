@@ -263,7 +263,8 @@ QString IndirectFitAnalysisTab::selectedFitType() const {
  */
 size_t IndirectFitAnalysisTab::numberOfCustomFunctions(
     const std::string &functionName) const {
-  if (auto fittingFunction = m_fittingModel->getFittingFunction())
+  auto fittingFunction = m_fittingModel->getFittingFunction();
+  if (fittingFunction->nFunctions() > 0)
     return getNumberOfSpecificFunctionContained(
         functionName, fittingFunction->getFunction(0).get());
   else
@@ -708,7 +709,8 @@ QStringList IndirectFitAnalysisTab::getDatasetNames() const {
 void IndirectFitAnalysisTab::updateDataReferences() {
   m_fitPropertyBrowser->updateFunctionBrowserData(
       m_fittingModel->getNumberOfDomains(), getDatasetNames(),
-      m_fittingModel->getQValuesForData());
+      m_fittingModel->getQValuesForData(),
+      m_fittingModel->getResolutionsForFit());
   m_fittingModel->setFitFunction(m_fitPropertyBrowser->getFittingFunction());
 }
 
@@ -733,7 +735,8 @@ void IndirectFitAnalysisTab::respondToChangeOfSpectraRange(
   m_dataPresenter->updateSpectraInTable(i);
   m_fitPropertyBrowser->updateFunctionBrowserData(
       m_fittingModel->getNumberOfDomains(), getDatasetNames(),
-      m_fittingModel->getQValuesForData());
+      m_fittingModel->getQValuesForData(),
+      m_fittingModel->getResolutionsForFit());
   setModelFitFunction();
   updateParameterEstimationData();
 }
