@@ -22,10 +22,10 @@ class TestablePoldiDGrid : public PoldiDGrid {
   friend class PoldiDGridTest;
 
   TestablePoldiDGrid(
-      boost::shared_ptr<PoldiAbstractDetector> detector =
-          boost::shared_ptr<PoldiAbstractDetector>(),
-      boost::shared_ptr<PoldiAbstractChopper> chopper =
-          boost::shared_ptr<PoldiAbstractChopper>(),
+      std::shared_ptr<PoldiAbstractDetector> detector =
+          std::shared_ptr<PoldiAbstractDetector>(),
+      std::shared_ptr<PoldiAbstractChopper> chopper =
+          std::shared_ptr<PoldiAbstractChopper>(),
       double deltaT = 0.0,
       std::pair<double, double> wavelengthRange = std::pair<double, double>())
       : PoldiDGrid(detector, chopper, deltaT, wavelengthRange) {}
@@ -41,9 +41,8 @@ public:
   void testDefaultConstructor() {
     TestablePoldiDGrid grid;
 
-    TS_ASSERT_EQUALS(grid.m_detector,
-                     boost::shared_ptr<PoldiAbstractDetector>());
-    TS_ASSERT_EQUALS(grid.m_chopper, boost::shared_ptr<PoldiAbstractChopper>());
+    TS_ASSERT_EQUALS(grid.m_detector, std::shared_ptr<PoldiAbstractDetector>());
+    TS_ASSERT_EQUALS(grid.m_chopper, std::shared_ptr<PoldiAbstractChopper>());
     TS_ASSERT_EQUALS(grid.m_deltaT, 0.0);
     TS_ASSERT_EQUALS(grid.m_wavelengthRange, std::make_pair(0.0, 0.0));
 
@@ -54,10 +53,9 @@ public:
   }
 
   void testdeltaD() {
-    boost::shared_ptr<MockDetector> mockDetector =
-        boost::make_shared<MockDetector>();
-    boost::shared_ptr<MockChopper> mockChopper =
-        boost::make_shared<MockChopper>();
+    std::shared_ptr<MockDetector> mockDetector =
+        std::make_shared<MockDetector>();
+    std::shared_ptr<MockChopper> mockChopper = std::make_shared<MockChopper>();
 
     TestablePoldiDGrid grid(mockDetector, mockChopper, 3.0,
                             std::make_pair(1.1, 5.0));
@@ -76,10 +74,9 @@ public:
   }
 
   void testdRange() {
-    boost::shared_ptr<MockDetector> mockDetector =
-        boost::make_shared<MockDetector>();
-    boost::shared_ptr<MockChopper> mockChopper =
-        boost::make_shared<MockChopper>();
+    std::shared_ptr<MockDetector> mockDetector =
+        std::make_shared<MockDetector>();
+    std::shared_ptr<MockChopper> mockChopper = std::make_shared<MockChopper>();
 
     TestablePoldiDGrid grid(mockDetector, mockChopper, 3.0,
                             std::make_pair(1.1, 5.0));
@@ -101,10 +98,9 @@ public:
   }
 
   void testgrid() {
-    boost::shared_ptr<MockDetector> mockDetector =
-        boost::make_shared<MockDetector>();
-    boost::shared_ptr<MockChopper> mockChopper =
-        boost::make_shared<MockChopper>();
+    std::shared_ptr<MockDetector> mockDetector =
+        std::make_shared<MockDetector>();
+    std::shared_ptr<MockChopper> mockChopper = std::make_shared<MockChopper>();
 
     TestablePoldiDGrid grid(mockDetector, mockChopper, 3.0,
                             std::make_pair(1.1, 5.0));

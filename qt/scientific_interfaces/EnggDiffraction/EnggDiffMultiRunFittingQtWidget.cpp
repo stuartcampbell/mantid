@@ -26,7 +26,7 @@ namespace MantidQt {
 namespace CustomInterfaces {
 
 EnggDiffMultiRunFittingQtWidget::EnggDiffMultiRunFittingQtWidget(
-    boost::shared_ptr<IEnggDiffractionPythonRunner> pythonRunner)
+    std::shared_ptr<IEnggDiffractionPythonRunner> pythonRunner)
     : m_pythonRunner(pythonRunner) {
   setupUI();
 
@@ -107,7 +107,7 @@ void EnggDiffMultiRunFittingQtWidget::plotFittedPeaksStateChanged() {
 }
 
 void EnggDiffMultiRunFittingQtWidget::plotFittedPeaks(
-    const std::vector<boost::shared_ptr<QwtData>> &curves) {
+    const std::vector<std::shared_ptr<QwtData>> &curves) {
   for (const auto &curve : curves) {
     auto plotCurve = std::make_unique<QwtPlotCurve>();
 
@@ -127,7 +127,7 @@ void EnggDiffMultiRunFittingQtWidget::processPlotToSeparateWindow() {
 }
 
 void EnggDiffMultiRunFittingQtWidget::plotFocusedRun(
-    const std::vector<boost::shared_ptr<QwtData>> &curves) {
+    const std::vector<std::shared_ptr<QwtData>> &curves) {
   for (const auto &curve : curves) {
     auto plotCurve = std::make_unique<QwtPlotCurve>();
 
@@ -208,12 +208,12 @@ void EnggDiffMultiRunFittingQtWidget::setEnabled(const bool enabled) {
 }
 
 void EnggDiffMultiRunFittingQtWidget::setMessageProvider(
-    boost::shared_ptr<IEnggDiffractionUserMsg> messageProvider) {
+    std::shared_ptr<IEnggDiffractionUserMsg> messageProvider) {
   m_userMessageProvider = messageProvider;
 }
 
 void EnggDiffMultiRunFittingQtWidget::setPresenter(
-    boost::shared_ptr<IEnggDiffMultiRunFittingWidgetPresenter> presenter) {
+    std::shared_ptr<IEnggDiffMultiRunFittingWidgetPresenter> presenter) {
   m_presenter = presenter;
 }
 

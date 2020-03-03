@@ -82,7 +82,7 @@ MatrixWorkspace_sptr runAlgorithm(MatrixWorkspace_sptr inputWS,
   TS_ASSERT_THROWS_NOTHING(alg.execute(););
   TS_ASSERT(alg.isExecuted());
 
-  MatrixWorkspace_sptr outputWS = boost::dynamic_pointer_cast<MatrixWorkspace>(
+  MatrixWorkspace_sptr outputWS = std::dynamic_pointer_cast<MatrixWorkspace>(
       AnalysisDataService::Instance().retrieve(outWSName));
   TS_ASSERT(outputWS);
   return outputWS;

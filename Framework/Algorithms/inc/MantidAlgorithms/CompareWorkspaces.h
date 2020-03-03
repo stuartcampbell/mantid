@@ -95,8 +95,8 @@ private:
   bool processGroups() override;
 
   /// Process the two groups
-  void processGroups(boost::shared_ptr<const API::WorkspaceGroup> groupOne,
-                     boost::shared_ptr<const API::WorkspaceGroup> groupTwo);
+  void processGroups(std::shared_ptr<const API::WorkspaceGroup> groupOne,
+                     std::shared_ptr<const API::WorkspaceGroup> groupTwo);
 
   void doComparison();
 

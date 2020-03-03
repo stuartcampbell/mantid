@@ -46,8 +46,7 @@ std::size_t numberOfFunctions(CompositeFunction_sptr composite,
 
 std::size_t numberOfFunctions(IFunction_sptr function,
                               const std::string &functionName) {
-  const auto composite =
-      boost::dynamic_pointer_cast<CompositeFunction>(function);
+  const auto composite = std::dynamic_pointer_cast<CompositeFunction>(function);
   if (composite)
     return numberOfFunctions(composite, functionName);
   return function->name() == functionName ? 1 : 0;
@@ -66,8 +65,7 @@ bool containsFunction(CompositeFunction_sptr composite,
 
 bool containsFunction(IFunction_sptr function,
                       const std::string &functionName) {
-  const auto composite =
-      boost::dynamic_pointer_cast<CompositeFunction>(function);
+  const auto composite = std::dynamic_pointer_cast<CompositeFunction>(function);
   if (function->name() == functionName)
     return true;
   else if (composite)
@@ -135,7 +133,7 @@ IFunction_sptr extractFirstBackground(CompositeFunction_sptr composite) {
 }
 
 IFunction_sptr extractFirstBackground(IFunction_sptr function) {
-  auto composite = boost::dynamic_pointer_cast<CompositeFunction>(function);
+  auto composite = std::dynamic_pointer_cast<CompositeFunction>(function);
 
   if (composite)
     return extractFirstBackground(composite);

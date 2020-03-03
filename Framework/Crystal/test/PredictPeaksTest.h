@@ -84,7 +84,7 @@ public:
     TS_ASSERT_THROWS_NOTHING(alg.initialize())
     TS_ASSERT(alg.isInitialized())
     TS_ASSERT_THROWS_NOTHING(alg.setProperty(
-        "InputWorkspace", boost::dynamic_pointer_cast<Workspace>(inWS)));
+        "InputWorkspace", std::dynamic_pointer_cast<Workspace>(inWS)));
     TS_ASSERT_THROWS_NOTHING(
         alg.setPropertyValue("OutputWorkspace", outWSName));
     TS_ASSERT_THROWS_NOTHING(alg.setPropertyValue("WavelengthMin", "0.1"));
@@ -150,7 +150,7 @@ public:
     TS_ASSERT_THROWS_NOTHING(alg.initialize())
     TS_ASSERT(alg.isInitialized())
     TS_ASSERT_THROWS_NOTHING(alg.setProperty(
-        "InputWorkspace", boost::dynamic_pointer_cast<Workspace>(inWS)));
+        "InputWorkspace", std::dynamic_pointer_cast<Workspace>(inWS)));
     TS_ASSERT_THROWS_NOTHING(
         alg.setPropertyValue("OutputWorkspace", outWSName));
     TS_ASSERT_THROWS_NOTHING(alg.setPropertyValue("WavelengthMin", "0.1"));
@@ -212,7 +212,7 @@ public:
     TS_ASSERT_THROWS_NOTHING(alg.initialize())
     TS_ASSERT(alg.isInitialized())
     TS_ASSERT_THROWS_NOTHING(alg.setProperty(
-        "InputWorkspace", boost::dynamic_pointer_cast<Workspace>(inWS)));
+        "InputWorkspace", std::dynamic_pointer_cast<Workspace>(inWS)));
     TS_ASSERT_THROWS_NOTHING(
         alg.setPropertyValue("OutputWorkspace", outWSName));
     TS_ASSERT_THROWS_NOTHING(alg.setProperty("HKLPeaksWorkspace", hklPW));
@@ -276,7 +276,7 @@ public:
     TS_ASSERT_THROWS_NOTHING(alg.initialize())
     TS_ASSERT(alg.isInitialized())
     TS_ASSERT_THROWS_NOTHING(alg.setProperty(
-        "InputWorkspace", boost::dynamic_pointer_cast<Workspace>(inWS)));
+        "InputWorkspace", std::dynamic_pointer_cast<Workspace>(inWS)));
     TS_ASSERT_THROWS_NOTHING(
         alg.setPropertyValue("OutputWorkspace", outWSName));
     TS_ASSERT_THROWS_NOTHING(alg.setProperty("CalculateGoniometerForCW", true));
@@ -322,7 +322,7 @@ public:
     PredictPeaks alg;
     alg.initialize();
     alg.setProperty("InputWorkspace",
-                    boost::dynamic_pointer_cast<Workspace>(inWS));
+                    std::dynamic_pointer_cast<Workspace>(inWS));
     alg.setPropertyValue("OutputWorkspace", "predict_peaks_performance");
     alg.setPropertyValue("WavelengthMin", ".5");
     alg.setPropertyValue("WavelengthMax", "15.0");
@@ -346,7 +346,7 @@ public:
     PredictPeaks alg;
     alg.initialize();
     alg.setProperty("InputWorkspace",
-                    boost::dynamic_pointer_cast<Workspace>(inWS));
+                    std::dynamic_pointer_cast<Workspace>(inWS));
     alg.setPropertyValue("OutputWorkspace", "predict_peaks_performance");
     alg.setPropertyValue("WavelengthMin", ".5");
     alg.setPropertyValue("WavelengthMax", "15.0");

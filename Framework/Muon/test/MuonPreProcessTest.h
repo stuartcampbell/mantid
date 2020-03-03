@@ -26,7 +26,7 @@ namespace {
 IAlgorithm_sptr
 algorithmWithoutOptionalPropertiesSet(const std::string &inputWSName) {
 
-  auto alg = boost::make_shared<MuonPreProcess>();
+  auto alg = std::make_shared<MuonPreProcess>();
   alg->initialize();
   alg->setProperty("InputWorkspace", inputWSName);
   alg->setProperty("OutputWorkspace", "__notUsed");
@@ -103,7 +103,7 @@ MatrixWorkspace_sptr getOutputWorkspace(IAlgorithm_sptr muonPreProcessAlg,
   WorkspaceGroup_sptr outputWS;
   outputWS = muonPreProcessAlg->getProperty("OutputWorkspace");
   MatrixWorkspace_sptr wsOut =
-      boost::dynamic_pointer_cast<MatrixWorkspace>(outputWS->getItem(index));
+      std::dynamic_pointer_cast<MatrixWorkspace>(outputWS->getItem(index));
   return wsOut;
 }
 
@@ -228,7 +228,7 @@ public:
     outputWS = alg->getProperty("OutputWorkspace");
 
     MatrixWorkspace_sptr wsOut =
-        boost::dynamic_pointer_cast<MatrixWorkspace>(outputWS->getItem(0));
+        std::dynamic_pointer_cast<MatrixWorkspace>(outputWS->getItem(0));
 
     TS_ASSERT_DELTA(wsOut->readX(0)[0], 0.000, 0.001);
     TS_ASSERT_DELTA(wsOut->readX(0)[1], 0.200, 0.001);
@@ -257,7 +257,7 @@ public:
     outputWS = alg->getProperty("OutputWorkspace");
 
     MatrixWorkspace_sptr wsOut =
-        boost::dynamic_pointer_cast<MatrixWorkspace>(outputWS->getItem(0));
+        std::dynamic_pointer_cast<MatrixWorkspace>(outputWS->getItem(0));
 
     // Using "FullBinsOnly" as false in Rebin preserves
     // the counts at the expense of an uneven bin
@@ -411,7 +411,7 @@ public:
 
   void test_that_execption_thrown_if_input_workspace_group_is_empty() {
 
-    WorkspaceGroup_sptr wsGroup = boost::make_shared<WorkspaceGroup>();
+    WorkspaceGroup_sptr wsGroup = std::make_shared<WorkspaceGroup>();
     auto alg = setUpAlgorithmWithNoOptionalProperties(wsGroup);
 
     TS_ASSERT_THROWS(alg->execute(), const std::runtime_error &);
@@ -422,7 +422,7 @@ public:
 
     auto wsOneSpectra = createCountsWorkspace(1, 10, 0.0);
     auto wsTwoSpectra = createCountsWorkspace(2, 10, 0.0);
-    WorkspaceGroup_sptr wsGroup = boost::make_shared<WorkspaceGroup>();
+    WorkspaceGroup_sptr wsGroup = std::make_shared<WorkspaceGroup>();
     wsGroup->addWorkspace(wsOneSpectra);
     wsGroup->addWorkspace(wsTwoSpectra);
     auto alg = setUpAlgorithmWithNoOptionalProperties(wsGroup);

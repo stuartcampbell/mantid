@@ -1484,7 +1484,7 @@ public:
     boxes.emplace_back(a);
     boxes.emplace_back(b);
 
-    auto bc = boost::make_shared<BoxController>(1);
+    auto bc = std::make_shared<BoxController>(1);
     std::vector<Mantid::Geometry::MDDimensionExtents<coord_t>> extentsVector(1);
     MDGridBox<MDLeanEvent<1>, 1> g(bc, 0, extentsVector);
     g.setChildren(boxes, 0, 2);
@@ -1509,7 +1509,7 @@ public:
     boxes.emplace_back(a);
     boxes.emplace_back(b);
 
-    auto bc = boost::make_shared<BoxController>(1);
+    auto bc = std::make_shared<BoxController>(1);
     std::vector<Mantid::Geometry::MDDimensionExtents<coord_t>> extentsVector(1);
     MDGridBox<MDLeanEvent<1>, 1> g(bc, 0, extentsVector);
     g.setChildren(boxes, 0, 2);
@@ -1534,7 +1534,7 @@ public:
     boxes.emplace_back(a);
     boxes.emplace_back(b);
 
-    auto bc = boost::make_shared<BoxController>(1);
+    auto bc = std::make_shared<BoxController>(1);
     std::vector<Mantid::Geometry::MDDimensionExtents<coord_t>> extentsVector(1);
     MDGridBox<MDLeanEvent<1>, 1> g(bc, 0, extentsVector);
 
@@ -1558,7 +1558,7 @@ public:
     boxes.emplace_back(a);
     boxes.emplace_back(b);
 
-    auto bc = boost::make_shared<BoxController>(1);
+    auto bc = std::make_shared<BoxController>(1);
     std::vector<Mantid::Geometry::MDDimensionExtents<coord_t>> extentsVector(1);
     MDGridBox<MDLeanEvent<1>, 1> griddedBox(bc, 0, extentsVector);
 
@@ -1582,7 +1582,7 @@ public:
     boxes.emplace_back(a);
     boxes.emplace_back(b);
 
-    auto bc = boost::make_shared<BoxController>(1);
+    auto bc = std::make_shared<BoxController>(1);
     std::vector<Mantid::Geometry::MDDimensionExtents<coord_t>> extentsVector(1);
     MDGridBox<MDLeanEvent<1>, 1> griddedBox(bc, 0, extentsVector);
 

@@ -114,9 +114,9 @@ bool equivalentComposites(const CompositeFunction &composite1,
 bool equivalentFunctions(IFunction_const_sptr func1,
                          IFunction_const_sptr func2) {
   const auto composite1 =
-      boost::dynamic_pointer_cast<const CompositeFunction>(func1);
+      std::dynamic_pointer_cast<const CompositeFunction>(func1);
   const auto composite2 =
-      boost::dynamic_pointer_cast<const CompositeFunction>(func2);
+      std::dynamic_pointer_cast<const CompositeFunction>(func2);
 
   if (composite1 && composite2)
     return equivalentComposites(*composite1, *composite2);
@@ -265,7 +265,7 @@ void cleanTemporaries(const std::string &algorithmName,
 
 IFunction_sptr extractFirstInnerFunction(IFunction_sptr function) {
   if (const auto multiDomain =
-          boost::dynamic_pointer_cast<MultiDomainFunction>(function)) {
+          std::dynamic_pointer_cast<MultiDomainFunction>(function)) {
     if (multiDomain->nFunctions() > 0)
       return multiDomain->getFunction(0);
   }
@@ -278,7 +278,7 @@ IFunction_sptr extractFirstInnerFunction(const std::string &function) {
 }
 
 template <typename WorkspaceType>
-boost::shared_ptr<WorkspaceType>
+std::shared_ptr<WorkspaceType>
 getWorkspaceOutput(IAlgorithm_sptr algorithm, const std::string &propertyName) {
   return AnalysisDataService::Instance().retrieveWS<WorkspaceType>(
       algorithm->getProperty(propertyName));
@@ -417,7 +417,7 @@ boost::optional<std::string> IndirectFittingModel::isInvalidFunction() const {
     return std::string("No fit function has been defined");
 
   const auto composite =
-      boost::dynamic_pointer_cast<CompositeFunction>(m_activeFunction);
+      std::dynamic_pointer_cast<CompositeFunction>(m_activeFunction);
   if (composite && (composite->nFunctions() == 0 || composite->nParams() == 0))
     return std::string("No fitting functions have been defined.");
   return boost::none;

@@ -646,7 +646,7 @@ void PreviewPlot::hardReplot() {
  * @param pNf Poco notification
  */
 void PreviewPlot::handleRemoveEvent(WorkspacePreDeleteNotification_ptr pNf) {
-  auto ws = boost::dynamic_pointer_cast<MatrixWorkspace>(pNf->object());
+  auto ws = std::dynamic_pointer_cast<MatrixWorkspace>(pNf->object());
 
   if (ws)
     // emit a queued signal to the queued slot
@@ -674,7 +674,7 @@ void PreviewPlot::removeWorkspace(MatrixWorkspace_sptr ws) {
 void PreviewPlot::handleReplaceEvent(
     WorkspaceAfterReplaceNotification_ptr pNf) {
   MatrixWorkspace_sptr ws =
-      boost::dynamic_pointer_cast<MatrixWorkspace>(pNf->object());
+      std::dynamic_pointer_cast<MatrixWorkspace>(pNf->object());
 
   // Ignore non matrix worksapces
   if (!ws)

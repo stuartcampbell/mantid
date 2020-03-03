@@ -12,6 +12,8 @@
 #include "MantidAPI/TextAxis.h"
 #include "MantidAPI/Workspace.h"
 
+#include <memory>
+
 using namespace Mantid::API;
 
 namespace {
@@ -21,11 +23,11 @@ std::string noWorkspaceErrorMessage(std::string const &process) {
 }
 
 MatrixWorkspace_sptr convertToMatrixWorkspace(Workspace_sptr workspace) {
-  return boost::dynamic_pointer_cast<MatrixWorkspace>(workspace);
+  return std::dynamic_pointer_cast<MatrixWorkspace>(workspace);
 }
 
 WorkspaceGroup_sptr convertToGroupWorkspace(Workspace_sptr workspace) {
-  return boost::dynamic_pointer_cast<WorkspaceGroup>(workspace);
+  return std::dynamic_pointer_cast<WorkspaceGroup>(workspace);
 }
 
 Workspace_sptr getADSWorkspace(std::string const &workspaceName) {
@@ -162,8 +164,7 @@ bool doesGroupContain(std::string const &groupName,
                       MatrixWorkspace_sptr workspace) {
   auto const adsWorkspace = getADSWorkspace(groupName);
   if (adsWorkspace->isGroup()) {
-    auto const group =
-        boost::dynamic_pointer_cast<WorkspaceGroup>(adsWorkspace);
+    auto const group = std::dynamic_pointer_cast<WorkspaceGroup>(adsWorkspace);
     return group->contains(workspace);
   }
   return false;

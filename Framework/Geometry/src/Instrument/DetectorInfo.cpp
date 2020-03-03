@@ -23,10 +23,9 @@ namespace Geometry {
  * argument. */
 DetectorInfo::DetectorInfo(
     std::unique_ptr<Beamline::DetectorInfo> detectorInfo,
-    boost::shared_ptr<const Geometry::Instrument> instrument,
-    boost::shared_ptr<const std::vector<detid_t>> detectorIds,
-    boost::shared_ptr<const std::unordered_map<detid_t, size_t>>
-        detIdToIndexMap)
+    std::shared_ptr<const Geometry::Instrument> instrument,
+    std::shared_ptr<const std::vector<detid_t>> detectorIds,
+    std::shared_ptr<const std::unordered_map<detid_t, size_t>> detIdToIndexMap)
     : m_detectorInfo(std::move(detectorInfo)), m_instrument(instrument),
       m_detectorIDs(detectorIds), m_detIDToIndex(detIdToIndexMap),
       m_lastDetector(PARALLEL_GET_MAX_THREADS),
@@ -437,7 +436,7 @@ const Geometry::IDetector &DetectorInfo::getDetector(const size_t index) const {
 }
 
 /// Helper used by SpectrumInfo.
-boost::shared_ptr<const Geometry::IDetector>
+std::shared_ptr<const Geometry::IDetector>
 DetectorInfo::getDetectorPtr(const size_t index) const {
   auto thread = static_cast<size_t>(PARALLEL_THREAD_NUMBER);
   static_cast<void>(getDetector(index));

@@ -10,8 +10,8 @@
 #include "MantidKernel/ConfigService.h"
 #include "MantidKernel/FacilityInfo.h"
 
-#include <boost/make_shared.hpp>
 #include <map>
+#include <memory>
 
 namespace Mantid {
 namespace API {
@@ -56,7 +56,7 @@ ICatalog_sptr CatalogManagerImpl::getCatalog(const std::string &sessionID) {
     throw std::runtime_error("You are not currently logged into a catalog.");
 
   if (sessionID.empty()) {
-    auto composite = boost::make_shared<CompositeCatalog>();
+    auto composite = std::make_shared<CompositeCatalog>();
     for (auto &activeCatalog : m_activeCatalogs) {
       composite->add(activeCatalog.second);
     }

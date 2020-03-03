@@ -25,8 +25,8 @@
 
 #include <H5Cpp.h>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/regex.hpp>
+#include <memory>
 
 #include <Poco/File.h>
 #include <Poco/Path.h>
@@ -781,7 +781,7 @@ DECLARE_ALGORITHM(SaveNXcanSAS)
 SaveNXcanSAS::SaveNXcanSAS() {}
 
 void SaveNXcanSAS::init() {
-  auto inputWSValidator = boost::make_shared<Kernel::CompositeValidator>();
+  auto inputWSValidator = std::make_shared<Kernel::CompositeValidator>();
   inputWSValidator->add<API::WorkspaceUnitValidator>("MomentumTransfer");
   inputWSValidator->add<API::CommonBinsValidator>();
   declareProperty(
@@ -805,7 +805,7 @@ void SaveNXcanSAS::init() {
                                             "electron"};
   declareProperty(
       "RadiationSource", "Spallation Neutron Source",
-      boost::make_shared<Kernel::StringListValidator>(radiation_source),
+      std::make_shared<Kernel::StringListValidator>(radiation_source),
       "The type of radiation used.");
   declareProperty("DetectorNames", "",
                   "Specify in a comma separated list, which detectors to store "
@@ -817,7 +817,7 @@ void SaveNXcanSAS::init() {
   declareProperty(
       std::make_unique<API::WorkspaceProperty<>>(
           "Transmission", "", Kernel::Direction::Input, PropertyMode::Optional,
-          boost::make_shared<API::WorkspaceUnitValidator>("Wavelength")),
+          std::make_shared<API::WorkspaceUnitValidator>("Wavelength")),
       "The transmission workspace. Optional. If given, will be saved at "
       "TransmissionSpectrum");
 
@@ -825,7 +825,7 @@ void SaveNXcanSAS::init() {
       std::make_unique<API::WorkspaceProperty<>>(
           "TransmissionCan", "", Kernel::Direction::Input,
           PropertyMode::Optional,
-          boost::make_shared<API::WorkspaceUnitValidator>("Wavelength")),
+          std::make_shared<API::WorkspaceUnitValidator>("Wavelength")),
       "The transmission workspace of the Can. Optional. If given, will be "
       "saved at TransmissionSpectrum");
 
@@ -845,7 +845,7 @@ std::map<std::string, std::string> SaveNXcanSAS::validateInputs() {
   Mantid::API::MatrixWorkspace_sptr workspace = getProperty("InputWorkspace");
   std::map<std::string, std::string> result;
   if (!workspace ||
-      !boost::dynamic_pointer_cast<const Mantid::DataObjects::Workspace2D>(
+      !std::dynamic_pointer_cast<const Mantid::DataObjects::Workspace2D>(
           workspace)) {
     result.emplace("InputWorkspace",
                    "The InputWorkspace must be a Workspace2D.");

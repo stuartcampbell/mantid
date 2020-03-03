@@ -57,8 +57,8 @@ private:
   template <typename MDE, size_t nd>
   void doLoad(typename DataObjects::MDEventWorkspace<MDE, nd>::sptr ws);
 
-  void loadExperimentInfos(
-      boost::shared_ptr<Mantid::API::MultipleExperimentInfos> ws);
+  void
+  loadExperimentInfos(std::shared_ptr<Mantid::API::MultipleExperimentInfos> ws);
 
   void loadSlab(std::string name, void *data,
                 DataObjects::MDHistoWorkspace_sptr ws,

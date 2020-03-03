@@ -75,7 +75,7 @@ private:
   TransformMap
       m_transforms; ///< A map of transformation name and function pointers
 
-  boost::shared_ptr<Kernel::Units::Label> m_label;
+  std::shared_ptr<Kernel::Units::Label> m_label;
 
   // A function for each transformation
   void guinierSpheres(API::MatrixWorkspace_sptr ws);

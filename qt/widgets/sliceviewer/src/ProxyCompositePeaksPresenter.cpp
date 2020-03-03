@@ -12,7 +12,7 @@ namespace SliceViewer {
 Constructor
 */
 ProxyCompositePeaksPresenter::ProxyCompositePeaksPresenter(
-    boost::shared_ptr<CompositePeaksPresenter> composite)
+    std::shared_ptr<CompositePeaksPresenter> composite)
     : m_compositePresenter(composite), m_updateableView(nullptr) {
   m_compositePresenter->registerOwningPresenter(this);
 }
@@ -43,7 +43,7 @@ Set the foreground colour of the peaks.
 @ color to use for re-colouring
 */
 void ProxyCompositePeaksPresenter::setForegroundColor(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
     PeakViewColor color) {
   m_compositePresenter->setForegroundColor(ws, color);
 }
@@ -54,23 +54,23 @@ Set the background colour of the peaks.
 @ colour to use for re-colouring
 */
 void ProxyCompositePeaksPresenter::setBackgroundColor(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
     PeakViewColor color) {
   m_compositePresenter->setBackgroundColor(ws, color);
 }
 
 PeakViewColor ProxyCompositePeaksPresenter::getBackgroundPeakViewColor(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
   return m_compositePresenter->getBackgroundPeakViewColor(ws);
 }
 
 PeakViewColor ProxyCompositePeaksPresenter::getForegroundPeakViewColor(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
   return m_compositePresenter->getForegroundPeakViewColor(ws);
 }
 
 bool ProxyCompositePeaksPresenter::getShowBackground(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
   return m_compositePresenter->getShowBackground(ws);
 }
 
@@ -89,24 +89,23 @@ std::string ProxyCompositePeaksPresenter::getTransformName() const {
 }
 
 void ProxyCompositePeaksPresenter::setBackgroundRadiusShown(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
-    const bool shown) {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> ws, const bool shown) {
   m_compositePresenter->setBackgroundRadiusShown(ws, shown);
 }
 
 void ProxyCompositePeaksPresenter::remove(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) {
   m_compositePresenter->remove(peaksWS);
 }
 
 void ProxyCompositePeaksPresenter::hideInPlot(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS,
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS,
     const bool hide) {
   m_compositePresenter->setShown(peaksWS, !hide);
 }
 
 void ProxyCompositePeaksPresenter::zoomToPeak(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS,
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS,
     const int peakIndex) {
   m_compositePresenter->zoomToPeak(peaksWS, peakIndex);
 }
@@ -124,14 +123,14 @@ void ProxyCompositePeaksPresenter::performUpdate() {
 
 void ProxyCompositePeaksPresenter::updatePeaksWorkspace(
     const std::string &toName,
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> toWorkspace) {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> toWorkspace) {
   if (m_updateableView) {
     m_updateableView->updatePeaksWorkspace(toName, toWorkspace);
   }
 }
 
 bool ProxyCompositePeaksPresenter::getIsHidden(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) const {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) const {
   return m_compositePresenter->getIsHidden(peaksWS);
 }
 
@@ -151,7 +150,7 @@ int ProxyCompositePeaksPresenter::getZoomedPeakIndex() const {
 
 void ProxyCompositePeaksPresenter::editCommand(
     EditMode editMode,
-    boost::weak_ptr<const Mantid::API::IPeaksWorkspace> target) {
+    std::weak_ptr<const Mantid::API::IPeaksWorkspace> target) {
   m_compositePresenter->editCommand(editMode, target);
 }
 

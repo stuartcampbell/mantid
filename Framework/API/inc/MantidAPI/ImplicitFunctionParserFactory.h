@@ -32,7 +32,7 @@ public:
       delete;
   ImplicitFunctionParserFactoryImpl &
   operator=(const ImplicitFunctionParserFactoryImpl &) = delete;
-  boost::shared_ptr<ImplicitFunctionParser>
+  std::shared_ptr<ImplicitFunctionParser>
   create(const std::string &xmlString) const override;
   ImplicitFunctionParser *
   createImplicitFunctionParserFromXML(const std::string &functionXML) const;

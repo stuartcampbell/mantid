@@ -296,7 +296,7 @@ void TabulatedFunction::load(const std::string &fname) {
 
   Workspace_sptr ws = loadAlg->getProperty("OutputWorkspace");
   MatrixWorkspace_sptr resData =
-      boost::dynamic_pointer_cast<Mantid::API::MatrixWorkspace>(ws);
+      std::dynamic_pointer_cast<Mantid::API::MatrixWorkspace>(ws);
   loadWorkspace(resData);
 }
 
@@ -314,7 +314,7 @@ void TabulatedFunction::loadWorkspace(const std::string &wsName) const {
  * @param ws :: The workspace to load from
  */
 void TabulatedFunction::loadWorkspace(
-    boost::shared_ptr<API::MatrixWorkspace> ws) const {
+    std::shared_ptr<API::MatrixWorkspace> ws) const {
   m_workspace = ws;
   m_setupFinished = false;
 }

@@ -76,7 +76,7 @@ IAlgorithm_sptr setupAlg(MatrixWorkspace_sptr m_loadedData, bool isChildAlg,
 
 IAlgorithm_sptr setupAlg(MatrixWorkspace_sptr m_loadedData, bool isChildAlg) {
   // Create and populate a detector table
-  boost::shared_ptr<ITableWorkspace> phaseTable(
+  std::shared_ptr<ITableWorkspace> phaseTable(
       new Mantid::DataObjects::TableWorkspace);
   populatePhaseTable(phaseTable);
 
@@ -86,7 +86,7 @@ IAlgorithm_sptr setupAlg(MatrixWorkspace_sptr m_loadedData, bool isChildAlg) {
 IAlgorithm_sptr setupAlg(MatrixWorkspace_sptr m_loadedData, bool isChildAlg,
                          std::vector<std::string> names, bool swap = false) {
   // Create and populate a detector table
-  boost::shared_ptr<ITableWorkspace> phaseTable(
+  std::shared_ptr<ITableWorkspace> phaseTable(
       new Mantid::DataObjects::TableWorkspace);
   populatePhaseTable(phaseTable, names, swap);
 
@@ -95,7 +95,7 @@ IAlgorithm_sptr setupAlg(MatrixWorkspace_sptr m_loadedData, bool isChildAlg,
 
 IAlgorithm_sptr setupAlgDead(MatrixWorkspace_sptr m_loadedData) {
   // Create and populate a detector table
-  boost::shared_ptr<ITableWorkspace> phaseTable(
+  std::shared_ptr<ITableWorkspace> phaseTable(
       new Mantid::DataObjects::TableWorkspace);
   populatePhaseTableWithDeadDetectors(phaseTable, m_loadedData);
 
@@ -103,7 +103,7 @@ IAlgorithm_sptr setupAlgDead(MatrixWorkspace_sptr m_loadedData) {
 }
 
 MatrixWorkspace_sptr setupWS(MatrixWorkspace_sptr m_loadedData) {
-  boost::shared_ptr<ITableWorkspace> phaseTable(
+  std::shared_ptr<ITableWorkspace> phaseTable(
       new Mantid::DataObjects::TableWorkspace);
   MatrixWorkspace_sptr ws = m_loadedData->clone();
   // create toy data set
@@ -134,7 +134,7 @@ MatrixWorkspace_sptr loadMuonDataset() {
   loader->execute();
   Workspace_sptr temp = loader->getProperty("OutputWorkspace");
   MatrixWorkspace_sptr m_loadedData =
-      boost::dynamic_pointer_cast<MatrixWorkspace>(temp);
+      std::dynamic_pointer_cast<MatrixWorkspace>(temp);
   return m_loadedData;
 }
 } // namespace

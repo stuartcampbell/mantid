@@ -345,7 +345,7 @@ private:
 
   /// Model for calculating the vanadium corrections workspaces for focus and
   /// calib
-  boost::shared_ptr<IEnggVanadiumCorrectionsModel> m_vanadiumCorrectionsModel;
+  std::shared_ptr<IEnggVanadiumCorrectionsModel> m_vanadiumCorrectionsModel;
 };
 
 } // namespace CustomInterfaces

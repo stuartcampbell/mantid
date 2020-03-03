@@ -16,7 +16,7 @@ using namespace Geometry;
 
 PoldiDeadWireDecorator::PoldiDeadWireDecorator(
     std::set<int> deadWires,
-    boost::shared_ptr<Poldi::PoldiAbstractDetector> detector)
+    std::shared_ptr<Poldi::PoldiAbstractDetector> detector)
     : PoldiDetectorDecorator(detector), m_deadWireSet(deadWires),
       m_goodElements() {
   setDecoratedDetector(detector);
@@ -24,7 +24,7 @@ PoldiDeadWireDecorator::PoldiDeadWireDecorator(
 
 PoldiDeadWireDecorator::PoldiDeadWireDecorator(
     const Geometry::DetectorInfo &poldiDetectorInfo,
-    boost::shared_ptr<PoldiAbstractDetector> detector)
+    std::shared_ptr<PoldiAbstractDetector> detector)
     : PoldiDetectorDecorator(detector), m_deadWireSet(), m_goodElements() {
   setDecoratedDetector(detector);
 

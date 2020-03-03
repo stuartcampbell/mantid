@@ -708,12 +708,12 @@ QList<PeakMarker2D *> ProjectionSurface::getMarkersWithID(int detID) const {
 /**
  * Get peaks workspace for manually editing.
  */
-boost::shared_ptr<Mantid::API::IPeaksWorkspace>
+std::shared_ptr<Mantid::API::IPeaksWorkspace>
 ProjectionSurface::getEditPeaksWorkspace() const {
   if (!m_peakShapes.isEmpty()) {
     return m_peakShapes.last()->getPeaksWorkspace();
   }
-  return boost::shared_ptr<Mantid::API::IPeaksWorkspace>();
+  return std::shared_ptr<Mantid::API::IPeaksWorkspace>();
 }
 
 /**
@@ -721,7 +721,7 @@ ProjectionSurface::getEditPeaksWorkspace() const {
  * @param ws :: Shared pointer to the deleted peaks workspace.
  */
 void ProjectionSurface::deletePeaksWorkspace(
-    boost::shared_ptr<Mantid::API::IPeaksWorkspace> ws) {
+    std::shared_ptr<Mantid::API::IPeaksWorkspace> ws) {
   const int npeaks = m_peakShapes.size();
   for (int i = 0; i < npeaks; ++i) {
     if (m_peakShapes[i]->getPeaksWorkspace() == ws) {

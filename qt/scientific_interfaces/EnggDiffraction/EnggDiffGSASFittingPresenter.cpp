@@ -27,8 +27,8 @@ namespace CustomInterfaces {
 EnggDiffGSASFittingPresenter::EnggDiffGSASFittingPresenter(
     std::unique_ptr<IEnggDiffGSASFittingModel> model,
     IEnggDiffGSASFittingView *view,
-    boost::shared_ptr<IEnggDiffMultiRunFittingWidgetPresenter> multiRunWidget,
-    boost::shared_ptr<IEnggDiffractionParam> mainSettings)
+    std::shared_ptr<IEnggDiffMultiRunFittingWidgetPresenter> multiRunWidget,
+    std::shared_ptr<IEnggDiffractionParam> mainSettings)
     : m_model(std::move(model)), m_multiRunWidget(multiRunWidget),
       m_mainSettings(mainSettings), m_view(view), m_viewHasClosed(false) {}
 

@@ -200,9 +200,9 @@ LoadAndApplyMuonDetectorGrouping::validateInputs() {
 void LoadAndApplyMuonDetectorGrouping::getTimeLimitsFromInputWorkspace(
     Workspace_sptr inputWS, AnalysisOptions &options) {
   MatrixWorkspace_sptr inputMatrixWS =
-      boost::dynamic_pointer_cast<MatrixWorkspace>(inputWS);
+      std::dynamic_pointer_cast<MatrixWorkspace>(inputWS);
   WorkspaceGroup_sptr inputGroupWS =
-      boost::dynamic_pointer_cast<WorkspaceGroup>(inputWS);
+      std::dynamic_pointer_cast<WorkspaceGroup>(inputWS);
   if (inputMatrixWS) {
     if (inputMatrixWS->getNumberHistograms() > 0) {
       double timeMin = inputMatrixWS->mutableX(0)[0];
@@ -212,7 +212,7 @@ void LoadAndApplyMuonDetectorGrouping::getTimeLimitsFromInputWorkspace(
     }
   } else if (inputGroupWS) {
     MatrixWorkspace_sptr ws1 =
-        boost::dynamic_pointer_cast<MatrixWorkspace>(inputGroupWS->getItem(0));
+        std::dynamic_pointer_cast<MatrixWorkspace>(inputGroupWS->getItem(0));
     double timeMin = ws1->mutableX(0)[0];
     auto sizex = ws1->mutableX(0).size();
     double timeMax = ws1->mutableX(0)[sizex - 1];
@@ -292,13 +292,13 @@ LoadAndApplyMuonDetectorGrouping::addGroupedWSWithDefaultName(
 
   WorkspaceGroup_sptr groupedWS;
   if (ads.doesExist(groupedWSName)) {
-    if ((groupedWS = boost::dynamic_pointer_cast<WorkspaceGroup>(
+    if ((groupedWS = std::dynamic_pointer_cast<WorkspaceGroup>(
              ads.retrieve(groupedWSName)))) {
       return groupedWS;
     }
   }
 
-  groupedWS = boost::make_shared<WorkspaceGroup>();
+  groupedWS = std::make_shared<WorkspaceGroup>();
   AnalysisDataService::Instance().addOrReplace(groupedWSName, groupedWS);
   return groupedWS;
 }
@@ -323,7 +323,7 @@ AnalysisOptions LoadAndApplyMuonDetectorGrouping::setDefaultOptions() {
 void LoadAndApplyMuonDetectorGrouping::addGroupingInformationToADS(
     const Mantid::API::Grouping &grouping) {
 
-  auto groupingTable = boost::dynamic_pointer_cast<ITableWorkspace>(
+  auto groupingTable = std::dynamic_pointer_cast<ITableWorkspace>(
       WorkspaceFactory::Instance().createTable("TableWorkspace"));
   groupingTable->addColumn("str", "GroupName");
   groupingTable->addColumn("vector_int", "Detectors");

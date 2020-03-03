@@ -7,7 +7,7 @@
 #include "MantidCurveFitting/Functions/SimpleChebfun.h"
 #include "MantidAPI/IFunction.h"
 
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace Mantid {
 namespace CurveFitting {
@@ -26,14 +26,14 @@ using namespace CurveFitting;
 SimpleChebfun::SimpleChebfun(size_t n, ChebfunFunctionType fun, double start,
                              double end)
     : m_badFit(false) {
-  m_base = boost::make_shared<ChebfunBase>(n, start, end);
+  m_base = std::make_shared<ChebfunBase>(n, start, end);
   m_P = m_base->fit(fun);
 }
 
 SimpleChebfun::SimpleChebfun(size_t n, const API::IFunction &fun, double start,
                              double end)
     : m_badFit(false) {
-  m_base = boost::make_shared<ChebfunBase>(n, start, end);
+  m_base = std::make_shared<ChebfunBase>(n, start, end);
   m_P = m_base->fit(fun);
 }
 
@@ -55,7 +55,7 @@ SimpleChebfun::SimpleChebfun(ChebfunFunctionType fun, double start, double end,
   m_base = ChebfunBase::bestFitAnyTolerance<ChebfunFunctionType>(
       start, end, fun, m_P, m_A, accuracy);
   if (!m_base) {
-    m_base = boost::make_shared<ChebfunBase>(badSize - 1, start, end, accuracy);
+    m_base = std::make_shared<ChebfunBase>(badSize - 1, start, end, accuracy);
     m_P = m_base->fit(fun);
     m_badFit = true;
   }
@@ -67,7 +67,7 @@ SimpleChebfun::SimpleChebfun(const API::IFunction &fun, double start,
   m_base = ChebfunBase::bestFitAnyTolerance<const API::IFunction &>(
       start, end, fun, m_P, m_A, accuracy);
   if (!m_base) {
-    m_base = boost::make_shared<ChebfunBase>(badSize - 1, start, end, accuracy);
+    m_base = std::make_shared<ChebfunBase>(badSize - 1, start, end, accuracy);
     m_P = m_base->fit(fun);
     m_badFit = true;
   }
@@ -79,7 +79,7 @@ SimpleChebfun::SimpleChebfun(const API::IFunction &fun, double start,
 SimpleChebfun::SimpleChebfun(const std::vector<double> &x,
                              const std::vector<double> &y)
     : m_badFit(false) {
-  m_base = boost::make_shared<ChebfunBase>(x.size() - 1, x.front(), x.back());
+  m_base = std::make_shared<ChebfunBase>(x.size() - 1, x.front(), x.back());
   m_P = m_base->smooth(x, y);
 }
 

@@ -50,7 +50,7 @@ std::string extractFirstOf(std::string const &str,
 void setYAxisLabels(WorkspaceGroup_sptr group, std::string const &unit,
                     std::string const &axisLabel) {
   for (auto const &workspace : *group) {
-    auto matrixWs = boost::dynamic_pointer_cast<MatrixWorkspace>(workspace);
+    auto matrixWs = std::dynamic_pointer_cast<MatrixWorkspace>(workspace);
     matrixWs->setYUnit(unit);
     matrixWs->setYUnitLabel(axisLabel);
   }
@@ -103,7 +103,7 @@ WorkspaceGroup_sptr convertUnits(WorkspaceGroup_sptr workspaceGroup,
   for (auto const &workspace : *workspaceGroup) {
     auto const name = workspace->getName();
     auto const wavelengthWorkspace = convertUnits(
-        boost::dynamic_pointer_cast<MatrixWorkspace>(workspace), target);
+        std::dynamic_pointer_cast<MatrixWorkspace>(workspace), target);
     addWorkspaceToADS(name, wavelengthWorkspace);
     convertedNames.emplace_back(name);
   }
@@ -481,7 +481,7 @@ void AbsorptionCorrections::convertSpectrumAxes(
     WorkspaceGroup_sptr correctionsGroup, MatrixWorkspace_sptr sample) {
   for (auto const &workspace : *correctionsGroup) {
     auto const correction =
-        boost::dynamic_pointer_cast<MatrixWorkspace>(workspace);
+        std::dynamic_pointer_cast<MatrixWorkspace>(workspace);
     convertSpectrumAxes(correction, sample);
   }
 }

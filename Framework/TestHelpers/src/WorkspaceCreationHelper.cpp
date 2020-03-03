@@ -123,7 +123,7 @@ Workspace2D_sptr create1DWorkspaceRand(int size, bool isHisto) {
   Counts counts(size, randFunc);
   CountStandardDeviations errorVals(size, randFunc);
 
-  auto retVal = boost::make_shared<Workspace2D>();
+  auto retVal = std::make_shared<Workspace2D>();
   retVal->initialize(1, createHisto(isHisto, counts, errorVals));
   return retVal;
 }
@@ -133,7 +133,7 @@ Workspace2D_sptr create1DWorkspaceConstant(int size, double value, double error,
   Counts yVals(size, value);
   CountStandardDeviations errVals(size, error);
 
-  auto retVal = boost::make_shared<Workspace2D>();
+  auto retVal = std::make_shared<Workspace2D>();
   retVal->initialize(1, createHisto(isHisto, yVals, errVals));
   return retVal;
 }
@@ -153,7 +153,7 @@ Workspace2D_sptr create1DWorkspaceFib(int size, bool isHisto) {
   Counts yVals(size, FibSeries<double>());
   CountStandardDeviations errVals(size);
 
-  auto retVal = boost::make_shared<Workspace2D>();
+  auto retVal = std::make_shared<Workspace2D>();
   retVal->initialize(1, createHisto(isHisto, yVals, errVals));
   return retVal;
 }
@@ -186,7 +186,7 @@ Workspace2D_sptr create2DWorkspaceThetaVsTOF(int nHist, int nBins) {
   auto newAxis = std::make_unique<NumericAxis>(nHist);
   auto newAxisRaw = newAxis.get();
   outputWS->replaceAxis(1, std::move(newAxis));
-  newAxisRaw->unit() = boost::make_shared<Units::Degrees>();
+  newAxisRaw->unit() = std::make_shared<Units::Degrees>();
   for (int i = 0; i < nHist; ++i) {
     newAxisRaw->setValue(i, i + 1);
   }
@@ -218,7 +218,7 @@ create2DWorkspaceWithValues(int64_t nHist, int64_t nBins, bool isHist,
   Counts y1(nBins, yVal);
   CountStandardDeviations e1(nBins, eVal);
   auto dx = Kernel::make_cow<HistogramData::HistogramDx>(nBins, yVal);
-  auto retVal = boost::make_shared<Workspace2D>();
+  auto retVal = std::make_shared<Workspace2D>();
   retVal->initialize(nHist, createHisto(isHist, y1, e1));
   for (int i = 0; i < nHist; i++) {
     retVal->setSharedX(i, x1);
@@ -265,7 +265,7 @@ Workspace2D_sptr maskSpectra(Workspace2D_sptr workspace,
   const auto nhist = static_cast<int>(workspace->getNumberHistograms());
   if (workspace->getInstrument()->nelements() == 0) {
     // We need detectors to be able to mask them.
-    auto instrument = boost::make_shared<Instrument>();
+    auto instrument = std::make_shared<Instrument>();
     workspace->setInstrument(instrument);
 
     std::string xmlShape = "<sphere id=\"shape\"> ";
@@ -299,7 +299,7 @@ Workspace2D_sptr maskSpectra(Workspace2D_sptr workspace,
  */
 WorkspaceGroup_sptr createWorkspaceGroup(int nEntries, int nHist, int nBins,
                                          const std::string &stem) {
-  auto group = boost::make_shared<WorkspaceGroup>();
+  auto group = std::make_shared<WorkspaceGroup>();
   AnalysisDataService::Instance().add(stem, group);
   for (int i = 0; i < nEntries; ++i) {
     Workspace2D_sptr ws = create2DWorkspace(nHist, nBins);
@@ -338,7 +338,7 @@ Workspace2D_sptr create2DWorkspaceNonUniformlyBinned(int nhist,
   CountStandardDeviations e(numBins, M_SQRT2);
   auto dx = Kernel::make_cow<HistogramData::HistogramDx>(
       numBins, LinearGenerator(0.1, .1));
-  auto retVal = boost::make_shared<Workspace2D>();
+  auto retVal = std::make_shared<Workspace2D>();
   retVal->initialize(nhist, createHisto(true, y, e));
   for (int i = 0; i < nhist; i++) {
     retVal->setBinEdges(i, x);
@@ -609,8 +609,8 @@ MatrixWorkspace_sptr create2DWorkspaceWithReflectometryInstrument(
     const double vg1, const double vg2, const V3D &sourcePos,
     const V3D &monitorPos, const V3D &samplePos, const V3D &detectorPos,
     const int nBins, const double deltaX) {
-  Instrument_sptr instrument = boost::make_shared<Instrument>();
-  instrument->setReferenceFrame(boost::make_shared<ReferenceFrame>(
+  Instrument_sptr instrument = std::make_shared<Instrument>();
+  instrument->setReferenceFrame(std::make_shared<ReferenceFrame>(
       PointingAlong::Y, PointingAlong::X, Handedness::Left, "0,0,0"));
 
   InstrumentCreationHelper::addSource(instrument, sourcePos, "source");
@@ -661,8 +661,8 @@ MatrixWorkspace_sptr create2DWorkspaceWithReflectometryInstrumentMultiDetector(
     const V3D &sourcePos, const V3D &monitorPos, const V3D &samplePos,
     const V3D &detectorCenterPos, const int nSpectra, const int nBins,
     const double deltaX) {
-  Instrument_sptr instrument = boost::make_shared<Instrument>();
-  instrument->setReferenceFrame(boost::make_shared<ReferenceFrame>(
+  Instrument_sptr instrument = std::make_shared<Instrument>();
+  instrument->setReferenceFrame(std::make_shared<ReferenceFrame>(
       PointingAlong::Y /*up*/, PointingAlong::X /*along*/, Handedness::Left,
       "0,0,0"));
 
@@ -698,9 +698,9 @@ MatrixWorkspace_sptr create2DWorkspaceWithReflectometryInstrumentMultiDetector(
 void createInstrumentForWorkspaceWithDistances(
     MatrixWorkspace_sptr workspace, const V3D &samplePosition,
     const V3D &sourcePosition, const std::vector<V3D> &detectorPositions) {
-  Instrument_sptr instrument = boost::make_shared<Instrument>();
+  Instrument_sptr instrument = std::make_shared<Instrument>();
   instrument->setReferenceFrame(
-      boost::make_shared<ReferenceFrame>(Y, X, Left, "0,0,0"));
+      std::make_shared<ReferenceFrame>(Y, X, Left, "0,0,0"));
 
   InstrumentCreationHelper::addSource(instrument, sourcePosition, "source");
   InstrumentCreationHelper::addSample(instrument, samplePosition, "sample");
@@ -719,12 +719,12 @@ void createInstrumentForWorkspaceWithDistances(
 
 //================================================================================================================
 WorkspaceSingleValue_sptr createWorkspaceSingleValue(double value) {
-  return boost::make_shared<WorkspaceSingleValue>(value, sqrt(value));
+  return std::make_shared<WorkspaceSingleValue>(value, sqrt(value));
 }
 
 WorkspaceSingleValue_sptr createWorkspaceSingleValueWithError(double value,
                                                               double error) {
-  return boost::make_shared<WorkspaceSingleValue>(value, error);
+  return std::make_shared<WorkspaceSingleValue>(value, error);
 }
 
 /** Perform some finalization on event workspace stuff */
@@ -773,7 +773,7 @@ createEventWorkspaceWithStartTime(int numPixels, int numBins, int numEvents,
   // add one to the number of bins as this is histogram
   numBins++;
 
-  auto retVal = boost::make_shared<EventWorkspace>();
+  auto retVal = std::make_shared<EventWorkspace>();
   retVal->initialize(numPixels, 1, 1);
 
   // Make fake events
@@ -819,7 +819,7 @@ EventWorkspace_sptr
 createGroupedEventWorkspace(std::vector<std::vector<int>> groups, int numBins,
                             double binDelta, double xOffset) {
 
-  auto retVal = boost::make_shared<EventWorkspace>();
+  auto retVal = std::make_shared<EventWorkspace>();
   retVal->initialize(groups.size(), 2, 1);
 
   for (size_t g = 0; g < groups.size(); g++) {
@@ -856,7 +856,7 @@ createGroupedEventWorkspace(std::vector<std::vector<int>> groups, int numBins,
  */
 EventWorkspace_sptr createRandomEventWorkspace(size_t numbins, size_t numpixels,
                                                double bin_delta) {
-  auto retVal = boost::make_shared<EventWorkspace>();
+  auto retVal = std::make_shared<EventWorkspace>();
   retVal->initialize(numpixels, numbins, numbins - 1);
 
   // and X-axis for references:
@@ -906,7 +906,7 @@ MatrixWorkspace_sptr createGroupedWorkspace2D(size_t numHist, int numBins,
       spec.addDetectorID(g * 9 + i);
     spec.setSpectrumNo(g + 1); // Match detector ID and spec NO
   }
-  return boost::dynamic_pointer_cast<MatrixWorkspace>(retVal);
+  return std::dynamic_pointer_cast<MatrixWorkspace>(retVal);
 }
 
 // =====================================================================================
@@ -928,7 +928,7 @@ createGroupedWorkspace2DWithRingsAndBoxes(size_t RootOfNumHist, int numBins,
       spec.addDetectorID(g * 9 + i);
     spec.setSpectrumNo(g + 1); // Match detector ID and spec NO
   }
-  return boost::dynamic_pointer_cast<MatrixWorkspace>(retVal);
+  return std::dynamic_pointer_cast<MatrixWorkspace>(retVal);
 }
 
 // not strictly creating a workspace, but really helpful to see what one
@@ -1314,7 +1314,7 @@ void populateWsWithInitList(T &destination, size_t startingIndex,
 
 Mantid::DataObjects::PeaksWorkspace_sptr
 createPeaksWorkspace(const int numPeaks, const bool createOrientedLattice) {
-  auto peaksWS = boost::make_shared<PeaksWorkspace>();
+  auto peaksWS = std::make_shared<PeaksWorkspace>();
   Instrument_sptr inst =
       ComponentCreationHelper::createTestInstrumentRectangular2(1, 10);
   peaksWS->setInstrument(inst);
@@ -1344,12 +1344,12 @@ createPeaksWorkspace(const int numPeaks,
 }
 
 /** helper method to create preprocessed detector's table workspace */
-boost::shared_ptr<DataObjects::TableWorkspace>
+std::shared_ptr<DataObjects::TableWorkspace>
 createTableWorkspace(const API::MatrixWorkspace_const_sptr &inputWS) {
   const size_t nHist = inputWS->getNumberHistograms();
 
   // set the target workspace
-  auto targWS = boost::make_shared<TableWorkspace>(nHist);
+  auto targWS = std::make_shared<TableWorkspace>(nHist);
   // detectors positions
   targWS->addColumn("V3D", "DetDirections");
   // sample-detector distance;
@@ -1462,7 +1462,7 @@ void processDetectorsPositions(const API::MatrixWorkspace_const_sptr &inputWS,
       true); //,"The actual number of detectors receivinv signal");
 }
 
-boost::shared_ptr<Mantid::DataObjects::TableWorkspace>
+std::shared_ptr<Mantid::DataObjects::TableWorkspace>
 buildPreprocessedDetectorsWorkspace(Mantid::API::MatrixWorkspace_sptr ws) {
   Mantid::DataObjects::TableWorkspace_sptr DetPos = createTableWorkspace(ws);
   auto Ei = ws->run().getPropertyValueAsType<double>("Ei");
@@ -1491,7 +1491,7 @@ void create2DAngles(std::vector<double> &L2, std::vector<double> &polar,
 
 ITableWorkspace_sptr
 createEPPTableWorkspace(const std::vector<EPPTableRow> &rows) {
-  ITableWorkspace_sptr ws = boost::make_shared<TableWorkspace>(rows.size());
+  ITableWorkspace_sptr ws = std::make_shared<TableWorkspace>(rows.size());
   auto wsIndexColumn = ws->addColumn("int", "WorkspaceIndex");
   auto centreColumn = ws->addColumn("double", "PeakCentre");
   auto centreErrorColumn = ws->addColumn("double", "PeakCentreError");

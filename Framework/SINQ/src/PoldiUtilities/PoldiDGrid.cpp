@@ -10,20 +10,19 @@
 namespace Mantid {
 namespace Poldi {
 
-PoldiDGrid::PoldiDGrid(boost::shared_ptr<PoldiAbstractDetector> detector,
-                       boost::shared_ptr<PoldiAbstractChopper> chopper,
+PoldiDGrid::PoldiDGrid(std::shared_ptr<PoldiAbstractDetector> detector,
+                       std::shared_ptr<PoldiAbstractChopper> chopper,
                        double deltaT, std::pair<double, double> wavelengthRange)
     : m_detector(detector), m_chopper(chopper), m_deltaT(deltaT),
       m_wavelengthRange(wavelengthRange), m_dRangeAsMultiples(), m_deltaD(0.0),
       m_dgrid(), m_hasCachedCalculation(false) {}
 
 void PoldiDGrid::setDetector(
-    boost::shared_ptr<PoldiAbstractDetector> newDetector) {
+    std::shared_ptr<PoldiAbstractDetector> newDetector) {
   m_detector = newDetector;
 }
 
-void PoldiDGrid::setChopper(
-    boost::shared_ptr<PoldiAbstractChopper> newChopper) {
+void PoldiDGrid::setChopper(std::shared_ptr<PoldiAbstractChopper> newChopper) {
   m_chopper = newChopper;
 }
 

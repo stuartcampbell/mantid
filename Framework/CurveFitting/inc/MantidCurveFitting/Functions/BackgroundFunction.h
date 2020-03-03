@@ -10,7 +10,7 @@
 // Includes
 //----------------------------------------------------------------------
 #include "MantidAPI/IBackgroundFunction.h"
-#include <boost/shared_array.hpp>
+#include <memory>
 
 namespace mu {
 class Parser;
@@ -57,7 +57,7 @@ public:
   const std::string category() const override { return "Background"; }
 };
 
-using BackgroundFunction_sptr = boost::shared_ptr<BackgroundFunction>;
+using BackgroundFunction_sptr = std::shared_ptr<BackgroundFunction>;
 
 } // namespace Functions
 } // namespace CurveFitting

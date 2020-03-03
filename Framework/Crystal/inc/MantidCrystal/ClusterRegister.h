@@ -9,8 +9,8 @@
 #include "MantidCrystal/DisjointElement.h"
 #include "MantidKernel/System.h"
 #include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
 #include <map>
+#include <memory>
 #include <vector>
 
 namespace Mantid {
@@ -24,13 +24,13 @@ class ImplClusterRegister;
 class DLLExport ClusterRegister {
 public:
   /// Cluster map
-  using MapCluster = std::map<size_t, boost::shared_ptr<ICluster>>;
+  using MapCluster = std::map<size_t, std::shared_ptr<ICluster>>;
 
   /// Constructor
   ClusterRegister();
 
   /// Add clusters
-  void add(const size_t &label, const boost::shared_ptr<ICluster> &cluster);
+  void add(const size_t &label, const std::shared_ptr<ICluster> &cluster);
 
   /// Merge clusters on the basis of known pairs of disjoint elements
   void merge(const DisjointElement &a, const DisjointElement &b) const;

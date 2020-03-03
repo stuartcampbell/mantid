@@ -31,11 +31,11 @@ namespace Poldi {
 class MANTID_SINQ_DLL PoldiDeadWireDecorator : public PoldiDetectorDecorator {
 public:
   PoldiDeadWireDecorator(std::set<int> deadWires,
-                         boost::shared_ptr<PoldiAbstractDetector> detector =
-                             boost::shared_ptr<PoldiAbstractDetector>());
+                         std::shared_ptr<PoldiAbstractDetector> detector =
+                             std::shared_ptr<PoldiAbstractDetector>());
   PoldiDeadWireDecorator(const Geometry::DetectorInfo &poldiDetectorInfo,
-                         boost::shared_ptr<PoldiAbstractDetector> detector =
-                             boost::shared_ptr<PoldiAbstractDetector>());
+                         std::shared_ptr<PoldiAbstractDetector> detector =
+                             std::shared_ptr<PoldiAbstractDetector>());
 
   void setDeadWires(std::set<int> deadWires);
   std::set<int> deadWires();

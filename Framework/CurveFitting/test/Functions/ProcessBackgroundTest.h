@@ -27,7 +27,7 @@ using namespace HistogramData;
 
 namespace {
 Workspace2D_sptr createInputWS(std::string name, size_t sizex, size_t sizey) {
-  Workspace2D_sptr inputWS = boost::dynamic_pointer_cast<Workspace2D>(
+  Workspace2D_sptr inputWS = std::dynamic_pointer_cast<Workspace2D>(
       WorkspaceFactory::Instance().create("Workspace2D", 1, sizex, sizey));
   AnalysisDataService::Instance().addOrReplace(name, inputWS);
 
@@ -70,7 +70,7 @@ public:
     TS_ASSERT(alg.isExecuted());
 
     // 3. Check
-    Workspace2D_sptr outws = boost::dynamic_pointer_cast<Workspace2D>(
+    Workspace2D_sptr outws = std::dynamic_pointer_cast<Workspace2D>(
         AnalysisDataService::Instance().retrieve("NewBackground"));
     size_t newsize = outws->x(0).size();
 
@@ -116,7 +116,7 @@ public:
     TS_ASSERT(alg.isExecuted());
 
     // 3. Check
-    Workspace2D_sptr outws = boost::dynamic_pointer_cast<Workspace2D>(
+    Workspace2D_sptr outws = std::dynamic_pointer_cast<Workspace2D>(
         AnalysisDataService::Instance().retrieve("NewBackground"));
     size_t newsize = outws->x(0).size();
 
@@ -164,7 +164,7 @@ public:
     TS_ASSERT(alg.isExecuted());
 
     // 3. Check the result
-    Workspace2D_sptr bkgdws = boost::dynamic_pointer_cast<Workspace2D>(
+    Workspace2D_sptr bkgdws = std::dynamic_pointer_cast<Workspace2D>(
         AnalysisDataService::Instance().retrieve("SelectedBackgroundPoints"));
     TS_ASSERT(bkgdws);
 
@@ -207,7 +207,7 @@ public:
     TS_ASSERT(alg.isExecuted());
 
     // 3. Check the result
-    Workspace2D_sptr bkgdws = boost::dynamic_pointer_cast<Workspace2D>(
+    Workspace2D_sptr bkgdws = std::dynamic_pointer_cast<Workspace2D>(
         AnalysisDataService::Instance().retrieve("SelectedBackgroundPoints"));
     TS_ASSERT(bkgdws);
     if (bkgdws) {
@@ -234,7 +234,7 @@ public:
     }
 
     // Create background function
-    TableWorkspace_sptr functablews = boost::make_shared<TableWorkspace>();
+    TableWorkspace_sptr functablews = std::make_shared<TableWorkspace>();
     functablews->addColumn("str", "Name");
     functablews->addColumn("double", "Value");
     TableRow row0 = functablews->appendRow();
@@ -272,7 +272,7 @@ public:
     TS_ASSERT(alg.isExecuted());
 
     // 3. Check the result
-    Workspace2D_sptr bkgdws = boost::dynamic_pointer_cast<Workspace2D>(
+    Workspace2D_sptr bkgdws = std::dynamic_pointer_cast<Workspace2D>(
         AnalysisDataService::Instance().retrieve("SelectedBackgroundPoints2"));
     TS_ASSERT(bkgdws);
     if (bkgdws) {
@@ -280,7 +280,7 @@ public:
       TS_ASSERT_EQUALS(bkgdws->getNumberHistograms(), 3);
     }
 
-    TableWorkspace_sptr bkgdparws = boost::dynamic_pointer_cast<TableWorkspace>(
+    TableWorkspace_sptr bkgdparws = std::dynamic_pointer_cast<TableWorkspace>(
         AnalysisDataService::Instance().retrieve("OutBackgroundParameters"));
     TS_ASSERT(bkgdparws);
 
@@ -301,7 +301,7 @@ public:
     // 2. Create workspace
     size_t datasize = data.x().size();
     DataObjects::Workspace2D_sptr dataws =
-        boost::dynamic_pointer_cast<DataObjects::Workspace2D>(
+        std::dynamic_pointer_cast<DataObjects::Workspace2D>(
             API::WorkspaceFactory::Instance().create("Workspace2D", 1, datasize,
                                                      datasize));
     dataws->setHistogram(0, data);
@@ -500,7 +500,7 @@ public:
     }
 
     // Create background function
-    TableWorkspace_sptr functablews = boost::make_shared<TableWorkspace>();
+    TableWorkspace_sptr functablews = std::make_shared<TableWorkspace>();
     functablews->addColumn("str", "Name");
     functablews->addColumn("double", "Value");
     TableRow row0 = functablews->appendRow();

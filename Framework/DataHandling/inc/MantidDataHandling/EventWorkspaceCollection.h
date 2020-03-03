@@ -13,7 +13,6 @@
 #include "MantidKernel/System.h"
 #include "MantidKernel/TimeSeriesProperty.h"
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <memory>
 #include <vector>
 
@@ -86,15 +85,14 @@ public:
   void setIndexInfo(const Indexing::IndexInfo &indexInfo);
   void setInstrument(const Geometry::Instrument_const_sptr &inst);
   void
-  setMonitorWorkspace(const boost::shared_ptr<API::MatrixWorkspace> &monitorWS);
+  setMonitorWorkspace(const std::shared_ptr<API::MatrixWorkspace> &monitorWS);
   void updateSpectraUsing(const API::SpectrumDetectorMapping &map);
   void setTitle(std::string title);
   void applyFilter(boost::function<void(API::MatrixWorkspace_sptr)> func);
   virtual bool threadSafe() const;
 };
 
-using EventWorkspaceCollection_sptr =
-    boost::shared_ptr<EventWorkspaceCollection>;
+using EventWorkspaceCollection_sptr = std::shared_ptr<EventWorkspaceCollection>;
 using EventWorkspaceCollection_uptr = std::unique_ptr<EventWorkspaceCollection>;
 
 } // namespace DataHandling

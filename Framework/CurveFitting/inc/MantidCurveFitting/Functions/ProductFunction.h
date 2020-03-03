@@ -10,8 +10,8 @@
 // Includes
 //----------------------------------------------------------------------
 #include "MantidAPI/CompositeFunction.h"
-#include <boost/shared_array.hpp>
 #include <cmath>
+#include <memory>
 
 namespace Mantid {
 namespace CurveFitting {

@@ -100,7 +100,7 @@ void GenerateEventsFilter::init() {
   std::vector<std::string> timeoptions{"Seconds", "Nanoseconds", "Percent"};
   declareProperty(
       "UnitOfTime", "Seconds",
-      boost::make_shared<Kernel::StringListValidator>(timeoptions),
+      std::make_shared<Kernel::StringListValidator>(timeoptions),
       "StartTime, StopTime and DeltaTime can be given in various unit."
       "The unit can be 'Seconds' or 'Nanoseconds' from run start time."
       "They can also be defined as 'Percentage' of total run time.");
@@ -131,7 +131,7 @@ void GenerateEventsFilter::init() {
   std::vector<std::string> filteroptions{"Both", "Increase", "Decrease"};
   declareProperty(
       "FilterLogValueByChangingDirection", "Both",
-      boost::make_shared<Kernel::StringListValidator>(filteroptions),
+      std::make_shared<Kernel::StringListValidator>(filteroptions),
       "d(log value)/dt can be positive and negative.  They can be put to "
       "different splitters."
       "There are 3 options, 'Both', 'Increase' and 'Decrease' corresponding to "
@@ -148,7 +148,7 @@ void GenerateEventsFilter::init() {
                                            "LogName", IS_NOT_EQUAL_TO, ""));
 
   vector<string> logboundoptions{"Centre", "Left", "Other"};
-  auto logvalidator = boost::make_shared<StringListValidator>(logboundoptions);
+  auto logvalidator = std::make_shared<StringListValidator>(logboundoptions);
   declareProperty(
       "LogBoundary", "Centre", logvalidator,
       "How to treat log values as being measured in the centre of time. "
@@ -170,7 +170,7 @@ void GenerateEventsFilter::init() {
 
   // Linear or parallel
   vector<string> processoptions{"Serial", "Parallel"};
-  auto procvalidator = boost::make_shared<StringListValidator>(processoptions);
+  auto procvalidator = std::make_shared<StringListValidator>(processoptions);
   declareProperty(
       "UseParallelProcessing", "Serial", procvalidator,
       "Use multiple cores to generate events filter by log values. \n"
@@ -231,7 +231,7 @@ void GenerateEventsFilter::processInOutWorkspaces() {
     // Using default
     title = "Splitters";
   }
-  m_filterInfoWS = m_filterInfoWS = boost::make_shared<TableWorkspace>();
+  m_filterInfoWS = m_filterInfoWS = std::make_shared<TableWorkspace>();
   m_filterInfoWS->setTitle(title);
   m_filterInfoWS->addColumn("int", "workspacegroup");
   m_filterInfoWS->addColumn("str", "title");
@@ -240,7 +240,7 @@ void GenerateEventsFilter::processInOutWorkspaces() {
   // last step
   m_forFastLog = getProperty("FastLog");
   if (!m_forFastLog) {
-    m_splitWS = boost::shared_ptr<DataObjects::SplittersWorkspace>(
+    m_splitWS = std::shared_ptr<DataObjects::SplittersWorkspace>(
         new DataObjects::SplittersWorkspace());
     m_splitWS->setTitle(title);
   }
@@ -1889,7 +1889,7 @@ DateAndTime GenerateEventsFilter::findRunEnd() {
     runendtime = 0;
 
     DataObjects::EventWorkspace_const_sptr eventWS =
-        boost::dynamic_pointer_cast<const EventWorkspace>(m_dataWS);
+        std::dynamic_pointer_cast<const EventWorkspace>(m_dataWS);
     if (!eventWS) {
       stringstream errss;
       errss << "Input workspace " << m_dataWS->getName()

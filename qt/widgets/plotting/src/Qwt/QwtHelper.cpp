@@ -24,13 +24,13 @@ namespace QwtHelper {
  * @param wsIndex :: Workspace index to use
  * @return Pointer to created QwtData
  */
-boost::shared_ptr<QwtData> curveDataFromWs(MatrixWorkspace_const_sptr ws,
-                                           size_t wsIndex) {
+std::shared_ptr<QwtData> curveDataFromWs(MatrixWorkspace_const_sptr ws,
+                                         size_t wsIndex) {
   const double *x = &ws->x(wsIndex)[0];
   const double *y = &ws->y(wsIndex)[0];
   size_t size = ws->y(wsIndex).size();
 
-  return boost::make_shared<QwtArrayData>(x, y, size);
+  return std::make_shared<QwtArrayData>(x, y, size);
 }
 
 /**
@@ -39,10 +39,10 @@ boost::shared_ptr<QwtData> curveDataFromWs(MatrixWorkspace_const_sptr ws,
  * @param ws :: Workspace with X and Y values to use
  * @return Pointer to created Vector QwtData
  */
-std::vector<boost::shared_ptr<QwtData>>
+std::vector<std::shared_ptr<QwtData>>
 curveDataFromWs(MatrixWorkspace_const_sptr ws) {
 
-  std::vector<boost::shared_ptr<QwtData>> dataVector;
+  std::vector<std::shared_ptr<QwtData>> dataVector;
   auto histograms = ws->getNumberHistograms();
 
   for (size_t wsIndex = 0; wsIndex < histograms; wsIndex++) {
@@ -71,7 +71,7 @@ std::vector<double> curveErrorsFromWs(MatrixWorkspace_const_sptr ws,
  * those as well.
  * @return Pointer to create QwtData
  */
-boost::shared_ptr<QwtData>
+std::shared_ptr<QwtData>
 curveDataFromFunction(IFunction_const_sptr func,
                       const std::vector<double> &xValues) {
   MatrixWorkspace_sptr ws = createWsFromFunction(func, xValues);
@@ -87,7 +87,7 @@ curveDataFromFunction(IFunction_const_sptr func,
  */
 MatrixWorkspace_sptr createWsFromFunction(IFunction_const_sptr func,
                                           const std::vector<double> &xValues) {
-  auto inputWs = boost::dynamic_pointer_cast<MatrixWorkspace>(
+  auto inputWs = std::dynamic_pointer_cast<MatrixWorkspace>(
       WorkspaceFactory::Instance().create("Workspace2D", 1, xValues.size(),
                                           xValues.size()));
   inputWs->mutableX(0) = xValues;
@@ -114,9 +114,9 @@ MatrixWorkspace_sptr createWsFromFunction(IFunction_const_sptr func,
   return extract->getProperty("OutputWorkspace");
 }
 
-boost::shared_ptr<QwtData> emptyCurveData() {
+std::shared_ptr<QwtData> emptyCurveData() {
   QwtArray<double> x, y; // Empty arrays -> empty data
-  return boost::make_shared<QwtArrayData>(x, y);
+  return std::make_shared<QwtArrayData>(x, y);
 }
 } // namespace QwtHelper
 } // namespace API

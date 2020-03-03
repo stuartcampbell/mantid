@@ -31,7 +31,7 @@ class Void;
 namespace Mantid {
 namespace API {
 class Algorithm;
-using Algorithm_sptr = boost::shared_ptr<Algorithm>;
+using Algorithm_sptr = std::shared_ptr<Algorithm>;
 
 /**
 
@@ -178,7 +178,7 @@ private:
   const std::string m_summary; ///< Message to display in GUI and help.
   const int m_version;         ///< version of the real algorithm
 
-  mutable boost::shared_ptr<Algorithm>
+  mutable std::shared_ptr<Algorithm>
       m_alg;         ///< Shared pointer to a real algorithm. Created on demand
   bool m_isExecuted; ///< Executed flag
   bool m_isLoggingEnabled; ///< is the logging of the underlying algorithm

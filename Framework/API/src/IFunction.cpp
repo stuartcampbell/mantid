@@ -70,7 +70,7 @@ IFunction::~IFunction() { m_attrs.clear(); }
 /**
  * Virtual copy constructor
  */
-boost::shared_ptr<IFunction> IFunction::clone() const {
+std::shared_ptr<IFunction> IFunction::clone() const {
   auto clonedFunction =
       FunctionFactory::Instance().createInitialized(this->asString());
   for (size_t i = 0; i < this->nParams(); i++) {
@@ -86,7 +86,7 @@ boost::shared_ptr<IFunction> IFunction::clone() const {
  * function evaluation
  */
 void IFunction::setProgressReporter(
-    boost::shared_ptr<Kernel::ProgressBase> reporter) {
+    std::shared_ptr<Kernel::ProgressBase> reporter) {
   m_progReporter = reporter;
   m_progReporter->setNotifyStep(0.01);
 }
@@ -1048,7 +1048,7 @@ void IFunction::calNumericalDeriv(const FunctionDomain &domain,
  * @param endX :: The upper bin index
  */
 void IFunction::setMatrixWorkspace(
-    boost::shared_ptr<const API::MatrixWorkspace> workspace, size_t wi,
+    std::shared_ptr<const API::MatrixWorkspace> workspace, size_t wi,
     double startX, double endX) {
   UNUSED_ARG(startX);
   UNUSED_ARG(endX);
@@ -1242,7 +1242,7 @@ void IFunction::setMatrixWorkspace(
  *  @return converted value
  */
 double IFunction::convertValue(double value, Kernel::Unit_sptr &outUnit,
-                               boost::shared_ptr<const MatrixWorkspace> ws,
+                               std::shared_ptr<const MatrixWorkspace> ws,
                                size_t wsIndex) const {
   // only required if formula or look-up-table different from ws unit
   const auto &wsUnit = ws->getAxis(0)->unit();
@@ -1271,7 +1271,7 @@ double IFunction::convertValue(double value, Kernel::Unit_sptr &outUnit,
  */
 void IFunction::convertValue(std::vector<double> &values,
                              Kernel::Unit_sptr &outUnit,
-                             boost::shared_ptr<const MatrixWorkspace> ws,
+                             std::shared_ptr<const MatrixWorkspace> ws,
                              size_t wsIndex) const {
   // only required if  formula or look-up-table different from ws unit
   const auto &wsUnit = ws->getAxis(0)->unit();
@@ -1304,7 +1304,7 @@ void IFunction::convertValue(std::vector<double> &values,
     auto emode = static_cast<int>(ws->getEMode());
     double efixed(0.0);
     try {
-      boost::shared_ptr<const Geometry::IDetector> det(
+      std::shared_ptr<const Geometry::IDetector> det(
           &spectrumInfo.detector(wsIndex), NoDeleting());
       efixed = ws->getEFixed(det);
     } catch (std::exception &) {
@@ -1447,7 +1447,7 @@ void IFunction::storeReadOnlyAttribute(
  * @param covar :: A matrix to set.
  */
 void IFunction::setCovarianceMatrix(
-    boost::shared_ptr<Kernel::Matrix<double>> covar) {
+    std::shared_ptr<Kernel::Matrix<double>> covar) {
   // the matrix shouldn't be empty
   if (!covar) {
     throw std::invalid_argument(
@@ -1600,11 +1600,11 @@ namespace Mantid {
 namespace Kernel {
 
 template <>
-MANTID_API_DLL boost::shared_ptr<Mantid::API::IFunction>
-IPropertyManager::getValue<boost::shared_ptr<Mantid::API::IFunction>>(
+MANTID_API_DLL std::shared_ptr<Mantid::API::IFunction>
+IPropertyManager::getValue<std::shared_ptr<Mantid::API::IFunction>>(
     const std::string &name) const {
   auto *prop = dynamic_cast<
-      PropertyWithValue<boost::shared_ptr<Mantid::API::IFunction>> *>(
+      PropertyWithValue<std::shared_ptr<Mantid::API::IFunction>> *>(
       getPointerToProperty(name));
   if (prop) {
     return *prop;
@@ -1616,11 +1616,11 @@ IPropertyManager::getValue<boost::shared_ptr<Mantid::API::IFunction>>(
 }
 
 template <>
-MANTID_API_DLL boost::shared_ptr<const Mantid::API::IFunction>
-IPropertyManager::getValue<boost::shared_ptr<const Mantid::API::IFunction>>(
+MANTID_API_DLL std::shared_ptr<const Mantid::API::IFunction>
+IPropertyManager::getValue<std::shared_ptr<const Mantid::API::IFunction>>(
     const std::string &name) const {
   auto *prop = dynamic_cast<
-      PropertyWithValue<boost::shared_ptr<Mantid::API::IFunction>> *>(
+      PropertyWithValue<std::shared_ptr<Mantid::API::IFunction>> *>(
       getPointerToProperty(name));
   if (prop) {
     return prop->operator()();

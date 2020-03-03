@@ -151,7 +151,7 @@ Constructor
 @param peaksWS : Workspace model.
 */
 QPeaksTableModel::QPeaksTableModel(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS)
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS)
     : QAbstractTableModel(nullptr), m_peaksWS(peaksWS) {
   m_columnNameMap = {{0, RUNNUMBER},
                      {1, DETID},
@@ -261,7 +261,7 @@ QPeaksTableModel::QPeaksTableModel(
 }
 
 void QPeaksTableModel::setPeaksWorkspace(
-    boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) {
+    std::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) {
   beginResetModel();
   emit layoutAboutToBeChanged();
   m_peaksWS = peaksWS;

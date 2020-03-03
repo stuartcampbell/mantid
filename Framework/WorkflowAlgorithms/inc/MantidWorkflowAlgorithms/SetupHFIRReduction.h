@@ -39,12 +39,12 @@ private:
   void init() override;
   /// Execution code
   void exec() override;
-  void setupTransmission(
-      boost::shared_ptr<Kernel::PropertyManager> reductionManager);
   void
-  setupBackground(boost::shared_ptr<Kernel::PropertyManager> reductionManager);
+  setupTransmission(std::shared_ptr<Kernel::PropertyManager> reductionManager);
   void
-  setupSensitivity(boost::shared_ptr<Kernel::PropertyManager> reductionManager);
+  setupBackground(std::shared_ptr<Kernel::PropertyManager> reductionManager);
+  void
+  setupSensitivity(std::shared_ptr<Kernel::PropertyManager> reductionManager);
 };
 
 } // namespace WorkflowAlgorithms

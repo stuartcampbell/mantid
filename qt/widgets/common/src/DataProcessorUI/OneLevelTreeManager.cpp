@@ -490,7 +490,7 @@ void OneLevelTreeManager::invalidateAllProcessed() {
 /** Return a shared ptr to the model
  * @return :: A shared ptr to the model
  */
-boost::shared_ptr<AbstractTreeModel> OneLevelTreeManager::getModel() {
+std::shared_ptr<AbstractTreeModel> OneLevelTreeManager::getModel() {
   return m_model;
 }
 
@@ -557,7 +557,7 @@ bool OneLevelTreeManager::isValidModel(Workspace_sptr ws,
                                        size_t whitelistColumns) const {
 
   try {
-    validateModel(boost::dynamic_pointer_cast<ITableWorkspace>(ws),
+    validateModel(std::dynamic_pointer_cast<ITableWorkspace>(ws),
                   whitelistColumns);
   } catch (...) {
     return false;

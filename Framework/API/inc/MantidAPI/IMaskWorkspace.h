@@ -8,7 +8,6 @@
 
 #include "MantidGeometry/IDTypes.h"
 
-#include <boost/shared_ptr.hpp>
 #include <memory>
 #include <set>
 #include <string>
@@ -50,8 +49,8 @@ protected:
 };
 
 /// shared pointer to the matrix workspace base class
-using IMaskWorkspace_sptr = boost::shared_ptr<IMaskWorkspace>;
+using IMaskWorkspace_sptr = std::shared_ptr<IMaskWorkspace>;
 /// shared pointer to the matrix workspace base class (const version)
-using IMaskWorkspace_const_sptr = boost::shared_ptr<const IMaskWorkspace>;
+using IMaskWorkspace_const_sptr = std::shared_ptr<const IMaskWorkspace>;
 } // namespace API
 } // namespace Mantid

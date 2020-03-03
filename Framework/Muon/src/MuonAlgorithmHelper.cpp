@@ -30,10 +30,10 @@ using namespace Mantid::API;
  */
 MatrixWorkspace_sptr firstPeriod(Workspace_sptr ws) {
 
-  if (auto group = boost::dynamic_pointer_cast<WorkspaceGroup>(ws)) {
-    return boost::dynamic_pointer_cast<MatrixWorkspace>(group->getItem(0));
+  if (auto group = std::dynamic_pointer_cast<WorkspaceGroup>(ws)) {
+    return std::dynamic_pointer_cast<MatrixWorkspace>(group->getItem(0));
   } else {
-    return boost::dynamic_pointer_cast<MatrixWorkspace>(ws);
+    return std::dynamic_pointer_cast<MatrixWorkspace>(ws);
   }
 }
 
@@ -285,9 +285,9 @@ std::set<Mantid::detid_t>
 getAllDetectorIDsFromWorkspace(Mantid::API::Workspace_sptr ws) {
 
   std::set<Mantid::detid_t> detectorIDs;
-  if (auto workspace = boost::dynamic_pointer_cast<MatrixWorkspace>(ws)) {
+  if (auto workspace = std::dynamic_pointer_cast<MatrixWorkspace>(ws)) {
     detectorIDs = getAllDetectorIDsFromMatrixWorkspace(workspace);
-  } else if (auto workspace = boost::dynamic_pointer_cast<WorkspaceGroup>(ws)) {
+  } else if (auto workspace = std::dynamic_pointer_cast<WorkspaceGroup>(ws)) {
     detectorIDs = getAllDetectorIDsFromGroupWorkspace(workspace);
   }
   return detectorIDs;
@@ -322,7 +322,7 @@ getAllDetectorIDsFromGroupWorkspace(Mantid::API::WorkspaceGroup_sptr ws) {
 
   std::vector<Workspace_sptr> workspaces = ws->getAllItems();
   for (const auto &workspace : workspaces) {
-    matrixWS = boost::dynamic_pointer_cast<MatrixWorkspace>(workspace);
+    matrixWS = std::dynamic_pointer_cast<MatrixWorkspace>(workspace);
     detectorIDsSingleWorkspace = getAllDetectorIDsFromMatrixWorkspace(matrixWS);
     detectorIDs.insert(detectorIDsSingleWorkspace.begin(),
                        detectorIDsSingleWorkspace.end());
@@ -537,7 +537,7 @@ MatrixWorkspace_sptr sumPeriods(const WorkspaceGroup_sptr &inputWS,
   MatrixWorkspace_sptr outWS;
   if (!periodsToSum.empty()) {
     auto LHSWorkspace = inputWS->getItem(periodsToSum[0] - 1);
-    outWS = boost::dynamic_pointer_cast<MatrixWorkspace>(LHSWorkspace);
+    outWS = std::dynamic_pointer_cast<MatrixWorkspace>(LHSWorkspace);
     if (outWS != nullptr && periodsToSum.size() > 1) {
       auto numPeriods = static_cast<int>(periodsToSum.size());
       for (int i = 1; i < numPeriods; i++) {

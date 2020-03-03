@@ -39,7 +39,7 @@ private:
   double getParameter(std::string algParam, API::MatrixWorkspace_sptr ws,
                       std::string altParam);
 
-  boost::shared_ptr<Kernel::PropertyManager> reductionManager;
+  std::shared_ptr<Kernel::PropertyManager> reductionManager;
 };
 
 } // namespace WorkflowAlgorithms

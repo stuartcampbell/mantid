@@ -62,7 +62,7 @@ GenericDataProcessorAlgorithm<Base>::GenericDataProcessorAlgorithm()
  *  @return shared pointer to the newly created algorithm object
  */
 template <class Base>
-boost::shared_ptr<Algorithm>
+std::shared_ptr<Algorithm>
 GenericDataProcessorAlgorithm<Base>::createChildAlgorithm(
     const std::string &name, const double startProgress,
     const double endProgress, const bool enableLogging, const int &version) {
@@ -396,7 +396,7 @@ GenericDataProcessorAlgorithm<Base>::load(const std::string &inputData,
  * @param propertyManager :: Name of the property manager to retrieve.
  */
 template <class Base>
-boost::shared_ptr<PropertyManager>
+std::shared_ptr<PropertyManager>
 GenericDataProcessorAlgorithm<Base>::getProcessProperties(
     const std::string &propertyManager) const {
   std::string propertyManagerName(propertyManager);
@@ -410,13 +410,13 @@ GenericDataProcessorAlgorithm<Base>::getProcessProperties(
     propertyManagerName = this->getPropertyValue(m_propertyManagerPropertyName);
   }
 
-  boost::shared_ptr<PropertyManager> processProperties;
+  std::shared_ptr<PropertyManager> processProperties;
   if (PropertyManagerDataService::Instance().doesExist(propertyManagerName)) {
     processProperties =
         PropertyManagerDataService::Instance().retrieve(propertyManagerName);
   } else {
     Base::getLogger().notice() << "Could not find property manager\n";
-    processProperties = boost::make_shared<PropertyManager>();
+    processProperties = std::make_shared<PropertyManager>();
     PropertyManagerDataService::Instance().addOrReplace(propertyManagerName,
                                                         processProperties);
   }

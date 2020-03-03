@@ -19,7 +19,7 @@
 #include "MantidKernel/TimeSeriesProperty.h"
 
 #include <boost/lexical_cast.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace Mantid {
 namespace Algorithms {
@@ -83,7 +83,7 @@ void ChangeTimeZero::exec() {
   // Set up remaining progress points
   const double progressStartShiftTimeLogs = progressStopCreateOutputWs;
   double progressStopShiftTimeLogs = progressStartShiftTimeLogs;
-  if (boost::dynamic_pointer_cast<Mantid::API::IEventWorkspace>(out_ws)) {
+  if (std::dynamic_pointer_cast<Mantid::API::IEventWorkspace>(out_ws)) {
     progressStopShiftTimeLogs = progressStartShiftTimeLogs + 0.1;
   } else {
     progressStopShiftTimeLogs = 1.0;
@@ -121,10 +121,10 @@ ChangeTimeZero::createOutputWS(API::MatrixWorkspace_sptr input,
         createChildAlgorithm("CloneWorkspace", startProgress, stopProgress);
     duplicate->initialize();
     duplicate->setProperty<API::Workspace_sptr>(
-        "InputWorkspace", boost::dynamic_pointer_cast<API::Workspace>(input));
+        "InputWorkspace", std::dynamic_pointer_cast<API::Workspace>(input));
     duplicate->execute();
     API::Workspace_sptr temp = duplicate->getProperty("OutputWorkspace");
-    output = boost::dynamic_pointer_cast<API::MatrixWorkspace>(temp);
+    output = std::dynamic_pointer_cast<API::MatrixWorkspace>(temp);
   }
   return output;
 }
@@ -220,7 +220,7 @@ void ChangeTimeZero::shiftTimeOfNeutrons(Mantid::API::MatrixWorkspace_sptr ws,
                                          double timeShift, double startProgress,
                                          double stopProgress) {
   if (auto eventWs =
-          boost::dynamic_pointer_cast<Mantid::API::IEventWorkspace>(ws)) {
+          std::dynamic_pointer_cast<Mantid::API::IEventWorkspace>(ws)) {
     // Use the change pulse time algorithm to change the neutron time stamp
     auto alg =
         createChildAlgorithm("ChangePulsetime", startProgress, stopProgress);

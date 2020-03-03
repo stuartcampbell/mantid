@@ -5,8 +5,8 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "MantidAlgorithms/MaxEnt/MaxentTransformFourier.h"
-#include <boost/shared_array.hpp>
 #include <gsl/gsl_fft_complex.h>
+#include <memory>
 
 namespace Mantid {
 namespace Algorithms {

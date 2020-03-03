@@ -29,7 +29,7 @@ std::string const WORKSPACE_NAME = "WorkspaceName";
 std::string const WORKSPACE_INDICES = "0-2,4";
 
 MatrixWorkspace_sptr convertWorkspace2DToMatrix(Workspace2D_sptr workspace) {
-  return boost::dynamic_pointer_cast<MatrixWorkspace>(workspace);
+  return std::dynamic_pointer_cast<MatrixWorkspace>(workspace);
 }
 
 MatrixWorkspace_sptr
@@ -40,7 +40,7 @@ createMatrixWorkspace(std::size_t const &numberOfHistograms,
 }
 
 TableWorkspace_sptr createTableWorkspace(std::size_t const &size) {
-  return boost::make_shared<TableWorkspace>(size);
+  return std::make_shared<TableWorkspace>(size);
 }
 
 } // namespace

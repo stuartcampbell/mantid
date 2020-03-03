@@ -78,9 +78,8 @@ void ConcretePeaksPresenter::produceViews() {
  * @param mdWS : MDWorkspace currently plotted.
  */
 void ConcretePeaksPresenter::checkWorkspaceCompatibilities(
-    boost::shared_ptr<Mantid::API::MDGeometry> mdWS) {
-  if (auto imdWS =
-          boost::dynamic_pointer_cast<Mantid::API::IMDWorkspace>(mdWS)) {
+    std::shared_ptr<Mantid::API::MDGeometry> mdWS) {
+  if (auto imdWS = std::dynamic_pointer_cast<Mantid::API::IMDWorkspace>(mdWS)) {
     const SpecialCoordinateSystem coordSystMD =
         imdWS->getSpecialCoordinateSystem();
     const SpecialCoordinateSystem coordSystDim =
@@ -136,7 +135,7 @@ void ConcretePeaksPresenter::checkWorkspaceCompatibilities(
  */
 ConcretePeaksPresenter::ConcretePeaksPresenter(
     PeakOverlayViewFactory_sptr viewFactory, IPeaksWorkspace_sptr peaksWS,
-    boost::shared_ptr<MDGeometry> mdWS,
+    std::shared_ptr<MDGeometry> mdWS,
     Mantid::Geometry::PeakTransformFactory_sptr transformFactory)
     : m_viewFactory(viewFactory), m_peaksWS(peaksWS),
       m_transformFactory(transformFactory),
@@ -526,8 +525,7 @@ bool ConcretePeaksPresenter::deletePeaksIn(PeakBoundingBox box) {
   if (!deletionIndexList.empty()) {
 
     Mantid::API::IPeaksWorkspace_sptr peaksWS =
-        boost::const_pointer_cast<Mantid::API::IPeaksWorkspace>(
-            this->m_peaksWS);
+        std::const_pointer_cast<Mantid::API::IPeaksWorkspace>(this->m_peaksWS);
     // Sort the Peaks in-place.
     Mantid::API::IAlgorithm_sptr alg =
         AlgorithmManager::Instance().create("DeleteTableRows");
@@ -558,7 +556,7 @@ bool ConcretePeaksPresenter::addPeakAt(double plotCoordsPointX,
   V3D position = m_transform->transformBack(plotCoordsPoint);
 
   Mantid::API::IPeaksWorkspace_sptr peaksWS =
-      boost::const_pointer_cast<Mantid::API::IPeaksWorkspace>(this->m_peaksWS);
+      std::const_pointer_cast<Mantid::API::IPeaksWorkspace>(this->m_peaksWS);
 
   const auto frame = m_transform->getCoordinateSystem();
   try {
@@ -591,8 +589,7 @@ ConcretePeaksPresenter::findVisiblePeakIndexes(const PeakBoundingBox &box) {
             ->getRadius(); // Effective radius of each peak representation.
 
     Mantid::API::IPeaksWorkspace_sptr peaksWS =
-        boost::const_pointer_cast<Mantid::API::IPeaksWorkspace>(
-            this->m_peaksWS);
+        std::const_pointer_cast<Mantid::API::IPeaksWorkspace>(this->m_peaksWS);
 
     PeakBoundingBox transformedViewableRegion = box.makeSliceBox(radius);
 

@@ -24,7 +24,7 @@ SimpleWidget::SimpleWidget(QWidget *parent) : QWidget(parent) {
 SimpleWidget::~SimpleWidget() {}
 
 /// Assign a surface to draw on
-void SimpleWidget::setSurface(boost::shared_ptr<ProjectionSurface> surface) {
+void SimpleWidget::setSurface(std::shared_ptr<ProjectionSurface> surface) {
   m_surface = surface;
   connect(m_surface.get(), SIGNAL(redrawRequired()), this, SLOT(repaint()),
           Qt::QueuedConnection);

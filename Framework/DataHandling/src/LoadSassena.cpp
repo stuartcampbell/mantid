@@ -154,7 +154,7 @@ LoadSassena::loadQvectors(const hid_t &h5file, API::WorkspaceGroup_sptr gws,
       sorting_indexes.emplace_back(iq);
 
   DataObjects::Workspace2D_sptr ws =
-      boost::dynamic_pointer_cast<DataObjects::Workspace2D>(
+      std::dynamic_pointer_cast<DataObjects::Workspace2D>(
           API::WorkspaceFactory::Instance().create("Workspace2D", nq, 3, 3));
   std::string wsName = gwsName + std::string("_") + setName;
   ws->setTitle(wsName);
@@ -200,7 +200,7 @@ void LoadSassena::loadFQ(const hid_t &h5file, API::WorkspaceGroup_sptr gws,
   const std::string gwsName = this->getPropertyValue("OutputWorkspace");
 
   DataObjects::Workspace2D_sptr ws =
-      boost::dynamic_pointer_cast<DataObjects::Workspace2D>(
+      std::dynamic_pointer_cast<DataObjects::Workspace2D>(
           API::WorkspaceFactory::Instance().create("Workspace2D", 2, nq, nq));
   const std::string wsName = gwsName + std::string("_") + setName;
   ws->setTitle(wsName);
@@ -264,14 +264,14 @@ void LoadSassena::loadFQT(const hid_t &h5file, API::WorkspaceGroup_sptr gws,
   const double dt =
       getProperty("TimeUnit"); // time unit increment, in picoseconds;
   DataObjects::Workspace2D_sptr wsRe =
-      boost::dynamic_pointer_cast<DataObjects::Workspace2D>(
+      std::dynamic_pointer_cast<DataObjects::Workspace2D>(
           API::WorkspaceFactory::Instance().create("Workspace2D", nq, nt, nt));
   const std::string wsReName =
       gwsName + std::string("_") + setName + std::string(".Re");
   wsRe->setTitle(wsReName);
 
   DataObjects::Workspace2D_sptr wsIm =
-      boost::dynamic_pointer_cast<DataObjects::Workspace2D>(
+      std::dynamic_pointer_cast<DataObjects::Workspace2D>(
           API::WorkspaceFactory::Instance().create("Workspace2D", nq, nt, nt));
   const std::string wsImName =
       gwsName + std::string("_") + setName + std::string(".Im");
@@ -302,13 +302,13 @@ void LoadSassena::loadFQT(const hid_t &h5file, API::WorkspaceGroup_sptr gws,
 
   // Set the Time unit for the X-axis
   wsRe->getAxis(0)->unit() = Kernel::UnitFactory::Instance().create("Label");
-  auto unitPtr = boost::dynamic_pointer_cast<Kernel::Units::Label>(
-      wsRe->getAxis(0)->unit());
+  auto unitPtr =
+      std::dynamic_pointer_cast<Kernel::Units::Label>(wsRe->getAxis(0)->unit());
   unitPtr->setLabel("Time", "picoseconds");
 
   wsIm->getAxis(0)->unit() = Kernel::UnitFactory::Instance().create("Label");
-  unitPtr = boost::dynamic_pointer_cast<Kernel::Units::Label>(
-      wsIm->getAxis(0)->unit());
+  unitPtr =
+      std::dynamic_pointer_cast<Kernel::Units::Label>(wsIm->getAxis(0)->unit());
   unitPtr->setLabel("Time", "picoseconds");
 
   // Create a numeric axis to replace the default vertical one
@@ -376,19 +376,19 @@ void LoadSassena::init() {
  */
 void LoadSassena::exec() {
   // auto
-  // gws=boost::dynamic_pointer_cast<API::WorkspaceGroup>(getProperty("OutputWorkspace"));
+  // gws=std::dynamic_pointer_cast<API::WorkspaceGroup>(getProperty("OutputWorkspace"));
   // API::WorkspaceGroup_sptr gws=getProperty("OutputWorkspace");
   API::Workspace_sptr ows = getProperty("OutputWorkspace");
 
   API::WorkspaceGroup_sptr gws =
-      boost::dynamic_pointer_cast<API::WorkspaceGroup>(ows);
+      std::dynamic_pointer_cast<API::WorkspaceGroup>(ows);
   if (gws && API::AnalysisDataService::Instance().doesExist(gws->getName())) {
     // gws->deepRemoveAll(); // remove workspace members
     API::AnalysisDataService::Instance().deepRemoveGroup(gws->getName());
   } else {
-    gws = boost::make_shared<API::WorkspaceGroup>();
+    gws = std::make_shared<API::WorkspaceGroup>();
     setProperty("OutputWorkspace",
-                boost::dynamic_pointer_cast<API::Workspace>(gws));
+                std::dynamic_pointer_cast<API::Workspace>(gws));
   }
 
   // populate m_validSets

@@ -95,7 +95,7 @@ public:
   int confidence(Kernel::NexusDescriptor &descriptor) const override;
 
   template <typename T>
-  static boost::shared_ptr<BankPulseTimes> runLoadNexusLogs(
+  static std::shared_ptr<BankPulseTimes> runLoadNexusLogs(
       const std::string &nexusfilename, T localWorkspace, Algorithm &alg,
       bool returnpulsetimes, int &nPeriods,
       std::unique_ptr<const Kernel::TimeSeriesProperty<int>> &periodLog);
@@ -139,7 +139,7 @@ public:
   std::string m_filename;
 
   /// The workspace being filled out
-  boost::shared_ptr<EventWorkspaceCollection> m_ws;
+  std::shared_ptr<EventWorkspaceCollection> m_ws;
 
   /// Filter by a minimum time-of-flight
   double filter_tof_min;
@@ -174,7 +174,7 @@ public:
   double compressTolerance;
 
   /// Pulse times for ALL banks, taken from proton_charge log.
-  boost::shared_ptr<BankPulseTimes> m_allBanksPulseTimes;
+  std::shared_ptr<BankPulseTimes> m_allBanksPulseTimes;
 
   /// name of top level NXentry to use
   std::string m_top_entry_name;
@@ -566,7 +566,7 @@ bool LoadEventNexus::runLoadInstrument(const std::string &nexusfilename,
                      "det-pos-source"))
     return executionSuccessful;
 
-  boost::shared_ptr<Geometry::Parameter> updateDets = pmap.get(
+  std::shared_ptr<Geometry::Parameter> updateDets = pmap.get(
       localWorkspace->getInstrument()->getComponentID(), "det-pos-source");
   std::string value = updateDets->value<std::string>();
   if (value.substr(0, 8) == "datafile") {

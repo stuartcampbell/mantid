@@ -15,15 +15,15 @@
 
 #include <QFileDialog>
 #include <QSettings>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace MantidQt {
 namespace CustomInterfaces {
 
 EnggDiffGSASFittingViewQtWidget::EnggDiffGSASFittingViewQtWidget(
-    boost::shared_ptr<IEnggDiffractionUserMsg> userMessageProvider,
-    boost::shared_ptr<IEnggDiffractionPythonRunner> pythonRunner,
-    boost::shared_ptr<IEnggDiffractionParam> mainSettings)
+    std::shared_ptr<IEnggDiffractionUserMsg> userMessageProvider,
+    std::shared_ptr<IEnggDiffractionPythonRunner> pythonRunner,
+    std::shared_ptr<IEnggDiffractionParam> mainSettings)
     : m_userMessageProvider(userMessageProvider) {
 
   auto multiRunWidgetModel =
@@ -32,7 +32,7 @@ EnggDiffGSASFittingViewQtWidget::EnggDiffGSASFittingViewQtWidget(
       std::make_unique<EnggDiffMultiRunFittingQtWidget>(pythonRunner);
 
   auto multiRunWidgetPresenter =
-      boost::make_shared<EnggDiffMultiRunFittingWidgetPresenter>(
+      std::make_shared<EnggDiffMultiRunFittingWidgetPresenter>(
           std::move(multiRunWidgetModel), m_multiRunWidgetView.get());
 
   m_multiRunWidgetView->setPresenter(multiRunWidgetPresenter);
@@ -42,7 +42,7 @@ EnggDiffGSASFittingViewQtWidget::EnggDiffGSASFittingViewQtWidget(
 
   auto model = std::make_unique<EnggDiffGSASFittingModel>();
   auto *model_ptr = model.get();
-  m_presenter = boost::make_shared<EnggDiffGSASFittingPresenter>(
+  m_presenter = std::make_shared<EnggDiffGSASFittingPresenter>(
       std::move(model), this, multiRunWidgetPresenter, mainSettings);
   model_ptr->setObserver(m_presenter);
   m_presenter->notify(IEnggDiffGSASFittingPresenter::Start);

@@ -22,7 +22,7 @@ Communicator::Communicator(const boost::mpi::communicator &comm)
     : m_communicator(comm) {}
 #endif
 
-Communicator::Communicator(boost::shared_ptr<detail::ThreadingBackend> backend,
+Communicator::Communicator(std::shared_ptr<detail::ThreadingBackend> backend,
                            const int rank)
     : m_backend(backend), m_rank(rank) {}
 

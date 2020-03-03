@@ -62,7 +62,7 @@ LeBailFunction::LeBailFunction(std::string peaktype) {
     throw runtime_error(errss.str());
   }
   IPowderDiffPeakFunction_sptr peakfunc =
-      boost::dynamic_pointer_cast<IPowderDiffPeakFunction>(ifunc);
+      std::dynamic_pointer_cast<IPowderDiffPeakFunction>(ifunc);
   if (!peakfunc) {
     stringstream errss;
     errss << "Input peak type " << peaktype
@@ -95,7 +95,7 @@ LeBailFunction::~LeBailFunction() {}
  */
 API::IFunction_sptr LeBailFunction::getFunction() {
   return m_compsiteFunction;
-  // return boost::dynamic_pointer_cast<IFunction_sptr>(m_compsiteFunction);
+  // return std::dynamic_pointer_cast<IFunction_sptr>(m_compsiteFunction);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -315,7 +315,7 @@ void LeBailFunction::addPeaks(std::vector<std::vector<int>> peakhkls) {
 IPowderDiffPeakFunction_sptr LeBailFunction::generatePeak(int h, int k, int l) {
   IFunction_sptr f = FunctionFactory::Instance().createFunction(m_peakType);
   IPowderDiffPeakFunction_sptr peak =
-      boost::dynamic_pointer_cast<IPowderDiffPeakFunction>(f);
+      std::dynamic_pointer_cast<IPowderDiffPeakFunction>(f);
 
   peak->setMillerIndex(h, k, l);
   for (const auto &parname : m_peakParameterNameVec) {
@@ -879,7 +879,7 @@ void LeBailFunction::addBackgroundFunction(
   // Create background function from factory
   auto background = FunctionFactory::Instance().createFunction(backgroundtype);
   m_background =
-      boost::dynamic_pointer_cast<Functions::BackgroundFunction>(background);
+      std::dynamic_pointer_cast<Functions::BackgroundFunction>(background);
 
   // Set order and initialize
   m_background->setAttributeValue("n", static_cast<int>(order));

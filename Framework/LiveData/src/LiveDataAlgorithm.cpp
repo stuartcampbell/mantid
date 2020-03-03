@@ -49,10 +49,10 @@ void LiveDataAlgorithm::initProps() {
   auto listeners = LiveListenerFactory::Instance().getKeys();
   listeners.emplace_back(""); // Allow not specifying a listener too
 
-  declareProperty(std::make_unique<PropertyWithValue<std::string>>(
-                      "Instrument", "",
-                      boost::make_shared<StringListValidator>(instruments)),
-                  "Name of the instrument to monitor.");
+  declareProperty(
+      std::make_unique<PropertyWithValue<std::string>>(
+          "Instrument", "", std::make_shared<StringListValidator>(instruments)),
+      "Name of the instrument to monitor.");
 
   declareProperty(std::make_unique<PropertyWithValue<std::string>>(
                       "Connection", "", Direction::Input),
@@ -61,7 +61,7 @@ void LiveDataAlgorithm::initProps() {
 
   declareProperty(
       std::make_unique<PropertyWithValue<std::string>>(
-          "Listener", "", boost::make_shared<StringListValidator>(listeners)),
+          "Listener", "", std::make_shared<StringListValidator>(listeners)),
       "Name of the listener class to use. "
       "If specified, overrides class specified by Connection.");
 
@@ -104,7 +104,7 @@ void LiveDataAlgorithm::initProps() {
   std::vector<std::string> propOptions{"Add", "Replace", "Append"};
   declareProperty(
       "AccumulationMethod", "Add",
-      boost::make_shared<StringListValidator>(propOptions),
+      std::make_shared<StringListValidator>(propOptions),
       "Method to use for accumulating each chunk of live data.\n"
       " - Add: the processed chunk will be summed to the previous outpu "
       "(default).\n"
@@ -144,7 +144,7 @@ void LiveDataAlgorithm::initProps() {
 
   std::vector<std::string> runOptions{"Restart", "Stop", "Rename"};
   declareProperty("RunTransitionBehavior", "Restart",
-                  boost::make_shared<StringListValidator>(runOptions),
+                  std::make_shared<StringListValidator>(runOptions),
                   "What to do at run start/end boundaries?\n"
                   " - Restart: the previously accumulated data is discarded.\n"
                   " - Stop: live data monitoring ends.\n"

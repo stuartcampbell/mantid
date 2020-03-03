@@ -86,12 +86,12 @@ private:
                         std::string filename);
 
   /// Local cache of bank IComponents used in file
-  std::map<std::string, boost::shared_ptr<const Geometry::IComponent>> m_banks;
+  std::map<std::string, std::shared_ptr<const Geometry::IComponent>> m_banks;
 
   /// Retrieve cached bank (or load and cache for next time)
-  boost::shared_ptr<const Geometry::IComponent> getCachedBankByName(
-      std::string bankname,
-      const boost::shared_ptr<const Geometry::Instrument> &inst);
+  std::shared_ptr<const Geometry::IComponent>
+  getCachedBankByName(std::string bankname,
+                      const std::shared_ptr<const Geometry::Instrument> &inst);
 };
 
 } // namespace Crystal

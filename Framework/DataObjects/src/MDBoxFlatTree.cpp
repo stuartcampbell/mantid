@@ -284,7 +284,7 @@ void MDBoxFlatTree::loadBoxStructure(const std::string &fileName, int &nDim,
 
   if (restoreExperimentInfo) {
     if (!m_mEI)
-      m_mEI = boost::make_shared<Mantid::API::MultipleExperimentInfos>(
+      m_mEI = std::make_shared<Mantid::API::MultipleExperimentInfos>(
           Mantid::API::MultipleExperimentInfos());
 
     loadExperimentInfos(hFile.get(), fileName, m_mEI);
@@ -406,7 +406,7 @@ void MDBoxFlatTree::saveExperimentInfos(::NeXus::File *const file,
  */
 void MDBoxFlatTree::loadExperimentInfos(
     ::NeXus::File *const file, const std::string &filename,
-    boost::shared_ptr<Mantid::API::MultipleExperimentInfos> mei, bool lazy) {
+    std::shared_ptr<Mantid::API::MultipleExperimentInfos> mei, bool lazy) {
   // First, find how many experimentX blocks there are
   std::map<std::string, std::string> entries;
   file->getEntries(entries);
@@ -449,12 +449,12 @@ void MDBoxFlatTree::loadExperimentInfos(
   for (; itr != ExperimentBlockNum.end(); itr++) {
     std::string groupName = "experiment" + Kernel::Strings::toString(*itr);
     if (lazy) {
-      auto ei = boost::make_shared<API::FileBackedExperimentInfo>(
+      auto ei = std::make_shared<API::FileBackedExperimentInfo>(
           filename, file->getPath() + "/" + groupName);
       // And add it to the mutliple experiment info.
       mei->addExperimentInfo(ei);
     } else {
-      auto ei = boost::make_shared<API::ExperimentInfo>();
+      auto ei = std::make_shared<API::ExperimentInfo>();
       file->openGroup(groupName, "NXgroup");
       std::string parameterStr;
       try {
@@ -772,7 +772,7 @@ void MDBoxFlatTree::saveWSGenericInfo(::NeXus::File *const file,
 
   // Write out the affine matrices
   saveAffineTransformMatricies(
-      file, boost::dynamic_pointer_cast<const API::IMDWorkspace>(ws));
+      file, std::dynamic_pointer_cast<const API::IMDWorkspace>(ws));
 
   // Save some info as attributes. (Note: need to use attributes, not data sets
   // because those cannot be resized).
