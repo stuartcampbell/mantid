@@ -42,16 +42,17 @@ Note as the X-data refers to the Bin boundaries, there is one more column in the
 Correct Binning
 ---------------
 
-Where bin boundaries are set along the X-axis deteremines, how long or short bins are. The overall arrangement 
+Where bin boundaries are set along the X-axis determines, how long or short bins are. The overall arrangement 
 of bins for a spectrum is called its **binning**. Converting units can lead to a *ragged workspace*, with inconsistent binning 
 between different spectra! A Colorfill plot of ragged data looks poor and often algorithms will not accept a ragged input. 
 
 To fix this **Rebin** the ragged workspace with regular binning:
 
-#. **Load** the *GEM38370_Focussed.nxs* file, naming the **OutputWorkspace** to be *ws*
-#. Execute the Algorithm **ConvertUnits** with *ws* as the InputWorkspace, *ws_lambda* as the **OutputWorkspace**,
+1. **Load** the *GEM38370_Focussed.nxs* file, naming the **OutputWorkspace** to be *ws*
+2. Execute the Algorithm **ConvertUnits** with *ws* as the InputWorkspace, *ws_lambda* as the **OutputWorkspace**,
    **Target**\ =\ *Wavelength*, **EMode**\ =\ *Elastic*. 
-#. Plotting the *ws_lambda* Workspace as a Colorfill demonstrates the ragged X-bins :-( .
+3. Plotting the *ws_lambda* Workspace as a Colorfill demonstrates the ragged X-bins :-( .
+( You may need to alter the max value of the colorbar to around 300 by double-click on the right of the colorbar)
 
 .. figure:: /images/MBC_Ragged.png
    :width: 600px
@@ -59,7 +60,7 @@ To fix this **Rebin** the ragged workspace with regular binning:
    :align: center
 
 
-#. Execute the **Rebin** Algorithm on *ws_lambda* setting **Params** to *0.5* (setting the width of each bin to 0.5  Å) and
+4. Execute the **Rebin** Algorithm on *ws_lambda* setting **Params** to *0.5* (setting the width of each bin to 0.5  Å) and
    **OutputWorkspace** to *Rebinned*. Plot this as a Colorfill to show uniform binning across all spectra has been
    achieved! :-)
 
@@ -82,7 +83,7 @@ neutron spallation source, this means that the Time of arrival and
 Detector ID of each individual neutron is recorded. Only fairly recent
 advances in computer and acquisition hardware have made storing this
 detailed knowledge a practical solution. For example at the SNS facility
-all data, except for data collected in monitors, are as Event data.
+all data, except for data collected in monitors, are in Event mode.
 
 Event specifies “when” and “where”
 
@@ -120,10 +121,6 @@ Operating on an EventWorkspace is slower than on a Workspace2D, or put more tech
 - Histogramming is O(n) = n
 - Only convert an EventWorkspace to a Workspace2D (histogram) when performance is a concern.
 
-.. figure:: /images/Rebin_example.png
-   :alt: Rebin_example.png
-   :width: 800px
-   :align: center
 
 Example of Workspace usage
 ==========================
@@ -132,9 +129,14 @@ Example of Workspace usage
 #. Execute the **SumSpectra** algorithm and output to a sensible workspace name such as "HYS_sum" 
 #. Rebin this summed Workspace with Params=10 (the width of each bin) with the box ticked to Preserve Events. 
 #. Rebin again to binwidths of 100, 300 and 1000.
-#. Observe that as the bins get larger, finer detail is "lost". It's nice to see rebinning graphically.
+#. Observe, on the plots below, that as the bins get larger, finer detail is "lost". It's nice to see rebinning graphically.
 
 **Keep these workspace open for the next page.**
+
+.. figure:: /images/Rebin_example.png
+   :alt: Rebin_example.png
+   :width: 800px
+   :align: center
 
 .. figure:: /images/peaksworkspace.png
    :alt: PeaksWorkspace
