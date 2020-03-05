@@ -156,6 +156,7 @@ Bugfixes
   This has the effect on some Linux environments of removing the ability to minimize the figure. The control within the Plots toolbox still allows visibility to be toggled on/off if required.
 - There is now appropriate protection around setting the colorbar scale to logarithmic while the min and/or max value is negative.
 - Toggling error bars on a line with markers no longer causes an unhandled exception.
+- The scale of the color bars on colorfill plots of ragged workspaces now uses the maximum and minimum values of the data.
 
 **Fitting**
 
