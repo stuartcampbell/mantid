@@ -8,6 +8,7 @@
 #include "MantidAPI/MatrixWorkspace.h"
 #include "MantidAPI/SpectrumInfo.h"
 #include "MantidAPI/WorkspaceFactory.h"
+#include "MantidDataObjects/EventWorkspace.h"
 #include "MantidGeometry/IDetector.h"
 #include "MantidGeometry/Instrument.h"
 #include "MantidKernel/BoundedValidator.h"
@@ -111,6 +112,9 @@ void SetUncertainties::init() {
 
 void SetUncertainties::exec() {
   MatrixWorkspace_const_sptr inputWorkspace = getProperty("InputWorkspace");
+  auto inputEventWorkspace =
+      boost::dynamic_pointer_cast<const DataObjects::EventWorkspace>(
+          inputWorkspace);
   std::string errorType = getProperty("SetError");
   bool zeroError = (errorType == ZERO);
   bool takeSqrt = ((errorType == SQRT) || (errorType == SQRT_OR_ONE));
@@ -121,51 +125,76 @@ void SetUncertainties::exec() {
   double valueToCompare = resetOne ? 0.0 : getProperty("IfEqualTo");
   int precision = getProperty("Precision");
   double tolerance = resetOne ? 1E-10 : std::pow(10.0, precision * (-1));
-
-  // Create the output workspace. This will copy many aspects from the input
-  // one.
-  MatrixWorkspace_sptr outputWorkspace =
-      WorkspaceFactory::Instance().create(inputWorkspace);
-
-  // ...but not the data, so do that here.
   const auto &spectrumInfo = inputWorkspace->spectrumInfo();
-  const size_t numHists = inputWorkspace->getNumberHistograms();
-  Progress prog(this, 0.0, 1.0, numHists);
+  const int64_t numHists =
+      static_cast<int64_t>(inputWorkspace->getNumberHistograms());
+  MatrixWorkspace_sptr outputWorkspace = getProperty("OutputWorkspace");
 
-  PARALLEL_FOR_IF(Kernel::threadSafe(*inputWorkspace, *outputWorkspace))
-  for (int64_t i = 0; i < int64_t(numHists); ++i) {
-    PARALLEL_START_INTERUPT_REGION
-
-    // copy the X/Y
-    outputWorkspace->setSharedX(i, inputWorkspace->sharedX(i));
-    outputWorkspace->setSharedY(i, inputWorkspace->sharedY(i));
-    // copy the E or set to zero depending on the mode
-    if (errorType == ONE_IF_ZERO || customError) {
-      outputWorkspace->setSharedE(i, inputWorkspace->sharedE(i));
-    } else {
-      outputWorkspace->mutableE(i) = 0.0;
-    }
-
-    // ZERO mode doesn't calculate anything further
-    if ((!zeroError) &&
-        (!(spectrumInfo.hasDetectors(i) && spectrumInfo.isMasked(i)))) {
-      auto &E = outputWorkspace->mutableE(i);
-      if (takeSqrt) {
-        const auto &Y = outputWorkspace->y(i);
-        std::transform(Y.begin(), Y.end(), E.begin(),
-                       SqrtError(resetOne ? 1. : 0.));
+  if (inputWorkspace == outputWorkspace && !bool(inputEventWorkspace)) {
+    Progress prog(this, 0.0, 1.0, numHists);
+    PARALLEL_FOR_IF(Kernel::threadSafe(*inputWorkspace, *outputWorkspace))
+    for (int64_t i = 0; i < numHists; ++i) {
+      PARALLEL_START_INTERUPT_REGION
+      // copy the E or set to zero depending on the mode
+      if (errorType == ONE_IF_ZERO || customError) {
       } else {
-        std::transform(E.begin(), E.end(), E.begin(),
-                       SetError(valueToSet, valueToCompare, tolerance));
+        outputWorkspace->mutableE(i) = 0.0;
       }
+
+      // ZERO mode doesn't calculate anything further
+      if ((!zeroError) &&
+          (!(spectrumInfo.hasDetectors(i) && spectrumInfo.isMasked(i)))) {
+        auto &E = outputWorkspace->mutableE(i);
+        if (takeSqrt) {
+          const auto &Y = outputWorkspace->y(i);
+          std::transform(Y.begin(), Y.end(), E.begin(),
+                         SqrtError(resetOne ? 1. : 0.));
+        } else {
+          std::transform(E.begin(), E.end(), E.begin(),
+                         SetError(valueToSet, valueToCompare, tolerance));
+        }
+      }
+      prog.report();
+      PARALLEL_END_INTERUPT_REGION
     }
+    PARALLEL_CHECK_INTERUPT_REGION
+  } else {
+    // Create the output workspace. This will copy many aspects from the input
+    // one.
+    outputWorkspace = WorkspaceFactory::Instance().create(inputWorkspace);
+    // ...but not the data, so do that here.
+    Progress prog(this, 0.0, 1.0, numHists);
+    PARALLEL_FOR_IF(Kernel::threadSafe(*inputWorkspace, *outputWorkspace))
+    for (int64_t i = 0; i < int64_t(numHists); ++i) {
+      PARALLEL_START_INTERUPT_REGION
+      // copy the X/Y
+      outputWorkspace->setSharedX(i, inputWorkspace->sharedX(i));
+      outputWorkspace->setSharedY(i, inputWorkspace->sharedY(i));
+      // copy the E or set to zero depending on the mode
+      if (errorType == ONE_IF_ZERO || customError) {
+        outputWorkspace->setSharedE(i, inputWorkspace->sharedE(i));
+      } else {
+        outputWorkspace->mutableE(i) = 0.0;
+      }
 
-    prog.report();
-
-    PARALLEL_END_INTERUPT_REGION
+      // ZERO mode doesn't calculate anything further
+      if ((!zeroError) &&
+          (!(spectrumInfo.hasDetectors(i) && spectrumInfo.isMasked(i)))) {
+        auto &E = outputWorkspace->mutableE(i);
+        if (takeSqrt) {
+          const auto &Y = outputWorkspace->y(i);
+          std::transform(Y.begin(), Y.end(), E.begin(),
+                         SqrtError(resetOne ? 1. : 0.));
+        } else {
+          std::transform(E.begin(), E.end(), E.begin(),
+                         SetError(valueToSet, valueToCompare, tolerance));
+        }
+      }
+      prog.report();
+      PARALLEL_END_INTERUPT_REGION
+    }
+    PARALLEL_CHECK_INTERUPT_REGION
   }
-  PARALLEL_CHECK_INTERUPT_REGION
-
   setProperty("OutputWorkspace", outputWorkspace);
 }
 
