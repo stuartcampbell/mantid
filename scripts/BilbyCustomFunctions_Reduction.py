@@ -4,7 +4,6 @@
 #     NScD Oak Ridge National Laboratory, European Spallation Source
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +from mantid.simpleapi import *
-from __future__ import print_function
 import csv
 import math
 from itertools import product

@@ -4,8 +4,6 @@
 #     NScD Oak Ridge National Laboratory, European Spallation Source
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
-from __future__ import print_function
-
 import mantid.simpleapi as mantid
 
 from Muon.GUI.ElementalAnalysis.LoadWidget import load_utils as lutils

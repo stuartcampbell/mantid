@@ -3,8 +3,6 @@
 Modification of Chris Beaumont's mpl-modest-image package to allow the use of
 set_extent.
 """
-from __future__ import print_function, division
-
 import matplotlib
 rcParams = matplotlib.rcParams
 
