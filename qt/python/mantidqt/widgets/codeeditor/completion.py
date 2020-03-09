@@ -36,12 +36,8 @@ import warnings
 
 from lib2to3.pgen2.tokenize import detect_encoding
 from io import BytesIO
-from six import PY2
 
-if PY2:  # noqa
-    from inspect import getargspec as getfullargspec
-else:  # noqa
-    from inspect import getfullargspec
+from inspect import getfullargspec
 
 from mantidqt.widgets.codeeditor.editor import CodeEditor
 
@@ -172,9 +168,6 @@ def generate_call_tips(definitions, prepend_module_name=None):
         return []
     call_tips = []
     for name, py_object in definitions.items():
-        if PY2:
-            if isinstance(py_object, unicode):
-                continue
         if name.startswith('_'):
             continue
         if prepend_module_name is True and hasattr(py_object, '__module__'):
