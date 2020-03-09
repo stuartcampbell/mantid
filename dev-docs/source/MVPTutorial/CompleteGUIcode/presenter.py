@@ -1,6 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
-
 class Presenter(object):
 
     def __init__(self, view, colours):

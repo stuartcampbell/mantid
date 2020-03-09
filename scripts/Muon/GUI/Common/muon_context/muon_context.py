@@ -6,7 +6,6 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 
 # Muon context - contains all of the values from the GUI
-from __future__ import (absolute_import, division, print_function)
 from collections import OrderedDict
 import copy
 

@@ -5,9 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
-
 class CalibrationInfo(object):
     """
     Keeps track of the parameters that went into a calibration created by the engineering diffraction GUI.

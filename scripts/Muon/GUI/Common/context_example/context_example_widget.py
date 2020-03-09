@@ -5,9 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
-
 from Muon.GUI.Common.context_example.context_example_view import ContextExampleView
 from Muon.GUI.Common.context_example.context_example_presenter import ContextExamplePresenter
 from Muon.GUI.Common.context_example.context_example_model import ContextExampleModel

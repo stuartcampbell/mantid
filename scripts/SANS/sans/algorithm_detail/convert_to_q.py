@@ -6,8 +6,6 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 
 """ Converts a workspace from wavelengths to momentum transfer."""
-from __future__ import (absolute_import, division, print_function)
-
 from math import sqrt
 
 from sans.common.constants import EMPTY_NAME

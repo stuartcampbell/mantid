@@ -6,8 +6,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
 import ILL_utilities as utils
 from mantid.api import (AlgorithmFactory, DataProcessorAlgorithm, FileAction, FileProperty, mtd, WorkspaceGroupProperty)
 from mantid.kernel import (CompositeValidator, Direction, StringArrayLengthValidator, StringArrayMandatoryValidator, StringArrayProperty,

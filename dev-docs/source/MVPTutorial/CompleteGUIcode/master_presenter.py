@@ -1,6 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
-
-
 import presenter
 import plot_presenter
 

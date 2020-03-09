@@ -5,8 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function, unicode_literals)
-
 from mantid.simpleapi import (ConvertToPointData, CreateWorkspace, DeleteWorkspace,
                               CreateEmptyTableWorkspace, FitGaussianPeaks)
 from mantid.api import (DataProcessorAlgorithm, AlgorithmFactory, WorkspaceProperty, Progress, ITableWorkspaceProperty)

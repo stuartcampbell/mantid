@@ -5,8 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
 from Engineering.gui.engineering_diffraction.tabs.common.cropping.cropping_model import CroppingModel
 from Engineering.gui.engineering_diffraction.tabs.common.cropping.cropping_view import CroppingView
 from Engineering.gui.engineering_diffraction.tabs.common.cropping.cropping_presenter import CroppingPresenter

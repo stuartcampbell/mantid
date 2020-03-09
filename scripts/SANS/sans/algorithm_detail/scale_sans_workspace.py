@@ -7,8 +7,6 @@
 
 """ Multiplies a SANS workspace by an absolute scale and divides it by the sample volume. """
 
-from __future__ import (absolute_import, division, print_function)
-
 import math
 
 from sans.common.constants import EMPTY_NAME

@@ -1,5 +1,4 @@
 #pylint: disable=C0103
-from __future__ import (absolute_import, division, print_function)
 from HFIR_4Circle_Reduction.hfctables import SinglePtIntegrationTable
 from HFIR_4Circle_Reduction.integratedpeakview import SinglePtIntegrationView
 import HFIR_4Circle_Reduction.guiutility as guiutility

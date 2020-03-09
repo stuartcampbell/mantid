@@ -5,8 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
 from Engineering.gui.engineering_diffraction.settings.settings_helper import get_setting, set_setting
 from Engineering.gui.engineering_diffraction.tabs.common import path_handling
 

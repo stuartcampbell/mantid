@@ -5,8 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
 from os import path, makedirs
 from matplotlib import gridspec
 import matplotlib.pyplot as plt

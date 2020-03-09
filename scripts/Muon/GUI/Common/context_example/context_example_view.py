@@ -5,9 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
-from __future__ import (absolute_import, division, print_function)
-
-
 from qtpy import QtCore, QtWidgets
 
 from Muon.GUI.Common.utilities import table_utils

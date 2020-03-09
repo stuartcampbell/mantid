@@ -6,8 +6,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 #  This file is part of the mantidqt package.
-from __future__ import (absolute_import, division, print_function)
-
 from mantid.dataobjects import PeaksWorkspace, TableWorkspace
 from mantid.kernel import V3D
 from mantid.simpleapi import DeleteTableRows, SortPeaksWorkspace, SortTableWorkspace, StatisticsOfTableWorkspace
