@@ -162,11 +162,14 @@ def pcolormesh(workspaces, fig=None):
         if subplot_idx < workspaces_len:
             ws = workspaces[subplot_idx]
             pcm = pcolormesh_on_axis(ax, ws)
-            if ax.images:  # Colour bar limits are wrong if workspace is ragged. Set them manually.
-                colorbar_min = np.nanmin(ax.images[-1].get_array())
-                colorbar_max = np.nanmax(ax.images[-1].get_array())
-                for image in ax.images:
-                    image.set_clim(colorbar_min, colorbar_max)
+            try:
+                if ax.images:  # Colour bar limits are wrong if workspace is ragged. Set them manually.
+                    colorbar_min = np.nanmin(ax.images[-1].get_array().astype(np.float64))
+                    colorbar_max = np.nanmax(ax.images[-1].get_array().astype(np.float64))
+                    for image in ax.images:
+                        image.set_clim(colorbar_min, colorbar_max)
+            except TypeError as e:
+                LOGGER.warning(e)
             if col_idx < ncols - 1:
                 col_idx += 1
             else:
