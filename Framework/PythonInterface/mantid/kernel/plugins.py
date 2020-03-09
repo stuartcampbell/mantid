@@ -10,9 +10,6 @@ Defines functions to dynamically load Python modules.
 These modules may define extensions to C++ types, e.g.
 algorithms, fit functions etc.
 """
-from __future__ import (absolute_import, division,
-                        print_function)
-
 import os as _os
 import sys as _sys
 from traceback import format_exc

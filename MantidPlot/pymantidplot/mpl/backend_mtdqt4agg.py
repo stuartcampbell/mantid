@@ -13,9 +13,6 @@ mode for MantidPlot is to run all python scripts asynchronously.
 Providing this backend allows users to work with the standard matplotlib
 API without modification
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 try:
     # Newer matplotlib has qt_compat
     from matplotlib.backends.qt_compat import QtCore, QtWidgets

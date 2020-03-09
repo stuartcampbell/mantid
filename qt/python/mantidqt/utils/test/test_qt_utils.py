@@ -7,9 +7,6 @@
 #  This file is part of the mantid workbench.
 #
 #
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import unittest
 
 from qtpy.QtCore import QObject, Qt, Slot
