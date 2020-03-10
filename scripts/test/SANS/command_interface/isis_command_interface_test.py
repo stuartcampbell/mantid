@@ -9,7 +9,6 @@ import tempfile
 import unittest
 import uuid
 
-import six
 
 import mock
 from sans.command_interface.ISISCommandInterface import MaskFile
