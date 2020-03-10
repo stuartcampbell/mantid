@@ -11,7 +11,8 @@ from shutil import rmtree
 from os import path
 
 from Engineering.gui.engineering_diffraction.tabs.common import vanadium_corrections
-from mantid.py3compat.mock import patch
+from mock import patch
+
 
 dir_path = "Engineering.gui.engineering_diffraction.tabs.common"
 

@@ -21,7 +21,8 @@ from testhelpers import assert_almost_equal
 
 # local package imports
 from mantid.plots import MantidAxes
-from mantid.py3compat.mock import MagicMock, PropertyMock, call, patch
+from mock import MagicMock, PropertyMock, call, patch
+
 from mantid.simpleapi import CreateWorkspace
 from mantidqt.plotting.figuretype import FigureType
 from mantidqt.plotting.functions import plot

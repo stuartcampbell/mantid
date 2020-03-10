@@ -5,7 +5,7 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 import unittest
-from mantid.py3compat import mock
+import mock
 
 from Muon.GUI.ElementalAnalysis.LoadWidget import load_utils as lutils
 

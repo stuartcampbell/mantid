@@ -9,7 +9,7 @@ import sys
 import unittest
 
 from Muon.GUI.FrequencyDomainAnalysis.frequency_context import MaxEnt, FFT, FrequencyContext, FREQUENCY_EXTENSIONS
-from mantid.py3compat import mock
+import mock
 from mantid.simpleapi import CreateWorkspace, AnalysisDataService
 
 

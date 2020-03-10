@@ -17,7 +17,8 @@ matplotlib.use('AGG')  # noqa
 
 
 # local imports
-from mantid.py3compat.mock import patch
+from mock import patch
+
 from mantid.plots._compatability import plotSpectrum, plotBin
 from mantid.plots.utility import MantidAxType
 

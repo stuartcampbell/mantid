@@ -8,7 +8,8 @@
 import unittest
 
 from mantid import UsageService
-from mantid.py3compat.mock import patch
+from mock import patch
+
 from mantidqt.utils.testing.mocks.mock_qt import MockQWidget
 from workbench.plugins.exception_handler import exception_logger
 

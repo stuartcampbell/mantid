@@ -6,7 +6,7 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 import unittest
 import six
-from mantid.py3compat import mock
+import mock
 from mantidqt.utils.qt.testing import start_qapplication
 from mantid import ConfigService
 from mantid.api import FileFinder

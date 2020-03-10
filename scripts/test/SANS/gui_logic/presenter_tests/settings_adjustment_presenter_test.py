@@ -1,6 +1,7 @@
 import unittest
 
-from mantid.py3compat.mock import Mock
+from mock import Mock
+
 from sans.common.enums import SANSInstrument
 from sans.gui_logic.presenter.settings_adjustment_presenter import SettingsAdjustmentPresenter
 

@@ -22,8 +22,8 @@ This module should be fully compatible with:
 
 import inspect
 import six
-from six import *  # noqa
 import sys
+from types import *
 
 # Enumerations are built in with Python 3
 try:
@@ -75,11 +75,11 @@ if not hasattr(six, "ensure_str"):
           - `str` -> `str`
           - `bytes` -> decoded to `str`
         """
-        if not isinstance(s, (text_type, binary_type)):
+        if not isinstance(s, (str, bytes)):
             raise TypeError("not expecting type '%s'" % type(s))
-        if isinstance(s, text_type):
+        if isinstance(s, str):
             s = s.encode(encoding, errors)
-        elif isinstance(s, binary_type):
+        elif isinstance(s, bytes):
             s = s.decode(encoding, errors)
         return s
 

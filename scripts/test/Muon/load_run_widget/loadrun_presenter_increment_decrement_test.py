@@ -7,7 +7,7 @@
 import os
 import unittest
 
-from mantid.py3compat import mock
+import mock
 from mantidqt.utils.qt.testing import start_qapplication
 from qtpy.QtWidgets import QApplication, QWidget
 

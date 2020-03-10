@@ -12,7 +12,8 @@ from ast import parse
 from collections import OrderedDict
 from numpy import array
 
-from mantid.py3compat.mock import patch, Mock
+from mock import patch, Mock
+
 from workbench.plotting.plotscriptgenerator.utils import (convert_args_to_string,
                                                           get_plotted_workspaces_names,
                                                           clean_variable_name,

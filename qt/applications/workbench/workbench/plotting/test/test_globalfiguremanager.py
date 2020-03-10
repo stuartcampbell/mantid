@@ -1,6 +1,7 @@
 import unittest
 
-from mantid.py3compat.mock import Mock, call, patch
+from mock import Mock, call, patch
+
 from workbench.plotting.globalfiguremanager import FigureAction, GlobalFigureManager, GlobalFigureManagerObserver
 from workbench.plotting.observabledictionary import DictionaryAction
 

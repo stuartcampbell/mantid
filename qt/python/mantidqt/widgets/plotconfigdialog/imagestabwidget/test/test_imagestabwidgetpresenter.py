@@ -15,7 +15,8 @@ from matplotlib.pyplot import figure
 from numpy import linspace, random
 
 from mantid.plots import MantidAxes  # register mantid projection  # noqa
-from mantid.py3compat.mock import Mock
+from mock import Mock
+
 from mantid.simpleapi import CreateWorkspace
 from mantidqt.widgets.plotconfigdialog.imagestabwidget import ImageProperties
 from mantidqt.widgets.plotconfigdialog.imagestabwidget.presenter import ImagesTabWidgetPresenter

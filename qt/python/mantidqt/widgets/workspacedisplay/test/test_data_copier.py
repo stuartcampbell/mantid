@@ -7,7 +7,8 @@
 #  This file is part of the mantid workbench.
 from unittest import TestCase
 
-from mantid.py3compat.mock import Mock, patch
+from mock import Mock, patch
+
 from qtpy.QtWidgets import QMessageBox
 
 from mantidqt.widgets.workspacedisplay.data_copier import DataCopier

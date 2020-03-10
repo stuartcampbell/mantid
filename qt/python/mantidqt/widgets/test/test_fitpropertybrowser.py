@@ -13,7 +13,8 @@ matplotlib.use('AGG')  # noqa
 from numpy import zeros
 
 from mantid.api import AnalysisDataService, WorkspaceFactory
-from mantid.py3compat.mock import MagicMock, Mock, patch
+from mock import MagicMock, Mock, patch
+
 from mantid.simpleapi import CreateSampleWorkspace, CreateWorkspace
 from mantidqt.plotting.functions import plot
 from mantidqt.utils.qt.testing import start_qapplication

@@ -5,8 +5,9 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 import unittest
-from mantid.py3compat import mock
-from mantid.py3compat.mock import patch
+import mock
+from mock import patch
+
 from mantidqt.utils.qt.testing import start_qapplication
 from qtpy.QtWidgets import QApplication, QMessageBox, QWidget
 

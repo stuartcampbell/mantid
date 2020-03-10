@@ -5,7 +5,8 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 #  This file is part of the mantid workbench.
-from mantid.py3compat.mock import Mock
+from mock import Mock
+
 from mantidqt.utils.testing.strict_mock import StrictMock
 
 try:

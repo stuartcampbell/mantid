@@ -12,7 +12,8 @@ from matplotlib.collections import PolyCollection
 from matplotlib.pyplot import figure
 
 from mantid.plots import datafunctions
-from mantid.py3compat.mock import Mock
+from mock import Mock
+
 from mantidqt.widgets.waterfallplotfillareadialog.presenter import WaterfallPlotFillAreaDialogPresenter
 
 

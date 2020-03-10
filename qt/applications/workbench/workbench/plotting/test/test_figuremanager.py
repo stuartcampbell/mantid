@@ -7,7 +7,8 @@
 #  This file is part of the mantid workbench.
 import unittest
 
-from mantid.py3compat.mock import MagicMock, patch
+from mock import MagicMock, patch
+
 from mantidqt.utils.qt.testing import start_qapplication
 from workbench.plotting.figuremanager import FigureCanvasQTAgg, FigureManagerWorkbench
 

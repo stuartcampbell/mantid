@@ -12,7 +12,8 @@ Defines the QMainWindow of the application and the main() entry point.
 """
 import unittest
 
-from mantid.py3compat.mock import patch
+from mock import patch
+
 from workbench.app.mainwindow import MainWindow
 
 

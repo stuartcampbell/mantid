@@ -9,7 +9,7 @@
 
 import unittest
 
-from mantid.py3compat import mock
+import mock
 from mantidqt.utils.qt.testing import start_qapplication
 from workbench.projectrecovery.recoverygui.projectrecoverywidgetview import ProjectRecoveryWidgetView
 

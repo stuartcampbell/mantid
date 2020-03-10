@@ -7,7 +7,7 @@
 
 import unittest
 
-from mantid.py3compat import mock
+import mock
 
 from Engineering.gui.engineering_diffraction.tabs.fitting.plotting import plot_model, plot_view, plot_presenter
 

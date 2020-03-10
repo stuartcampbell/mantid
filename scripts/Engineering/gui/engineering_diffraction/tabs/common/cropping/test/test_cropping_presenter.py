@@ -7,7 +7,7 @@
 
 import unittest
 
-from mantid.py3compat import mock
+import mock
 from Engineering.gui.engineering_diffraction.tabs.common.cropping import cropping_model, cropping_view, cropping_presenter
 
 dir_path = "Engineering.gui.engineering_diffraction.tabs.common.cropping"

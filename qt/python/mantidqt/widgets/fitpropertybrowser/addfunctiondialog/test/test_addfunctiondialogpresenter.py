@@ -8,7 +8,8 @@
 
 import unittest
 
-from mantid.py3compat.mock import patch
+from mock import patch
+
 from mantidqt.widgets.fitpropertybrowser.addfunctiondialog.presenter import AddFunctionDialog
 from testhelpers import assertRaisesNothing
 

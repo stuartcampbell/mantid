@@ -14,7 +14,8 @@
 import unittest
 
 from mantid.plots.utility import legend_set_draggable
-from mantid.py3compat.mock import create_autospec
+from mock import create_autospec
+
 from matplotlib.legend import Legend
 
 

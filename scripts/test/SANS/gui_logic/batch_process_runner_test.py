@@ -7,7 +7,7 @@
 import unittest
 from qtpy.QtCore import QThreadPool
 
-from mantid.py3compat import mock
+import mock
 from sans.common.enums import (OutputMode)
 from sans.gui_logic.models.batch_process_runner import BatchProcessRunner
 

@@ -15,7 +15,8 @@ import numpy as np
 
 import mantid.api
 import mantid.plots.datafunctions as funcs
-from mantid.py3compat.mock import Mock
+from mock import Mock
+
 from mantid.kernel import config
 from mantid.plots.utility import MantidAxType
 from mantid.simpleapi import (AddSampleLog, AddTimeSeriesLog, ConjoinWorkspaces,

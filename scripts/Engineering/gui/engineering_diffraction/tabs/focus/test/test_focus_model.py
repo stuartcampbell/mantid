@@ -8,7 +8,8 @@
 import unittest
 from os import path
 
-from mantid.py3compat.mock import patch
+from mock import patch
+
 from Engineering.gui.engineering_diffraction.tabs.focus import model
 from Engineering.gui.engineering_diffraction.tabs.common import path_handling
 from Engineering.gui.engineering_diffraction.tabs.common.calibration_info import CalibrationInfo

@@ -7,7 +7,7 @@
 from qtpy.QtWidgets import QApplication
 import unittest
 
-from mantid.py3compat import mock
+import mock
 from reduction_gui.reduction.toftof.toftof_reduction import TOFTOFScriptElement, OptionalFloat
 from reduction_gui.widgets.toftof.toftof_setup import TOFTOFSetupWidget
 

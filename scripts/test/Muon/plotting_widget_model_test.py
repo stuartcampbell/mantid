@@ -6,8 +6,9 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 import unittest
 
-from mantid.py3compat import mock
-from mantid.py3compat.mock import patch
+import mock
+from mock import patch
+
 
 from Muon.GUI.Common.plotting_widget.plotting_widget_model import PlotWidgetModel
 from mantid.simpleapi import *

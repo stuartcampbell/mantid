@@ -12,7 +12,8 @@ import matplotlib as mpl
 mpl.use('Agg')  # noqa
 import matplotlib.pyplot as plt
 
-from mantid.py3compat.mock import Mock
+from mock import Mock
+
 from workbench.plotting.plotscriptgenerator.axes import (generate_axis_limit_commands,
                                                          generate_axis_label_commands)
 

@@ -7,7 +7,7 @@
 import unittest
 
 from ErrorReporter.error_report_presenter import ErrorReporterPresenter
-from mantid.py3compat import mock
+import mock
 
 
 class ErrorReportPresenterTest(unittest.TestCase):

@@ -7,7 +7,8 @@
 
 import unittest
 
-from mantid.py3compat.mock import patch
+from mock import patch
+
 from Engineering.gui.engineering_diffraction.settings.settings_model import SettingsModel
 
 dir_path = "Engineering.gui.engineering_diffraction.settings."

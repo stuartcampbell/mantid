@@ -11,7 +11,7 @@ import uuid
 
 import six
 
-from mantid.py3compat import mock
+import mock
 from sans.command_interface.ISISCommandInterface import MaskFile
 
 

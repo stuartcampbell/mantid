@@ -9,7 +9,7 @@
 
 import unittest
 
-from mantid.py3compat import mock
+import mock
 from workbench.projectrecovery.recoverygui.projectrecoverypresenter import ProjectRecoveryPresenter
 
 

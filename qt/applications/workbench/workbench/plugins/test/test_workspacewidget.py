@@ -12,7 +12,7 @@ import unittest
 import matplotlib as mpl
 mpl.use('Agg')  # noqa
 
-from mantid.py3compat import mock
+import mock
 from mantid.simpleapi import (CreateEmptyTableWorkspace, CreateSampleWorkspace,
                               GroupWorkspaces)
 from mantidqt.utils.qt.testing import start_qapplication

@@ -9,7 +9,8 @@ import unittest
 
 from qtpy.QtWidgets import QApplication, QWidget
 
-from mantid.py3compat.mock import MagicMock
+from mock import MagicMock
+
 from mantidqt.utils.qt.testing import start_qapplication
 from mantidqt.utils.qt.testing.qt_widget_finder import QtWidgetFinder
 from workbench.widgets.settings.presenter import SettingsPresenter

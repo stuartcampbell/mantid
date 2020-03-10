@@ -7,8 +7,9 @@
 
 import unittest
 
-from mantid.py3compat import mock
-from mantid.py3compat.mock import patch
+import mock
+from mock import patch
+
 
 from Engineering.gui.engineering_diffraction.tabs.fitting.data_handling.data_model import FittingDataModel
 

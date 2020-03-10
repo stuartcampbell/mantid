@@ -1,6 +1,6 @@
 import unittest
 
-from mantid.py3compat import mock
+import mock
 from sans.gui_logic.presenter.presenter_common import PresenterCommon
 
 

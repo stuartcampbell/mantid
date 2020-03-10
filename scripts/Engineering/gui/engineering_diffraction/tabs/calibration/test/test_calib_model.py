@@ -7,8 +7,10 @@
 
 import unittest
 
-from mantid.py3compat.mock import patch
-from mantid.py3compat.mock import MagicMock
+from mock import patch
+
+from mock import MagicMock
+
 from Engineering.gui.engineering_diffraction.tabs.calibration.model import CalibrationModel
 
 VANADIUM_NUMBER = "307521"
