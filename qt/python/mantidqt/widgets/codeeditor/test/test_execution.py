@@ -17,8 +17,9 @@ import unittest
 from qtpy.QtCore import QCoreApplication, QObject
 
 # local imports
-from mantid.py3compat import StringIO
+from io import StringIO
 from mock import patch, Mock
+
 
 
 from mantidqt.utils.qt.testing import start_qapplication
