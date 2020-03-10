@@ -26,6 +26,7 @@ namespace API {
 class IFunction;
 class CompositeFunction;
 class Expression;
+class MultiDomainFunction;
 
 /** @class FunctionFactoryImpl
 
@@ -52,6 +53,12 @@ public:
   /// Creates an instance of a function
   boost::shared_ptr<IFunction>
   createInitialized(const std::string &input) const;
+
+  /// Creates an instnce of an inizialised multidomain function where each
+  /// domain has the same function.
+  boost::shared_ptr<MultiDomainFunction>
+  createInitializedMultiDomainFunction(const std::string &input,
+                                       size_t domainNumber);
 
   /// Query available functions based on the template type
   template <typename FunctionType>
