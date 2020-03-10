@@ -5,7 +5,6 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 import unittest
-import six
 import mock
 from mantidqt.utils.qt.testing import start_qapplication
 from mantid import ConfigService
