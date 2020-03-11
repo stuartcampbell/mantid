@@ -10,7 +10,6 @@ import unittest
 from mock import Mock, PropertyMock
 
 
-
 class StrictMock(Mock):
     """
     This mock automatically sets "spec_set={}", which will cause errors when methods

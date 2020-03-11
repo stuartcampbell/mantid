@@ -21,7 +21,6 @@ from io import StringIO
 from mock import patch, Mock
 
 
-
 from mantidqt.utils.qt.testing import start_qapplication
 from mantidqt.widgets.codeeditor.execution import PythonCodeExecution, _get_imported_from_future
 

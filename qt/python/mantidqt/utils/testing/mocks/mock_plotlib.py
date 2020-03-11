@@ -26,7 +26,6 @@ and it should not break any existing tests.
 from mock import Mock
 
 
-
 class MockAx:
     def __init__(self):
         self.plot = Mock()
