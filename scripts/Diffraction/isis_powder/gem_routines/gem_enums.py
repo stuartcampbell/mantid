@@ -4,6 +4,8 @@
 #     NScD Oak Ridge National Laboratory, European Spallation Source
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
+
+
 class GEM_CHOPPER_MODES(object):
     enum_friendly_name = "Gem chopper modes"
     PDF = "PDF"

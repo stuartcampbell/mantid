@@ -5,6 +5,8 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 # noinspection PyPep8Naming
+
+
 class Instrument(object):
 
     _name = None

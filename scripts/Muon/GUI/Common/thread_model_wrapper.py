@@ -4,6 +4,8 @@
 #     NScD Oak Ridge National Laboratory, European Spallation Source
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
+
+
 class ThreadModelWrapper(object):
     def __init__(self, function=None):
         self.callback = function

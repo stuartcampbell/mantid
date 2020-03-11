@@ -59,6 +59,7 @@ def _get_analysis_data_service():
 
 # -------------------------- Wrapped MantidPlot functions -----------------
 
+
 def runPythonScript(code, asynchronous=False, quiet=False, redirect=True):
     """
         Redirects the runPythonScript method to the app object

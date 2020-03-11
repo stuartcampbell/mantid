@@ -4,6 +4,8 @@
 #     NScD Oak Ridge National Laboratory, European Spallation Source
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
+
+
 def get_plotting_module():
     """
     :returns: The plotting module to use. Can be None if Qt is not accessible.

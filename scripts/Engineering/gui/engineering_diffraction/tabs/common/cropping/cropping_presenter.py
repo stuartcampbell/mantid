@@ -5,6 +5,7 @@
 #     & Institut Laue - Langevin
 # SPDX - License - Identifier: GPL - 3.0 +
 
+
 class CroppingPresenter(object):
     def __init__(self, model, view):
         self.model = model

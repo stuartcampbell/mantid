@@ -16,6 +16,7 @@ import numpy
 
 # Define some pure-Python functions to add to the mix
 
+
 def run_algorithm(name, **kwargs):
     """Run a named algorithm and return the
     algorithm handle
