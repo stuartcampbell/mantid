@@ -193,7 +193,7 @@ class ISISPowderSampleDetailsTest(unittest.TestCase):
 
         material_obj = sample_details._Material(chemical_formula='V')
         with self.assertRaisesRegex(ValueError, "absorption_cross_section was: -1 which is impossible for a physical "
-                                                 "object"):
+                                    "object"):
             material_obj.set_material_properties(abs_cross_sect=bad_absorb, scattering_cross_sect=good_scattering)
 
         # Check the immutability flag has not been set on a failure
@@ -278,9 +278,9 @@ class ISISPowderSampleDetailsTest(unittest.TestCase):
             sample_details_obj.print_sample_details()
             captured_std_out_material_props = std_out_buffer.getvalue()
             self.assertRegex(captured_std_out_material_props, "Absorption cross section: " +
-                        str(expected_abs_x_section))
+                             str(expected_abs_x_section))
             self.assertRegex(captured_std_out_material_props, "Scattering cross section: " +
-                        str(expected_scattering_x_section))
+                             str(expected_scattering_x_section))
         finally:
             # Ensure std IO is restored. Do NOT remove this line as all std out will pipe into our buffer otherwise
             sys.stdout = old_std_out
