@@ -150,6 +150,13 @@ bool XIntegrationScrollBar::eventFilter(QObject *object, QEvent *e) {
       updateMinMax();
     }
     return true;
+  } else if (e->type() == QEvent::KeyRelease) {
+    QKeyEvent *keyEv = static_cast<QKeyEvent *>(e);
+    if ((keyEv->key() == Qt::Key_Left || keyEv->key() == Qt::Key_Right) &&
+        !keyEv->isAutoRepeat()) {
+      emit changed(m_minimum, m_maximum);
+    }
+    return true;
   }
   return false;
 }
