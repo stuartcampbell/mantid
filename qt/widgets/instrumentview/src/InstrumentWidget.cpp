@@ -1337,7 +1337,7 @@ bool InstrumentWidget::hasWorkspace(const std::string &wsName) const {
 }
 
 void InstrumentWidget::handleWorkspaceReplacement(
-    const std::string &wsName, const std::shared_ptr<Workspace> workspace) {
+    const std::string &wsName, const std::shared_ptr<Workspace> &workspace) {
   if (!hasWorkspace(wsName) || !m_instrumentActor) {
     return;
   }
@@ -1365,7 +1365,7 @@ void InstrumentWidget::handleWorkspaceReplacement(
  */
 void InstrumentWidget::preDeleteHandle(
     const std::string &ws_name,
-    const std::shared_ptr<Workspace> workspace_ptr) {
+    const std::shared_ptr<Workspace> &workspace_ptr) {
   if (hasWorkspace(ws_name)) {
     emit preDeletingHandle();
     close();
@@ -1380,7 +1380,7 @@ void InstrumentWidget::preDeleteHandle(
 }
 
 void InstrumentWidget::afterReplaceHandle(
-    const std::string &wsName, const std::shared_ptr<Workspace> workspace) {
+    const std::string &wsName, const std::shared_ptr<Workspace> &workspace) {
   handleWorkspaceReplacement(wsName, workspace);
 }
 

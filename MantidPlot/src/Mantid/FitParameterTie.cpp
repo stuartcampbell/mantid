@@ -12,7 +12,8 @@
 /// Constructor
 FitParameterTie::FitParameterTie(
     std::shared_ptr<Mantid::API::CompositeFunction> cf)
-    : m_compositeFunction(cf), m_prop(nullptr) {}
+    // cppcheck-suppress passedByValue
+    : m_compositeFunction(std::move(cf)), m_prop(nullptr) {}
 
 /// Destructor
 FitParameterTie::~FitParameterTie() {

@@ -288,7 +288,7 @@ void MantidMatrixCurve::itemChanged() {
  */
 QString MantidMatrixCurve::createCurveName(
     const QString &prefix,
-    const std::shared_ptr<const Mantid::API::MatrixWorkspace> ws) {
+    const std::shared_ptr<const Mantid::API::MatrixWorkspace> &ws) {
   QString name = "";
 
   if (prefix.isEmpty())
@@ -347,7 +347,7 @@ void MantidMatrixCurve::dataReset(const QString &wsName) {
 
 void MantidMatrixCurve::afterReplaceHandle(
     const std::string &wsName,
-    const std::shared_ptr<Mantid::API::Workspace> ws) {
+    const std::shared_ptr<Mantid::API::Workspace> &ws) {
   (void)ws;
 
   invalidateBoundingRect();

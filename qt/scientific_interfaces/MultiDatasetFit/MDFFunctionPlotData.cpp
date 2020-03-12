@@ -38,7 +38,8 @@ auto FUNCTION_CURVE_COLOR = Qt::magenta;
 MDFFunctionPlotData::MDFFunctionPlotData(
     std::shared_ptr<Mantid::API::IFunction> fun, double startX, double endX,
     size_t nX)
-    : m_function(fun), m_functionCurve(new QwtPlotCurve()) {
+    // cppcheck-suppress passedByValue
+    : m_function(std::move(fun)), m_functionCurve(new QwtPlotCurve()) {
   setDomain(startX, endX, nX);
   auto pen = m_functionCurve->pen();
   pen.setColor(FUNCTION_CURVE_COLOR);

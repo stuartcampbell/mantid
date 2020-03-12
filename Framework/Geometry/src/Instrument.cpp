@@ -59,7 +59,7 @@ Instrument::Instrument(const std::string &name)
  *  @param instr :: instrument for parameter inclusion
  *  @param map :: parameter map to include
  */
-Instrument::Instrument(const std::shared_ptr<const Instrument> instr,
+Instrument::Instrument(const std::shared_ptr<const Instrument> &instr,
                        std::shared_ptr<ParameterMap> map)
     : CompAssembly(instr.get(), map.get()), m_sourceCache(instr->m_sourceCache),
       m_sampleCache(instr->m_sampleCache), m_defaultView(instr->m_defaultView),

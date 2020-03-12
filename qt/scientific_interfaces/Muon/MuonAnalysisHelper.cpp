@@ -905,8 +905,8 @@ QString runNumberString(const std::string &workspaceName,
  * @throws std::invalid_argument if loadedWorkspace is null
  */
 bool isReloadGroupingNecessary(
-    const std::shared_ptr<Mantid::API::Workspace> currentWorkspace,
-    const std::shared_ptr<Mantid::API::Workspace> loadedWorkspace) {
+    const std::shared_ptr<Mantid::API::Workspace> &currentWorkspace,
+    const std::shared_ptr<Mantid::API::Workspace> &loadedWorkspace) {
   if (!loadedWorkspace) {
     throw std::invalid_argument("No loaded workspace to get grouping for!");
   }

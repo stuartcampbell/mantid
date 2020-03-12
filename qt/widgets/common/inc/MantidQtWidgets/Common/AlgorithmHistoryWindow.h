@@ -145,7 +145,7 @@ signals:
 public:
   AlgorithmHistoryWindow(
       QWidget *parent,
-      const std::shared_ptr<const Mantid::API::Workspace> /*wsptr*/);
+      const std::shared_ptr<const Mantid::API::Workspace> & /*wsptr*/);
   AlgorithmHistoryWindow(QWidget *parent, const QString &workspaceName);
   ~AlgorithmHistoryWindow() override;
 

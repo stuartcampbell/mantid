@@ -405,7 +405,7 @@ void AlgorithmFactoryImpl::fillHiddenCategories(
  * @returns the name of the algroithm
  */
 const std::string AlgorithmFactoryImpl::extractAlgName(
-    const std::shared_ptr<IAlgorithm> alg) const {
+    const std::shared_ptr<IAlgorithm> &alg) const {
   return alg->name();
 }
 
@@ -414,7 +414,7 @@ const std::string AlgorithmFactoryImpl::extractAlgName(
  * @returns the version of the algroithm
  */
 int AlgorithmFactoryImpl::extractAlgVersion(
-    const std::shared_ptr<IAlgorithm> alg) const {
+    const std::shared_ptr<IAlgorithm> &alg) const {
   return alg->version();
 }
 

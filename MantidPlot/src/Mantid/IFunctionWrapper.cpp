@@ -26,7 +26,7 @@ void IFunctionWrapper::setFunction(const QString &name) {
 }
 
 void IFunctionWrapper::setFunction(
-    std::shared_ptr<Mantid::API::IFunction> function) {
+    const std::shared_ptr<Mantid::API::IFunction> &function) {
   m_function = function;
   m_compositeFunction =
       std::dynamic_pointer_cast<Mantid::API::CompositeFunction>(m_function);

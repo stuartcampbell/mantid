@@ -130,8 +130,8 @@ runNumberString(const std::string &workspaceName, const std::string &firstRun);
 
 /// Decide if grouping needs to be reloaded
 MANTIDQT_MUONINTERFACE_DLL bool isReloadGroupingNecessary(
-    const std::shared_ptr<Mantid::API::Workspace> currentWorkspace,
-    const std::shared_ptr<Mantid::API::Workspace> loadedWorkspace);
+    const std::shared_ptr<Mantid::API::Workspace> &currentWorkspace,
+    const std::shared_ptr<Mantid::API::Workspace> &loadedWorkspace);
 
 /// Parse run label into instrument and runs
 MANTIDQT_MUONINTERFACE_DLL void parseRunLabel(const std::string &label,

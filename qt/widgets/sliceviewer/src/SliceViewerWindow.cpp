@@ -411,7 +411,7 @@ void SliceViewerWindow::changePlanarWidth(double width) {
 /** Signal to close this window if the workspace has just been deleted */
 void SliceViewerWindow::preDeleteHandle(
     const std::string &wsName,
-    const std::shared_ptr<Mantid::API::Workspace> ws) {
+    const std::shared_ptr<Mantid::API::Workspace> &ws) {
   Mantid::API::IMDWorkspace *ws_ptr =
       dynamic_cast<Mantid::API::IMDWorkspace *>(ws.get());
   if (ws_ptr) {
@@ -458,7 +458,7 @@ void SliceViewerWindow::renameHandle(const std::string &oldName,
  * one */
 void SliceViewerWindow::afterReplaceHandle(
     const std::string &wsName,
-    const std::shared_ptr<Mantid::API::Workspace> ws) {
+    const std::shared_ptr<Mantid::API::Workspace> &ws) {
   Mantid::API::IMDWorkspace_sptr new_md_ws =
       std::dynamic_pointer_cast<Mantid::API::IMDWorkspace>(ws);
   if (new_md_ws) {
