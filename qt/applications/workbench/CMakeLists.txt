@@ -13,10 +13,10 @@ add_python_package(workbench
 )
 
 set_target_properties(workbench PROPERTIES
-                    VS_DEBUGGER_COMMAND $<$<BOOL:${WIN32}>:"${PYTHON_EXECUTABLE}">
-                    VS_DEBUGGER_COMMAND_ARGUMENTS $<$<BOOL:${WIN32}>:"${CMAKE_SOURCE_DIR}/TODO">
-                    VS_DEBUGGER_ENVIRONMENT $<$<BOOL:${WIN32}>:"PYTHONPATH=${MSVC_BIN_DIR}">
- )
+                      VS_DEBUGGER_COMMAND $<$<BOOL:${WIN32}>:${PYTHON_EXECUTABLE}>
+                      VS_DEBUGGER_COMMAND_ARGUMENTS $<$<BOOL:${WIN32}>:${MSVC_BIN_DIR}/workbench-script.pyw>
+                      VS_DEBUGGER_ENVIRONMENT $<$<BOOL:${WIN32}>:${MSVC_IDE_ENV}>
+                      )
 
 set(_images_qrc_file ${CMAKE_CURRENT_LIST_DIR}/resources.qrc)
 

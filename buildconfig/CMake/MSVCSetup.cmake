@@ -142,6 +142,9 @@ file(GENERATE
 # install version
 set ( MANTIDPYTHON_PREAMBLE "set PYTHONHOME=%_BIN_DIR%\nset PATH=%_BIN_DIR%;%_BIN_DIR%\\..\\plugins;%_BIN_DIR%\\..\\PVPlugins;%PATH%" )
 
+#  Semi-colon gen exp prevents future generators converting to CMake lists
+set ( MSVC_IDE_ENV "PYTHONPATH=${MSVC_BIN_DIR}$<SEMICOLON>PYTHONHOME=${MSVC_PYTHON_EXECUTABLE_DIR}" )
+
 if (MAKE_VATES)
   set ( PV_LIBS "%_BIN_DIR%\\..\\lib\\paraview-${PARAVIEW_VERSION_MAJOR}.${PARAVIEW_VERSION_MINOR}")
   set ( PARAVIEW_PYTHON_PATHS ";${PV_LIBS}\\site-packages;${PV_LIBS}\\site-packages\\vtk" )
@@ -157,12 +160,11 @@ configure_file ( ${PACKAGING_DIR}/mantidpython.bat.in
 ##########################################################################
 
 add_custom_target(SystemTests)
-add_dependencies(SystemTests Framework)
+add_dependencies(SystemTests Framework StandardTestData SystemTestData)
 set_target_properties(SystemTests PROPERTIES
                     VS_DEBUGGER_COMMAND "${PYTHON_EXECUTABLE}"
-                    VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_SOURCE_DIR}/Testing/SystemTests/scripts/runSystemTests.py 
-                                                  --executable \"${MSVC_BIN_DIR}/mantidpython.bat\" --exec-args \" --classic\" -R OSIRISConv"
-                    VS_DEBUGGER_ENVIRONMENT  "PYTHONPATH=${MSVC_BIN_DIR}"
+                    VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_SOURCE_DIR}/Testing/SystemTests/scripts/runSystemTests.py --executable \"${MSVC_BIN_DIR}/mantidpython.bat\" --exec-args \" --classic\""
+                    VS_DEBUGGER_ENVIRONMENT "${MSVC_IDE_ENV}"
  )
 ###########################################################################
 # (Fake) installation variables to keep windows sweet
