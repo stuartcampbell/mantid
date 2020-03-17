@@ -36,6 +36,9 @@ class LegendProperties(dict):
 
     @classmethod
     def from_legend(cls, legend):
+        if not (legend and legend.get_texts()):
+            return None
+
         props = dict()
 
         props['visible'] = legend.get_visible()
@@ -132,6 +135,10 @@ class LegendProperties(dict):
 
     @classmethod
     def create_legend(cls, props, ax):
+        if not props:
+            legend_set_draggable(ax.legend(), True)
+            return
+
         if int(matplotlib.__version__[0]) >= 2:
             legend = ax.legend(ncol=props['columns'],
                                prop={'size': props['entries_size']},
