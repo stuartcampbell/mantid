@@ -55,6 +55,7 @@ set(SRC_FILES
     src/ConvertDiffCal.cpp
     src/ConvertEmptyToTof.cpp
     src/ConvertFromDistribution.cpp
+    src/ConvertSingleSpectrumLambdaToQ.cpp
     src/ConvertSpectrumAxis.cpp
     src/ConvertSpectrumAxis2.cpp
     src/ConvertTableToMatrixWorkspace.cpp
@@ -400,6 +401,7 @@ set(INC_FILES
     inc/MantidAlgorithms/ConvertDiffCal.h
     inc/MantidAlgorithms/ConvertEmptyToTof.h
     inc/MantidAlgorithms/ConvertFromDistribution.h
+    inc/MantidAlgorithms/ConvertSingleSpectrumLambdaToQ.h
     inc/MantidAlgorithms/ConvertSpectrumAxis.h
     inc/MantidAlgorithms/ConvertSpectrumAxis2.h
     inc/MantidAlgorithms/ConvertTableToMatrixWorkspace.h
@@ -762,6 +764,7 @@ set(TEST_FILES
     ConvertDiffCalTest.h
     ConvertEmptyToTofTest.h
     ConvertFromDistributionTest.h
+    ConvertSingleSpectrumLambdaToQTest.h
     ConvertSpectrumAxis2Test.h
     ConvertSpectrumAxisTest.h
     ConvertTableToMatrixWorkspaceTest.h
