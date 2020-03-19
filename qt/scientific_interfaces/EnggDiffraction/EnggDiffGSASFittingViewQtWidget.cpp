@@ -16,15 +16,17 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <boost/make_shared.hpp>
+#include <utility>
+
 
 namespace MantidQt {
 namespace CustomInterfaces {
 
 EnggDiffGSASFittingViewQtWidget::EnggDiffGSASFittingViewQtWidget(
     boost::shared_ptr<IEnggDiffractionUserMsg> userMessageProvider,
-    boost::shared_ptr<IEnggDiffractionPythonRunner> pythonRunner,
+    const boost::shared_ptr<IEnggDiffractionPythonRunner>& pythonRunner,
     boost::shared_ptr<IEnggDiffractionParam> mainSettings)
-    : m_userMessageProvider(userMessageProvider) {
+    : m_userMessageProvider(std::move(userMessageProvider)) {
 
   auto multiRunWidgetModel =
       std::make_unique<EnggDiffMultiRunFittingWidgetModel>();

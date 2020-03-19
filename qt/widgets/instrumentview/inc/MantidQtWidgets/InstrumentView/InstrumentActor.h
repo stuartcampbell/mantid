@@ -217,7 +217,7 @@ signals:
 
 private:
   void setUpWorkspace(
-      boost::shared_ptr<const Mantid::API::MatrixWorkspace> sharedWorkspace,
+      const boost::shared_ptr<const Mantid::API::MatrixWorkspace>& sharedWorkspace,
       double scaleMin, double scaleMax);
   void setupPhysicalInstrumentIfExists();
   void resetColors();

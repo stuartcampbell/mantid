@@ -403,7 +403,7 @@ double Qxy::getQminFromWs(const API::MatrixWorkspace &inputWorkspace) {
  *  @return A pointer to the newly-created workspace
  */
 API::MatrixWorkspace_sptr
-Qxy::setUpOutputWorkspace(API::MatrixWorkspace_const_sptr inputWorkspace) {
+Qxy::setUpOutputWorkspace(const API::MatrixWorkspace_const_sptr& inputWorkspace) {
   const double max = getProperty("MaxQxy");
   const double delta = getProperty("DeltaQ");
   const bool log_binning = getProperty("IQxQyLogBinning");

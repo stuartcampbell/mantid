@@ -153,8 +153,8 @@ void CalMuonDetectorPhases::exec() {
  * @param resGroup :: [output] Workspace group storing the fitting results
  */
 void CalMuonDetectorPhases::fitWorkspace(const API::MatrixWorkspace_sptr &ws,
-                                         double freq, std::string groupName,
-                                         API::ITableWorkspace_sptr resTab,
+                                         double freq, const std::string& groupName,
+                                         const API::ITableWorkspace_sptr& resTab,
                                          API::WorkspaceGroup_sptr &resGroup) {
 
   auto nhist = static_cast<int>(ws->getNumberHistograms());

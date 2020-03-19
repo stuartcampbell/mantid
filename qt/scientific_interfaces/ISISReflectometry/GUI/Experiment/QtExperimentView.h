@@ -25,7 +25,7 @@ class MANTIDQT_ISISREFLECTOMETRY_DLL QtExperimentView : public QWidget,
                                                         public IExperimentView {
   Q_OBJECT
 public:
-  QtExperimentView(Mantid::API::IAlgorithm_sptr algorithmForTooltips,
+  QtExperimentView(const Mantid::API::IAlgorithm_sptr& algorithmForTooltips,
                    QWidget *parent = nullptr);
   void subscribe(ExperimentViewSubscriber *notifyee) override;
   void connectExperimentSettingsWidgets() override;
@@ -116,7 +116,7 @@ public slots:
 private:
   void
   initializeTableColumns(QTableWidget &table,
-                         Mantid::API::IAlgorithm_sptr algorithmForTooltips);
+                         const Mantid::API::IAlgorithm_sptr& algorithmForTooltips);
   void initializeTableItems(QTableWidget &table);
   void initializeTableRow(QTableWidget &table, int row);
   void initializeTableRow(QTableWidget &table, int row,
@@ -130,14 +130,14 @@ private:
   void initOptionsTable(Mantid::API::IAlgorithm_sptr algorithmForTooltips);
   void initFloodControls();
   void registerSettingsWidgets(Mantid::API::IAlgorithm_sptr alg);
-  void registerExperimentSettingsWidgets(Mantid::API::IAlgorithm_sptr alg);
+  void registerExperimentSettingsWidgets(const Mantid::API::IAlgorithm_sptr& alg);
   void setToolTipAsPropertyDocumentation(QWidget &widget,
                                          std::string const &propertyName,
-                                         Mantid::API::IAlgorithm_sptr alg);
+                                         const Mantid::API::IAlgorithm_sptr& alg);
 
   template <typename Widget>
   void registerSettingWidget(Widget &widget, std::string const &propertyName,
-                             Mantid::API::IAlgorithm_sptr alg);
+                             const Mantid::API::IAlgorithm_sptr& alg);
   void connectSettingsChange(QLineEdit &edit);
   void connectSettingsChange(QComboBox &edit);
   void connectSettingsChange(QCheckBox &edit);

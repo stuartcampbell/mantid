@@ -122,7 +122,7 @@ void MantidTreeModel::showAlgorithmDialog(const QString &algName,
  * Helper function not required by interface
  */
 MantidQt::API::AlgorithmDialog *
-MantidTreeModel::createAlgorithmDialog(Mantid::API::IAlgorithm_sptr alg) {
+MantidTreeModel::createAlgorithmDialog(const Mantid::API::IAlgorithm_sptr& alg) {
   QHash<QString, QString> presets;
   QStringList enabled;
 

@@ -186,7 +186,7 @@ void SaveCSV::exec() {
 }
 
 void SaveCSV::saveXerrors(std::ofstream &stream,
-                          const Mantid::DataObjects::Workspace2D_sptr workspace,
+                          const Mantid::DataObjects::Workspace2D_sptr& workspace,
                           const size_t numberOfHist) {
   // If there isn't a dx values present in the first entry then return
   if (!workspace->hasDx(0)) {

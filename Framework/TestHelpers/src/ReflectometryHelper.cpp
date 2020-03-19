@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidTestHelpers/ReflectometryHelper.h"
 
 #include "MantidAPI/AlgorithmManager.h"
@@ -115,7 +119,7 @@ void prepareInputGroup(std::string const &name, std::string const &paramsType,
   mkGroup->execute();
 }
 
-std::vector<MatrixWorkspace_sptr> groupToVector(WorkspaceGroup_sptr group) {
+std::vector<MatrixWorkspace_sptr> groupToVector(const WorkspaceGroup_sptr& group) {
   std::vector<MatrixWorkspace_sptr> out;
   for (size_t i = 0; i < group->size(); ++i) {
     out.emplace_back(
@@ -131,7 +135,7 @@ std::vector<MatrixWorkspace_sptr> retrieveOutWS(std::string const &name) {
 
 void applyPolarizationEfficiencies(WorkspaceGroup_sptr ws) {
 
-  auto wss = groupToVector(ws);
+  auto wss = groupToVector(std::move(ws));
   auto Rpp = wss[0];
   auto Rpa = wss[1];
   auto Rap = wss[2];

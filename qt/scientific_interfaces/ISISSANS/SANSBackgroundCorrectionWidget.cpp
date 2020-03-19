@@ -16,7 +16,7 @@ namespace {
 Mantid::Kernel::Logger g_log("SANSBackgroundCorrectionWidget");
 
 bool hasRunNumber(
-    MantidQt::CustomInterfaces::SANSBackgroundCorrectionSettings setting) {
+    const MantidQt::CustomInterfaces::SANSBackgroundCorrectionSettings& setting) {
   auto hasNumber = true;
   if (setting.getRunNumber().isEmpty()) {
     hasNumber = false;
@@ -49,7 +49,7 @@ SANSBackgroundCorrectionWidget::SANSBackgroundCorrectionWidget(QWidget *parent)
  * want
  */
 void SANSBackgroundCorrectionWidget::setDarkRunSettingForTimeDetectors(
-    SANSBackgroundCorrectionSettings setting) {
+    const SANSBackgroundCorrectionSettings& setting) {
 
   if (!hasRunNumber(setting)) {
     return;
@@ -73,7 +73,7 @@ void SANSBackgroundCorrectionWidget::setDarkRunSettingForTimeDetectors(
  * want
  */
 void SANSBackgroundCorrectionWidget::setDarkRunSettingForTimeMonitors(
-    SANSBackgroundCorrectionSettings setting) {
+    const SANSBackgroundCorrectionSettings& setting) {
   if (!hasRunNumber(setting)) {
     return;
   }
@@ -97,7 +97,7 @@ void SANSBackgroundCorrectionWidget::setDarkRunSettingForTimeMonitors(
  * want
  */
 void SANSBackgroundCorrectionWidget::setDarkRunSettingForUampDetectors(
-    SANSBackgroundCorrectionSettings setting) {
+    const SANSBackgroundCorrectionSettings& setting) {
   if (!hasRunNumber(setting)) {
     return;
   }
@@ -118,7 +118,7 @@ void SANSBackgroundCorrectionWidget::setDarkRunSettingForUampDetectors(
  * want
  */
 void SANSBackgroundCorrectionWidget::setDarkRunSettingForUampMonitors(
-    SANSBackgroundCorrectionSettings setting) {
+    const SANSBackgroundCorrectionSettings& setting) {
   if (!hasRunNumber(setting)) {
     return;
   }

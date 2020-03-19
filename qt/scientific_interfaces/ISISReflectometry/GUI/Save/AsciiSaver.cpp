@@ -11,6 +11,10 @@
 #include "MantidAPI/WorkspaceGroup.h"
 #include <Poco/File.h>
 #include <Poco/Path.h>
+
+
+#include <utility>
+
 namespace MantidQt {
 namespace CustomInterfaces {
 namespace ISISReflectometry {
@@ -65,7 +69,7 @@ bool AsciiSaver::isValidSaveDirectory(std::string const &path) const {
 
 namespace {
 template <typename T>
-void setPropertyIfSupported(Mantid::API::IAlgorithm_sptr alg,
+void setPropertyIfSupported(const Mantid::API::IAlgorithm_sptr& alg,
                             std::string const &propertyName, T const &value) {
   if (alg->existsProperty(propertyName))
     alg->setProperty(propertyName, value);
@@ -93,7 +97,7 @@ AsciiSaver::workspace(std::string const &workspaceName) const {
 
 Mantid::API::IAlgorithm_sptr
 AsciiSaver::setUpSaveAlgorithm(std::string const &saveDirectory,
-                               Mantid::API::Workspace_sptr workspace,
+                               const Mantid::API::Workspace_sptr& workspace,
                                std::vector<std::string> const &logParameters,
                                FileFormatOptions const &fileFormat) const {
   auto saveAlg = algorithmForFormat(fileFormat.format());
@@ -117,7 +121,7 @@ void AsciiSaver::save(Mantid::API::Workspace_sptr workspace,
                       std::vector<std::string> const &logParameters,
                       FileFormatOptions const &fileFormat) const {
   auto alg =
-      setUpSaveAlgorithm(saveDirectory, workspace, logParameters, fileFormat);
+      setUpSaveAlgorithm(saveDirectory, std::move(workspace), logParameters, fileFormat);
   alg->execute();
 }
 

@@ -8,6 +8,8 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <utility>
+
 
 namespace Mantid {
 namespace Poldi {
@@ -18,7 +20,7 @@ PoldiPeak_sptr PoldiPeak::clone() const {
 
 const MillerIndices &PoldiPeak::hkl() const { return m_hkl; }
 
-void PoldiPeak::setHKL(MillerIndices hkl) { m_hkl = hkl; }
+void PoldiPeak::setHKL(MillerIndices hkl) { m_hkl = std::move(hkl); }
 
 UncertainValue PoldiPeak::d() const { return m_d; }
 
@@ -119,13 +121,13 @@ PoldiPeak_sptr PoldiPeak::create(double qValue, double intensity) {
 
 PoldiPeak_sptr PoldiPeak::create(MillerIndices hkl, double dValue) {
   return PoldiPeak_sptr(new PoldiPeak(
-      UncertainValue(dValue), UncertainValue(0.0), UncertainValue(0.0), hkl));
+      UncertainValue(dValue), UncertainValue(0.0), UncertainValue(0.0), std::move(hkl)));
 }
 
 PoldiPeak_sptr PoldiPeak::create(MillerIndices hkl, UncertainValue dValue,
                                  UncertainValue intensity,
                                  UncertainValue fwhmRelative) {
-  return PoldiPeak_sptr(new PoldiPeak(dValue, intensity, fwhmRelative, hkl));
+  return PoldiPeak_sptr(new PoldiPeak(dValue, intensity, fwhmRelative, std::move(hkl)));
 }
 
 bool PoldiPeak::greaterThan(const PoldiPeak_sptr &first,
@@ -144,7 +146,7 @@ bool PoldiPeak::lessThan(const PoldiPeak_sptr &first,
 
 PoldiPeak::PoldiPeak(UncertainValue d, UncertainValue intensity,
                      UncertainValue fwhm, MillerIndices hkl)
-    : m_hkl(hkl), m_intensity(intensity) {
+    : m_hkl(std::move(hkl)), m_intensity(intensity) {
   setD(d);
   setFwhm(fwhm, Relative);
 }

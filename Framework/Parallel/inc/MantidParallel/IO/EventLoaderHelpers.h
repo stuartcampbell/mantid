@@ -79,7 +79,7 @@ template <class TimeOffsetType>
 void load(const Communicator &comm, const H5::Group &group,
           const std::vector<std::string> &bankNames,
           const std::vector<int32_t> &bankOffsets,
-          std::vector<std::vector<Types::Event::TofEvent> *> eventLists) {
+          const std::vector<std::vector<Types::Event::TofEvent> *>& eventLists) {
   // In tests loading from a single SSD this chunk size seems close to the
   // optimum. May need to be adjusted in the future (potentially dynamically)
   // when loading from parallel file systems and running on a cluster.

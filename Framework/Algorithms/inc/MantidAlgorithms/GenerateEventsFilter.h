@@ -76,7 +76,7 @@ private:
 
   void processInputTime();
   void setFilterByTimeOnly();
-  void setFilterByLogValue(std::string logname);
+  void setFilterByLogValue(const std::string& logname);
 
   void processSingleValueFilter(double minvalue, double maxvalue,
                                 bool filterincrease, bool filterdecrease);
@@ -93,7 +93,7 @@ private:
 
   /// Make multiple-log-value filters in serial
   void makeMultipleFiltersByValues(std::map<size_t, int> indexwsindexmap,
-                                   std::vector<double> logvalueranges,
+                                   const std::vector<double>& logvalueranges,
                                    bool centre, bool filterIncrease,
                                    bool filterDecrease,
                                    Types::Core::DateAndTime startTime,
@@ -101,7 +101,7 @@ private:
 
   /// Make multiple-log-value filters in serial in parallel
   void makeMultipleFiltersByValuesParallel(
-      std::map<size_t, int> indexwsindexmap, std::vector<double> logvalueranges,
+      const std::map<size_t, int>& indexwsindexmap, const std::vector<double>& logvalueranges,
       bool centre, bool filterIncrease, bool filterDecrease,
       Types::Core::DateAndTime startTime, Types::Core::DateAndTime stopTime);
 
@@ -109,7 +109,7 @@ private:
   void makeMultipleFiltersByValuesPartialLog(
       int istart, int iend, std::vector<Types::Core::DateAndTime> &vecSplitTime,
       std::vector<int> &vecSplitGroup, std::map<size_t, int> indexwsindexmap,
-      const std::vector<double> &logvalueranges, Types::Core::time_duration tol,
+      const std::vector<double> &logvalueranges, const Types::Core::time_duration& tol,
       bool filterIncrease, bool filterDecrease,
       Types::Core::DateAndTime startTime, Types::Core::DateAndTime stopTime);
 
@@ -124,7 +124,7 @@ private:
   /// Add a splitter
   void addNewTimeFilterSplitter(Types::Core::DateAndTime starttime,
                                 Types::Core::DateAndTime stoptime, int wsindex,
-                                std::string info);
+                                const std::string& info);
 
   /// Create a splitter and add to the vector of time splitters
   Types::Core::DateAndTime

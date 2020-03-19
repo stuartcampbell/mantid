@@ -6,6 +6,10 @@
 // SPDX - License - Identifier: GPL - 3.0 +
 #pragma once
 
+#include <utility>
+
+
+
 #include "MantidGeometry/Crystal/IPeak.h"
 #include "Shape2D.h"
 
@@ -23,8 +27,8 @@ class PeakMarker2D : public Shape2D {
 public:
   enum Symbol { Circle = 0, Diamond, Square };
   struct Style {
-    Style(Symbol sb = Circle, QColor c = Qt::red, int sz = g_defaultMarkerSize)
-        : symbol(sb), color(c), size(sz) {}
+    Style(Symbol sb = Circle, const QColor& c = Qt::red, int sz = g_defaultMarkerSize)
+        : symbol(sb), color(std::move(c)), size(sz) {}
     Symbol symbol;
     QColor color;
     int size;

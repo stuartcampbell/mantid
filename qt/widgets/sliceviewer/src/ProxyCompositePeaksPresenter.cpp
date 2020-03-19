@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidQtWidgets/SliceViewer/ProxyCompositePeaksPresenter.h"
 
 namespace MantidQt {
@@ -13,7 +17,7 @@ Constructor
 */
 ProxyCompositePeaksPresenter::ProxyCompositePeaksPresenter(
     boost::shared_ptr<CompositePeaksPresenter> composite)
-    : m_compositePresenter(composite), m_updateableView(nullptr) {
+    : m_compositePresenter(std::move(composite)), m_updateableView(nullptr) {
   m_compositePresenter->registerOwningPresenter(this);
 }
 
@@ -45,7 +49,7 @@ Set the foreground colour of the peaks.
 void ProxyCompositePeaksPresenter::setForegroundColor(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
     PeakViewColor color) {
-  m_compositePresenter->setForegroundColor(ws, color);
+  m_compositePresenter->setForegroundColor(std::move(ws), std::move(color));
 }
 
 /**
@@ -56,22 +60,22 @@ Set the background colour of the peaks.
 void ProxyCompositePeaksPresenter::setBackgroundColor(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
     PeakViewColor color) {
-  m_compositePresenter->setBackgroundColor(ws, color);
+  m_compositePresenter->setBackgroundColor(std::move(ws), std::move(color));
 }
 
 PeakViewColor ProxyCompositePeaksPresenter::getBackgroundPeakViewColor(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
-  return m_compositePresenter->getBackgroundPeakViewColor(ws);
+  return m_compositePresenter->getBackgroundPeakViewColor(std::move(ws));
 }
 
 PeakViewColor ProxyCompositePeaksPresenter::getForegroundPeakViewColor(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
-  return m_compositePresenter->getForegroundPeakViewColor(ws);
+  return m_compositePresenter->getForegroundPeakViewColor(std::move(ws));
 }
 
 bool ProxyCompositePeaksPresenter::getShowBackground(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const {
-  return m_compositePresenter->getShowBackground(ws);
+  return m_compositePresenter->getShowBackground(std::move(ws));
 }
 
 /**
@@ -91,24 +95,24 @@ std::string ProxyCompositePeaksPresenter::getTransformName() const {
 void ProxyCompositePeaksPresenter::setBackgroundRadiusShown(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
     const bool shown) {
-  m_compositePresenter->setBackgroundRadiusShown(ws, shown);
+  m_compositePresenter->setBackgroundRadiusShown(std::move(ws), shown);
 }
 
 void ProxyCompositePeaksPresenter::remove(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) {
-  m_compositePresenter->remove(peaksWS);
+  m_compositePresenter->remove(std::move(peaksWS));
 }
 
 void ProxyCompositePeaksPresenter::hideInPlot(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS,
     const bool hide) {
-  m_compositePresenter->setShown(peaksWS, !hide);
+  m_compositePresenter->setShown(std::move(peaksWS), !hide);
 }
 
 void ProxyCompositePeaksPresenter::zoomToPeak(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS,
     const int peakIndex) {
-  m_compositePresenter->zoomToPeak(peaksWS, peakIndex);
+  m_compositePresenter->zoomToPeak(std::move(peaksWS), peakIndex);
 }
 
 PeaksPresenter *
@@ -132,7 +136,7 @@ void ProxyCompositePeaksPresenter::updatePeaksWorkspace(
 
 bool ProxyCompositePeaksPresenter::getIsHidden(
     boost::shared_ptr<const Mantid::API::IPeaksWorkspace> peaksWS) const {
-  return m_compositePresenter->getIsHidden(peaksWS);
+  return m_compositePresenter->getIsHidden(std::move(peaksWS));
 }
 
 void ProxyCompositePeaksPresenter::registerView(
@@ -152,7 +156,7 @@ int ProxyCompositePeaksPresenter::getZoomedPeakIndex() const {
 void ProxyCompositePeaksPresenter::editCommand(
     EditMode editMode,
     boost::weak_ptr<const Mantid::API::IPeaksWorkspace> target) {
-  m_compositePresenter->editCommand(editMode, target);
+  m_compositePresenter->editCommand(editMode, std::move(target));
 }
 
 void ProxyCompositePeaksPresenter::setPeakSizeOnProjection(

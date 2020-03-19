@@ -22,6 +22,8 @@
 #include <boost/regex.hpp>
 #include <ostream>
 #include <stdexcept>
+#include <utility>
+
 
 namespace {
 /**
@@ -180,7 +182,7 @@ void RectangularDetector::initialize(boost::shared_ptr<IObject> shape,
                                      int idstepbyrow, int idstep) {
 
   GridDetector::initialize(
-      shape, xpixels, xstart, xstep, ypixels, ystart, ystep, 0, 0, 0, idstart,
+      std::move(shape), xpixels, xstart, xstep, ypixels, ystart, ystep, 0, 0, 0, idstart,
       idfillbyfirst_y ? "yxz" : "xyz", idstepbyrow, idstep);
 }
 

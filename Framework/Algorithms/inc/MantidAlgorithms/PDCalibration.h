@@ -40,7 +40,7 @@ private:
   void exec() override;
   API::MatrixWorkspace_sptr loadAndBin();
   API::MatrixWorkspace_sptr rebin(API::MatrixWorkspace_sptr wksp);
-  API::MatrixWorkspace_sptr load(const std::string filename);
+  API::MatrixWorkspace_sptr load(const std::string& filename);
   void createCalTableFromExisting();
   void createCalTableNew();
   void createInformationWorkspaces();
@@ -59,7 +59,7 @@ private:
 
   /// NEW: convert peak positions in dSpacing to peak centers workspace
   std::pair<API::MatrixWorkspace_sptr, API::MatrixWorkspace_sptr>
-  createTOFPeakCenterFitWindowWorkspaces(API::MatrixWorkspace_sptr dataws,
+  createTOFPeakCenterFitWindowWorkspaces(const API::MatrixWorkspace_sptr& dataws,
                                          const double peakWindowMaxInDSpacing);
 
   API::ITableWorkspace_sptr

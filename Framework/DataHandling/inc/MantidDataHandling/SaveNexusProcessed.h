@@ -75,7 +75,7 @@ protected:
 
 private:
   void getWSIndexList(std::vector<int> &indices,
-                      Mantid::API::MatrixWorkspace_const_sptr matrixWorkspace);
+                      const Mantid::API::MatrixWorkspace_const_sptr& matrixWorkspace);
 
   template <class T>
   static void appendEventListData(const std::vector<T> &events, size_t offset,
@@ -88,7 +88,7 @@ private:
   void setOtherProperties(IAlgorithm *alg, const std::string &propertyName,
                           const std::string &propertyValue,
                           int perioidNum) override;
-  void doExec(Mantid::API::Workspace_sptr inputWorkspace,
+  void doExec(const Mantid::API::Workspace_sptr& inputWorkspace,
               boost::shared_ptr<Mantid::NeXus::NexusFileIO> &nexusFile,
               const bool keepFile = false,
               boost::optional<size_t> entryNumber = boost::optional<size_t>());

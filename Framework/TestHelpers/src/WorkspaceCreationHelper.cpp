@@ -355,7 +355,7 @@ Workspace2D_sptr create2DWorkspaceNonUniformlyBinned(int nhist,
  * @param lower :: The lower bound of the flucation (default=-0.5)
  * @param upper:: The upper bound of the flucation (default=-0.5)
  */
-void addNoise(Mantid::API::MatrixWorkspace_sptr ws, double noise,
+void addNoise(const Mantid::API::MatrixWorkspace_sptr& ws, double noise,
               const double lower, const double upper) {
   const size_t seed(12345);
   MersenneTwister randGen(seed, lower, upper);
@@ -696,7 +696,7 @@ MatrixWorkspace_sptr create2DWorkspaceWithReflectometryInstrumentMultiDetector(
 }
 
 void createInstrumentForWorkspaceWithDistances(
-    MatrixWorkspace_sptr workspace, const V3D &samplePosition,
+    const MatrixWorkspace_sptr& workspace, const V3D &samplePosition,
     const V3D &sourcePosition, const std::vector<V3D> &detectorPositions) {
   Instrument_sptr instrument = boost::make_shared<Instrument>();
   instrument->setReferenceFrame(
@@ -728,7 +728,7 @@ WorkspaceSingleValue_sptr createWorkspaceSingleValueWithError(double value,
 }
 
 /** Perform some finalization on event workspace stuff */
-void eventWorkspace_Finalize(EventWorkspace_sptr ew) {
+void eventWorkspace_Finalize(const EventWorkspace_sptr& ew) {
   // get a proton charge
   ew->mutableRun().integrateProtonCharge();
 }
@@ -933,7 +933,7 @@ createGroupedWorkspace2DWithRingsAndBoxes(size_t RootOfNumHist, int numBins,
 
 // not strictly creating a workspace, but really helpful to see what one
 // contains
-void displayDataY(MatrixWorkspace_const_sptr ws) {
+void displayDataY(const MatrixWorkspace_const_sptr& ws) {
   const size_t numHists = ws->getNumberHistograms();
   for (size_t i = 0; i < numHists; ++i) {
     std::cout << "Histogram " << i << " = ";
@@ -944,11 +944,11 @@ void displayDataY(MatrixWorkspace_const_sptr ws) {
     std::cout << '\n';
   }
 }
-void displayData(MatrixWorkspace_const_sptr ws) { displayDataX(ws); }
+void displayData(MatrixWorkspace_const_sptr ws) { displayDataX(std::move(ws)); }
 
 // not strictly creating a workspace, but really helpful to see what one
 // contains
-void displayDataX(MatrixWorkspace_const_sptr ws) {
+void displayDataX(const MatrixWorkspace_const_sptr& ws) {
   const size_t numHists = ws->getNumberHistograms();
   for (size_t i = 0; i < numHists; ++i) {
     std::cout << "Histogram " << i << " = ";
@@ -962,7 +962,7 @@ void displayDataX(MatrixWorkspace_const_sptr ws) {
 
 // not strictly creating a workspace, but really helpful to see what one
 // contains
-void displayDataE(MatrixWorkspace_const_sptr ws) {
+void displayDataE(const MatrixWorkspace_const_sptr& ws) {
   const size_t numHists = ws->getNumberHistograms();
   for (size_t i = 0; i < numHists; ++i) {
     std::cout << "Histogram " << i << " = ";
@@ -981,7 +981,7 @@ void displayDataE(MatrixWorkspace_const_sptr ws) {
  * @param name :: property name
  * @param val :: value
  */
-void addTSPEntry(Run &runInfo, std::string name, double val) {
+void addTSPEntry(Run &runInfo, const std::string& name, double val) {
   TimeSeriesProperty<double> *tsp;
   tsp = new TimeSeriesProperty<double>(name);
   tsp->addValue("2011-05-24T00:00:00", val);
@@ -997,7 +997,7 @@ void addTSPEntry(Run &runInfo, std::string name, double val) {
  * @param b :: lattice length
  * @param c :: lattice length
  */
-void setOrientedLattice(Mantid::API::MatrixWorkspace_sptr ws, double a,
+void setOrientedLattice(const Mantid::API::MatrixWorkspace_sptr& ws, double a,
                         double b, double c) {
   ws->mutableSample().setOrientedLattice(
       std::make_unique<OrientedLattice>(a, b, c, 90., 90., 90.));
@@ -1011,7 +1011,7 @@ void setOrientedLattice(Mantid::API::MatrixWorkspace_sptr ws, double a,
  * @param chi :: +X rotation angle (deg)
  * @param omega :: +Y rotation angle (deg)
  */
-void setGoniometer(Mantid::API::MatrixWorkspace_sptr ws, double phi, double chi,
+void setGoniometer(const Mantid::API::MatrixWorkspace_sptr& ws, double phi, double chi,
                    double omega) {
   addTSPEntry(ws->mutableRun(), "phi", phi);
   addTSPEntry(ws->mutableRun(), "chi", chi);
@@ -1141,8 +1141,8 @@ createProcessedInelasticWS(const std::vector<double> &L2,
  * without any events
  */
 Mantid::DataObjects::EventWorkspace_sptr
-createEventWorkspace3(Mantid::DataObjects::EventWorkspace_const_sptr sourceWS,
-                      std::string wsname, API::Algorithm *alg) {
+createEventWorkspace3(const Mantid::DataObjects::EventWorkspace_const_sptr& sourceWS,
+                      const std::string& wsname, API::Algorithm *alg) {
   UNUSED_ARG(wsname);
   // 1. Initialize:use dummy numbers for arguments, for event workspace it
   // doesn't matter
@@ -1463,7 +1463,7 @@ void processDetectorsPositions(const API::MatrixWorkspace_const_sptr &inputWS,
 }
 
 boost::shared_ptr<Mantid::DataObjects::TableWorkspace>
-buildPreprocessedDetectorsWorkspace(Mantid::API::MatrixWorkspace_sptr ws) {
+buildPreprocessedDetectorsWorkspace(const Mantid::API::MatrixWorkspace_sptr& ws) {
   Mantid::DataObjects::TableWorkspace_sptr DetPos = createTableWorkspace(ws);
   auto Ei = ws->run().getPropertyValueAsType<double>("Ei");
   processDetectorsPositions(ws, DetPos, Ei);

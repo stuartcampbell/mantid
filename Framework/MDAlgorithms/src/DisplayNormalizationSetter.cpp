@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidMDAlgorithms/DisplayNormalizationSetter.h"
 #include "MantidAPI/IMDEventWorkspace.h"
 #include "MantidAPI/MatrixWorkspace.h"
@@ -21,7 +25,7 @@ namespace MDAlgorithms {
  * @param mode: the energy transfer mode
  */
 void DisplayNormalizationSetter::
-operator()(Mantid::API::IMDWorkspace_sptr mdWorkspace,
+operator()(const Mantid::API::IMDWorkspace_sptr& mdWorkspace,
            const Mantid::API::MatrixWorkspace_sptr &underlyingWorkspace,
            bool isQ, const Mantid::Kernel::DeltaEMode::Type &mode) {
   if (boost::dynamic_pointer_cast<Mantid::API::IMDEventWorkspace>(
@@ -73,7 +77,7 @@ void DisplayNormalizationSetter::setNormalizationMDEvent(
         Mantid::API::MDNormalization::NumEventsNormalization;
   }
 
-  applyNormalizationMDEvent(mdWorkspace, displayNormalization,
+  applyNormalizationMDEvent(std::move(mdWorkspace), displayNormalization,
                             displayNormalizationHisto);
 }
 
@@ -86,7 +90,7 @@ void DisplayNormalizationSetter::setNormalizationMDEvent(
  * MDHisto workspaces
  */
 void DisplayNormalizationSetter::applyNormalizationMDEvent(
-    Mantid::API::IMDWorkspace_sptr mdWorkspace,
+    const Mantid::API::IMDWorkspace_sptr& mdWorkspace,
     Mantid::API::MDNormalization displayNormalization,
     Mantid::API::MDNormalization displayNormalizationHisto) {
   auto ws =

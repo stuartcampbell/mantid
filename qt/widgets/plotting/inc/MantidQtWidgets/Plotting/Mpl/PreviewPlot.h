@@ -95,7 +95,7 @@ public slots:
   void resizeX();
   void resetView();
   void setCanvasColour(QColor colour);
-  void setLinesWithErrors(QStringList labels);
+  void setLinesWithErrors(const QStringList& labels);
   void showLegend(bool visible);
   void replot();
 
@@ -136,7 +136,7 @@ private:
   void switchPlotTool(QAction *selected);
   void setXScaleType(QAction *selected);
   void setYScaleType(QAction *selected);
-  void setScaleType(AxisID id, QString actionName);
+  void setScaleType(AxisID id, const QString& actionName);
   void toggleLegend(const bool checked);
 
   boost::optional<char const *> overrideAxisLabel(AxisID const &axisID);

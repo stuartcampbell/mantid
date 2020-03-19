@@ -28,7 +28,7 @@ public:
 private:
   Mantid::API::IAlgorithm_sptr
   setUpSaveAlgorithm(std::string const &saveDirectory,
-                     Mantid::API::Workspace_sptr workspace,
+                     const Mantid::API::Workspace_sptr& workspace,
                      std::vector<std::string> const &logParameters,
                      FileFormatOptions const &fileFormat) const;
 

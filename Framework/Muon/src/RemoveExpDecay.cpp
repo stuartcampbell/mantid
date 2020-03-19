@@ -178,7 +178,7 @@ HistogramData::Histogram MuonRemoveExpDecay::removeDecay(
  * @param wsIndex :: workspace index
  * @return normalisation constant
  */
-double MuonRemoveExpDecay::calNormalisationConst(API::MatrixWorkspace_sptr ws,
+double MuonRemoveExpDecay::calNormalisationConst(const API::MatrixWorkspace_sptr& ws,
                                                  int wsIndex) {
   double retVal = 1.0;
 

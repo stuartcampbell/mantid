@@ -68,9 +68,9 @@ private:
 
   inline API::MatrixWorkspace_sptr
   subtractBackgroundWS(API::MatrixWorkspace_sptr ws,
-                       API::MatrixWorkspace_sptr background);
+                       const API::MatrixWorkspace_sptr& background);
 
-  using TransformFunc = void (IQTransform::*)(API::MatrixWorkspace_sptr);
+  using TransformFunc = void (IQTransform::*)(const API::MatrixWorkspace_sptr &);
   using TransformMap = std::map<std::string, TransformFunc>;
   TransformMap
       m_transforms; ///< A map of transformation name and function pointers
@@ -78,16 +78,16 @@ private:
   boost::shared_ptr<Kernel::Units::Label> m_label;
 
   // A function for each transformation
-  void guinierSpheres(API::MatrixWorkspace_sptr ws);
-  void guinierRods(API::MatrixWorkspace_sptr ws);
-  void guinierSheets(API::MatrixWorkspace_sptr ws);
-  void zimm(API::MatrixWorkspace_sptr ws);
-  void debyeBueche(API::MatrixWorkspace_sptr ws);
-  void kratky(API::MatrixWorkspace_sptr ws);
-  void porod(API::MatrixWorkspace_sptr ws);
-  void holtzer(API::MatrixWorkspace_sptr ws);
-  void logLog(API::MatrixWorkspace_sptr ws);
-  void general(API::MatrixWorkspace_sptr ws);
+  void guinierSpheres(const API::MatrixWorkspace_sptr& ws);
+  void guinierRods(const API::MatrixWorkspace_sptr& ws);
+  void guinierSheets(const API::MatrixWorkspace_sptr& ws);
+  void zimm(const API::MatrixWorkspace_sptr& ws);
+  void debyeBueche(const API::MatrixWorkspace_sptr& ws);
+  void kratky(const API::MatrixWorkspace_sptr& ws);
+  void porod(const API::MatrixWorkspace_sptr& ws);
+  void holtzer(const API::MatrixWorkspace_sptr& ws);
+  void logLog(const API::MatrixWorkspace_sptr& ws);
+  void general(const API::MatrixWorkspace_sptr& ws);
 };
 
 } // namespace Algorithms

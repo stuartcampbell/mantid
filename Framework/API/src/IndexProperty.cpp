@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidAPI/IndexProperty.h"
 #include "MantidAPI/MatrixWorkspace.h"
 #include "MantidIndexing/GlobalSpectrumIndex.h"
@@ -17,7 +21,7 @@ IndexProperty::IndexProperty(const std::string &name,
                              const IWorkspaceProperty &workspaceProp,
                              const IndexTypeProperty &indexTypeProp,
                              Kernel::IValidator_sptr validator)
-    : ArrayProperty(name, "", validator), m_workspaceProp(workspaceProp),
+    : ArrayProperty(name, "", std::move(validator)), m_workspaceProp(workspaceProp),
       m_indexTypeProp(indexTypeProp), m_indices(0), m_indicesExtracted(false) {}
 
 IndexProperty *IndexProperty::clone() const { return new IndexProperty(*this); }

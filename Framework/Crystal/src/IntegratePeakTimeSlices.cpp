@@ -26,6 +26,8 @@
 #include "MantidHistogramData/BinEdges.h"
 
 #include <boost/math/special_functions/round.hpp>
+#include <utility>
+
 
 using namespace Mantid::Kernel;
 using namespace Mantid::API;
@@ -657,7 +659,7 @@ void IntegratePeakTimeSlices::exec() {
  * the center may be included.
  */
 bool IntegratePeakTimeSlices::getNeighborPixIDs(
-    boost::shared_ptr<Geometry::IComponent> comp, Kernel::V3D &Center,
+    const boost::shared_ptr<Geometry::IComponent>& comp, Kernel::V3D &Center,
     double &Radius, int *&ArryofID) {
 
   int N = ArryofID[1];
@@ -1468,7 +1470,7 @@ void IntegratePeakTimeSlices::SetUpData(
     m_NeighborIDs[1] = 2;
     neighborRadius = NeighborhoodRadiusDivPeakRadius * NewRadius;
     CentNghbr = CentPos;
-    getNeighborPixIDs(comp, CentPos, neighborRadius, m_NeighborIDs);
+    getNeighborPixIDs(std::move(comp), CentPos, neighborRadius, m_NeighborIDs);
 
   } else // big enough neighborhood so
     neighborRadius -= DD;
@@ -2526,7 +2528,7 @@ int IntegratePeakTimeSlices::UpdateOutputWS(
       m_AttributeValues->StatBaseVals(INCol) - 1;
   TabWS->getRef<double>(std::string("TotIntensityError"), TableRow) =
       SQRT(m_AttributeValues->StatBaseVals(IVariance));
-  TabWS->getRef<string>(std::string("SpecIDs"), TableRow) = spec_idList;
+  TabWS->getRef<string>(std::string("SpecIDs"), TableRow) = std::move(spec_idList);
 
   return newRowIndex;
 }

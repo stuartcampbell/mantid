@@ -91,7 +91,7 @@ public:
                    ->isExecuted());
   }
 
-  void do_test_exec(std::string Filename, bool lean, int MinRecursionDepth = 0,
+  void do_test_exec(const std::string& Filename, bool lean, int MinRecursionDepth = 0,
                     int expectedNumMDBoxes = 216, bool withFrames = false) {
 
     std::string wsName = "CreateMDWorkspaceTest_out";

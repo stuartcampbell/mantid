@@ -7,6 +7,10 @@
 //-----------------------------------
 // Includes
 //-----------------------------------
+#include <utility>
+
+
+
 #include "MantidQtWidgets/Common/WorkspaceObserver.h"
 #include "MantidAPI/AnalysisDataService.h"
 
@@ -18,7 +22,7 @@ namespace API {
 //---------------------------------------------------------------------------
 void ObserverCallback::handlePreDelete(const std::string &name,
                                        Mantid::API::Workspace_sptr workspace) {
-  m_observer->preDeleteHandle(name, workspace);
+  m_observer->preDeleteHandle(name, std::move(workspace));
 }
 
 void ObserverCallback::handlePostDelete(const std::string &name) {
@@ -27,12 +31,12 @@ void ObserverCallback::handlePostDelete(const std::string &name) {
 
 void ObserverCallback::handleAdd(const std::string &name,
                                  Mantid::API::Workspace_sptr workspace) {
-  m_observer->addHandle(name, workspace);
+  m_observer->addHandle(name, std::move(workspace));
 }
 
 void ObserverCallback::handleAfterReplace(
     const std::string &name, Mantid::API::Workspace_sptr workspace) {
-  m_observer->afterReplaceHandle(name, workspace);
+  m_observer->afterReplaceHandle(name, std::move(workspace));
 }
 
 void ObserverCallback::handleRename(const std::string &oldName,

@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidQtWidgets/Common/DataProcessorUI/AbstractTreeModel.h"
 #include "MantidAPI/ITableWorkspace.h"
 #include "MantidAPI/TableRow.h"
@@ -21,7 +25,7 @@ using namespace Mantid::API;
  */
 AbstractTreeModel::AbstractTreeModel(ITableWorkspace_sptr tableWorkspace,
                                      const WhiteList &whitelist)
-    : m_tWS(tableWorkspace), m_whitelist(whitelist) {}
+    : m_tWS(std::move(tableWorkspace)), m_whitelist(whitelist) {}
 
 AbstractTreeModel::~AbstractTreeModel() {}
 

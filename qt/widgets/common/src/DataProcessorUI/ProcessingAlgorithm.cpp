@@ -21,8 +21,8 @@ namespace DataProcessor {
  * indicate the most recent version.
  */
 ProcessingAlgorithm::ProcessingAlgorithm(
-    QString name, std::vector<QString> prefix,
-    std::size_t postprocessedOutputPrefixIndex, std::set<QString> blacklist,
+    const QString& name, std::vector<QString> prefix,
+    std::size_t postprocessedOutputPrefixIndex, const std::set<QString>& blacklist,
     const int version)
     : ProcessingAlgorithmBase(std::move(name), std::move(blacklist), version),
       m_postprocessedOutputPrefixIndex(postprocessedOutputPrefixIndex),
@@ -63,7 +63,7 @@ ProcessingAlgorithm::ProcessingAlgorithm(
  * indicate the most recent version.
  */
 ProcessingAlgorithm::ProcessingAlgorithm(
-    QString name, QString const &prefix,
+    const QString& name, QString const &prefix,
     std::size_t postprocessedOutputPrefixIndex, QString const &blacklist,
     const int version)
     : ProcessingAlgorithm(std::move(name), convertStringToVector(prefix),

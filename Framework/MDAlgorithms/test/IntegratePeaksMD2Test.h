@@ -52,9 +52,9 @@ public:
   //-------------------------------------------------------------------------------
   /** Run the IntegratePeaksMD2 with the given peak radius integration param */
   static void doRun(double PeakRadius, double BackgroundRadius,
-                    std::string OutputWorkspace = "IntegratePeaksMD2Test_peaks",
+                    const std::string& OutputWorkspace = "IntegratePeaksMD2Test_peaks",
                     double BackgroundStartRadius = 0.0, bool edge = true,
-                    bool cyl = false, std::string fnct = "NoFit",
+                    bool cyl = false, const std::string& fnct = "NoFit",
                     double adaptive = 0.0) {
     IntegratePeaksMD2 alg;
     TS_ASSERT_THROWS_NOTHING(alg.initialize())

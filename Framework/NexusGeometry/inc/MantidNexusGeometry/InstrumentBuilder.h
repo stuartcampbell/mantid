@@ -39,7 +39,7 @@ public:
   /// Adds tubes (ObjComponentAssemblies) to the last registered bank
   void addTubes(const std::string &bankName,
                 const std::vector<detail::TubeBuilder> &tubes,
-                boost::shared_ptr<const Mantid::Geometry::IObject> pixelShape);
+                const boost::shared_ptr<const Mantid::Geometry::IObject>& pixelShape);
   /// Adds detector to the root (instrument)
   void addDetectorToInstrument(
       const std::string &detName, detid_t detId,
@@ -70,7 +70,7 @@ public:
 private:
   /// Add a single tube to the last registed bank
   void doAddTube(const std::string &compName, const detail::TubeBuilder &tube,
-                 boost::shared_ptr<const Mantid::Geometry::IObject> pixelShape);
+                 const boost::shared_ptr<const Mantid::Geometry::IObject>& pixelShape);
   /// Sorts detectors
   void sortDetectors() const;
   /// product

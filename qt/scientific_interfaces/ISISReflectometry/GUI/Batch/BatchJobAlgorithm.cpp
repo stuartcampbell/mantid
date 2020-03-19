@@ -5,6 +5,10 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "BatchJobAlgorithm.h"
+
+
+#include <utility>
+
 #include "MantidAPI/IAlgorithm.h"
 
 namespace MantidQt {
@@ -18,7 +22,7 @@ BatchJobAlgorithm::BatchJobAlgorithm(
     Mantid::API::IAlgorithm_sptr algorithm,
     MantidQt::API::ConfiguredAlgorithm::AlgorithmRuntimeProps properties,
     UpdateFunction updateFunction, Item *item)
-    : ConfiguredAlgorithm(algorithm, properties), m_item(item),
+    : ConfiguredAlgorithm(std::move(algorithm), std::move(properties)), m_item(item),
       m_updateFunction(updateFunction) {}
 
 Item *BatchJobAlgorithm::item() { return m_item; }

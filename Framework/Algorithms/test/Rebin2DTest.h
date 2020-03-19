@@ -63,7 +63,7 @@ MatrixWorkspace_sptr makeInputWS(const bool distribution,
   return ws;
 }
 
-MatrixWorkspace_sptr runAlgorithm(MatrixWorkspace_sptr inputWS,
+MatrixWorkspace_sptr runAlgorithm(const MatrixWorkspace_sptr& inputWS,
                                   const std::string &axis1Params,
                                   const std::string &axis2Params,
                                   const bool UseFractionalArea = false) {
@@ -234,7 +234,7 @@ public:
   }
 
 private:
-  void checkData(MatrixWorkspace_const_sptr outputWS, const size_t nxvalues,
+  void checkData(const MatrixWorkspace_const_sptr& outputWS, const size_t nxvalues,
                  const size_t nhist, const bool dist, const bool onAxis1,
                  const bool small_bins = false) {
     TS_ASSERT_EQUALS(outputWS->getNumberHistograms(), nhist);

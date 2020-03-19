@@ -22,6 +22,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <utility>
+
 
 using namespace Mantid;
 
@@ -583,7 +585,7 @@ void ProcessBackground::selectFromGivenFunction() {
 /** Select background automatically
  */
 DataObjects::Workspace2D_sptr
-ProcessBackground::autoBackgroundSelection(Workspace2D_sptr bkgdWS) {
+ProcessBackground::autoBackgroundSelection(const Workspace2D_sptr& bkgdWS) {
   // Get background type and create bakground function
   BackgroundFunction_sptr bkgdfunction = createBackgroundFunction(m_bkgdType);
 
@@ -649,7 +651,7 @@ ProcessBackground::autoBackgroundSelection(Workspace2D_sptr bkgdWS) {
 /** Create a background function from input properties
  */
 BackgroundFunction_sptr
-ProcessBackground::createBackgroundFunction(const string backgroundtype) {
+ProcessBackground::createBackgroundFunction(const string& backgroundtype) {
   Functions::BackgroundFunction_sptr bkgdfunction;
 
   if (backgroundtype == "Polynomial") {
@@ -680,7 +682,7 @@ ProcessBackground::createBackgroundFunction(const string backgroundtype) {
 /** Filter non-background data points out and create a background workspace
  */
 Workspace2D_sptr
-ProcessBackground::filterForBackground(BackgroundFunction_sptr bkgdfunction) {
+ProcessBackground::filterForBackground(const BackgroundFunction_sptr& bkgdfunction) {
   double posnoisetolerance = getProperty("NoiseTolerance");
   double negnoisetolerance = getProperty("NegativeNoiseTolerance");
   if (isEmpty(negnoisetolerance))
@@ -751,7 +753,7 @@ ProcessBackground::filterForBackground(BackgroundFunction_sptr bkgdfunction) {
 //----------------------------------------------------------------------------------------------
 /** Fit background function
  */
-void ProcessBackground::fitBackgroundFunction(std::string bkgdfunctiontype) {
+void ProcessBackground::fitBackgroundFunction(const std::string& bkgdfunctiontype) {
   // Get background type and create bakground function
   BackgroundFunction_sptr bkgdfunction =
       createBackgroundFunction(bkgdfunctiontype);
@@ -886,7 +888,7 @@ void ProcessBackground::removePeaks() {
  */
 void RemovePeaks::setup(TableWorkspace_sptr peaktablews) {
   // Parse table workspace
-  parsePeakTableWorkspace(peaktablews, m_vecPeakCentre, m_vecPeakFWHM);
+  parsePeakTableWorkspace(std::move(peaktablews), m_vecPeakCentre, m_vecPeakFWHM);
 
   // Check
   if (m_vecPeakCentre.size() != m_vecPeakFWHM.size())
@@ -900,7 +902,7 @@ void RemovePeaks::setup(TableWorkspace_sptr peaktablews) {
 /** Remove peaks from a input workspace
  */
 Workspace2D_sptr
-RemovePeaks::removePeaks(API::MatrixWorkspace_const_sptr dataws, int wsindex,
+RemovePeaks::removePeaks(const API::MatrixWorkspace_const_sptr& dataws, int wsindex,
                          double numfwhm) {
   // Check
   if (m_vecPeakCentre.empty())
@@ -956,7 +958,7 @@ RemovePeaks::removePeaks(API::MatrixWorkspace_const_sptr dataws, int wsindex,
 //----------------------------------------------------------------------------------------------
 /** Parse table workspace
  */
-void RemovePeaks::parsePeakTableWorkspace(TableWorkspace_sptr peaktablews,
+void RemovePeaks::parsePeakTableWorkspace(const TableWorkspace_sptr& peaktablews,
                                           vector<double> &vec_peakcentre,
                                           vector<double> &vec_peakfwhm) {
   // Get peak table workspace information

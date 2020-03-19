@@ -25,6 +25,8 @@
 #include "MantidKernel/UnitFactory.h"
 
 #include <algorithm>
+#include <utility>
+
 
 using namespace Mantid::Kernel;
 using namespace Mantid::API;
@@ -344,7 +346,7 @@ std::string ReflectometryReductionOne2::createDebugWorkspaceName(
  * and is incremented after the workspace is output
  */
 void ReflectometryReductionOne2::outputDebugWorkspace(
-    MatrixWorkspace_sptr ws, const std::string &wsName,
+    const MatrixWorkspace_sptr& ws, const std::string &wsName,
     const std::string &wsSuffix, const bool debug, int &step) {
   // Nothing to do if debug is not enabled
   if (debug) {
@@ -503,7 +505,7 @@ MatrixWorkspace_sptr ReflectometryReductionOne2::backgroundSubtraction(
  * @return : corrected workspace
  */
 MatrixWorkspace_sptr ReflectometryReductionOne2::transOrAlgCorrection(
-    MatrixWorkspace_sptr detectorWS, const bool detectorWSReduced) {
+    const MatrixWorkspace_sptr& detectorWS, const bool detectorWSReduced) {
 
   MatrixWorkspace_sptr normalized;
   MatrixWorkspace_sptr transRun = getProperty("FirstTransmissionRun");
@@ -526,7 +528,7 @@ MatrixWorkspace_sptr ReflectometryReductionOne2::transOrAlgCorrection(
  * @return :: the input workspace normalized by transmission
  */
 MatrixWorkspace_sptr ReflectometryReductionOne2::transmissionCorrection(
-    MatrixWorkspace_sptr detectorWS, const bool detectorWSReduced) {
+    const MatrixWorkspace_sptr& detectorWS, const bool detectorWSReduced) {
 
   MatrixWorkspace_sptr transmissionWS = getProperty("FirstTransmissionRun");
   auto transmissionWSName = transmissionWS->getName();
@@ -615,7 +617,7 @@ MatrixWorkspace_sptr ReflectometryReductionOne2::transmissionCorrection(
  * @return : corrected workspace
  */
 MatrixWorkspace_sptr ReflectometryReductionOne2::algorithmicCorrection(
-    MatrixWorkspace_sptr detectorWS) {
+    const MatrixWorkspace_sptr& detectorWS) {
 
   const std::string corrAlgName = getProperty("CorrectionAlgorithm");
 
@@ -643,7 +645,7 @@ MatrixWorkspace_sptr ReflectometryReductionOne2::algorithmicCorrection(
  * @return : output workspace in Q
  */
 MatrixWorkspace_sptr
-ReflectometryReductionOne2::convertToQ(MatrixWorkspace_sptr inputWS) {
+ReflectometryReductionOne2::convertToQ(const MatrixWorkspace_sptr& inputWS) {
   bool const moreThanOneDetector = inputWS->getDetector(0)->nDets() > 1;
   bool const shouldCorrectAngle =
       !(*getProperty("ThetaIn")).isDefault() && !summingInQ();
@@ -807,7 +809,7 @@ size_t ReflectometryReductionOne2::twoThetaRDetectorIdx(
 }
 
 void ReflectometryReductionOne2::findWavelengthMinMax(
-    MatrixWorkspace_sptr inputWS) {
+    const MatrixWorkspace_sptr& inputWS) {
 
   // Get the max/min wavelength of region of interest
   const double lambdaMin = getProperty("WavelengthMin");
@@ -879,7 +881,7 @@ size_t ReflectometryReductionOne2::findIvsLamRangeMaxDetector(
 }
 
 double ReflectometryReductionOne2::findIvsLamRangeMin(
-    MatrixWorkspace_sptr detectorWS, const std::vector<size_t> &detectors,
+    const MatrixWorkspace_sptr& detectorWS, const std::vector<size_t> &detectors,
     const double lambda) {
   double projectedMin = 0.0;
 
@@ -898,7 +900,7 @@ double ReflectometryReductionOne2::findIvsLamRangeMin(
 }
 
 double ReflectometryReductionOne2::findIvsLamRangeMax(
-    MatrixWorkspace_sptr detectorWS, const std::vector<size_t> &detectors,
+    const MatrixWorkspace_sptr& detectorWS, const std::vector<size_t> &detectors,
     const double lambda) {
   double projectedMax = 0.0;
 
@@ -928,7 +930,7 @@ double ReflectometryReductionOne2::findIvsLamRangeMax(
  * @param projectedMax [out] : the end of the resulting projected range
  */
 void ReflectometryReductionOne2::findIvsLamRange(
-    MatrixWorkspace_sptr detectorWS, const std::vector<size_t> &detectors,
+    const MatrixWorkspace_sptr& detectorWS, const std::vector<size_t> &detectors,
     const double lambdaMin, const double lambdaMax, double &projectedMin,
     double &projectedMax) {
 
@@ -953,7 +955,7 @@ void ReflectometryReductionOne2::findIvsLamRange(
  * @return : a 1D workspace where y values are all zero
  */
 MatrixWorkspace_sptr
-ReflectometryReductionOne2::constructIvsLamWS(MatrixWorkspace_sptr detectorWS) {
+ReflectometryReductionOne2::constructIvsLamWS(const MatrixWorkspace_sptr& detectorWS) {
 
   // There is one output spectrum for each detector group
   const size_t numGroups = detectorGroups().size();
@@ -1001,7 +1003,7 @@ ReflectometryReductionOne2::constructIvsLamWS(MatrixWorkspace_sptr detectorWS) {
  * @return :: the output workspace in wavelength
  */
 MatrixWorkspace_sptr
-ReflectometryReductionOne2::sumInQ(MatrixWorkspace_sptr detectorWS) {
+ReflectometryReductionOne2::sumInQ(const MatrixWorkspace_sptr& detectorWS) {
 
   // Construct the output array in virtual lambda
   MatrixWorkspace_sptr IvsLam = constructIvsLamWS(detectorWS);
@@ -1097,7 +1099,7 @@ void ReflectometryReductionOne2::sumInQProcessValue(
                           lambdaVMin, lambdaVMax);
   // Share the input counts into the output array
   sumInQShareCounts(inputCounts, inputE[inputIdx], bLambda, lambdaVMin,
-                    lambdaVMax, outSpecIdx, IvsLam, outputE);
+                    lambdaVMax, outSpecIdx, std::move(IvsLam), outputE);
 }
 
 /**
@@ -1118,7 +1120,7 @@ void ReflectometryReductionOne2::sumInQProcessValue(
 void ReflectometryReductionOne2::sumInQShareCounts(
     const double inputCounts, const double inputErr, const double bLambda,
     const double lambdaMin, const double lambdaMax, const size_t outSpecIdx,
-    MatrixWorkspace_sptr IvsLam, std::vector<double> &outputE) {
+    const MatrixWorkspace_sptr& IvsLam, std::vector<double> &outputE) {
   // Check that we have histogram data
   const auto &outputX = IvsLam->dataX(outSpecIdx);
   auto &outputY = IvsLam->dataY(outSpecIdx);
@@ -1239,7 +1241,7 @@ Check whether the spectra for the given workspaces are the same.
 exception. Otherwise a warning is generated.
 */
 void ReflectometryReductionOne2::verifySpectrumMaps(
-    MatrixWorkspace_const_sptr ws1, MatrixWorkspace_const_sptr ws2) {
+    const MatrixWorkspace_const_sptr& ws1, const MatrixWorkspace_const_sptr& ws2) {
 
   bool mismatch = false;
   // Check that the number of histograms is the same

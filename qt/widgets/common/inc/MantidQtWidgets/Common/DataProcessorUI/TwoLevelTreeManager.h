@@ -122,9 +122,9 @@ private:
   Mantid::API::ITableWorkspace_sptr
   createDefaultWorkspace(const WhiteList &whitelist);
   /// Validate a table workspace
-  void validateModel(Mantid::API::ITableWorkspace_sptr ws,
+  void validateModel(const Mantid::API::ITableWorkspace_sptr& ws,
                      size_t whitelistColumns) const;
-  TreeData constructTreeData(ChildItems rows);
+  TreeData constructTreeData(const ChildItems& rows);
 };
 } // namespace DataProcessor
 } // namespace MantidWidgets

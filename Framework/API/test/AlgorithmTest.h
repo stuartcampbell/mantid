@@ -27,6 +27,8 @@
 #include "MantidTestHelpers/FakeObjects.h"
 #include "PropertyManagerHelper.h"
 #include <map>
+#include <utility>
+
 
 using namespace Mantid::Kernel;
 using namespace Mantid::API;
@@ -501,8 +503,8 @@ public:
   /** Test of setting read and/or write locks
    * for various combinations of input/output workspaces.
    */
-  void do_test_locking(std::string in1, std::string in2, std::string inout,
-                       std::string out1, std::string out2) {
+  void do_test_locking(const std::string& in1, const std::string& in2, const std::string& inout,
+                       const std::string& out1, const std::string& out2) {
     for (size_t i = 0; i < 6; i++) {
       boost::shared_ptr<WorkspaceTester> ws =
           boost::make_shared<WorkspaceTester>();
@@ -576,7 +578,7 @@ public:
    *        Make no group if blank, just 1 workspace
    * @return The new WorkspaceGroup object
    */
-  Workspace_sptr makeWorkspaceGroup(std::string group1, std::string contents1) {
+  Workspace_sptr makeWorkspaceGroup(const std::string& group1, std::string contents1) {
     auto &ads = AnalysisDataService::Instance();
     if (contents1.empty()) {
       if (group1.empty())
@@ -604,14 +606,14 @@ public:
   }
 
   //------------------------------------------------------------------------
-  WorkspaceGroup_sptr do_test_groups(std::string group1, std::string contents1,
-                                     std::string group2, std::string contents2,
-                                     std::string group3, std::string contents3,
+  WorkspaceGroup_sptr do_test_groups(const std::string& group1, std::string contents1,
+                                     const std::string& group2, std::string contents2,
+                                     const std::string& group3, std::string contents3,
                                      bool expectFail = false,
                                      int expectedNumber = 3) {
-    makeWorkspaceGroup(group1, contents1);
-    makeWorkspaceGroup(group2, contents2);
-    makeWorkspaceGroup(group3, contents3);
+    makeWorkspaceGroup(group1, std::move(contents1));
+    makeWorkspaceGroup(group2, std::move(contents2));
+    makeWorkspaceGroup(group3, std::move(contents3));
 
     StubbedWorkspaceAlgorithm alg;
     alg.initialize();

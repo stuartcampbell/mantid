@@ -97,7 +97,7 @@ void SaveRMCProfile::exec() {
 }
 
 void SaveRMCProfile::writeMetaData(std::ofstream &out,
-                                   API::MatrixWorkspace_const_sptr inputWS) {
+                                   const API::MatrixWorkspace_const_sptr& inputWS) {
   const auto &y = inputWS->y(0);
   const std::string title = getProperty("Title");
   const std::string inputType = getProperty("InputType");
@@ -108,7 +108,7 @@ void SaveRMCProfile::writeMetaData(std::ofstream &out,
 }
 
 void SaveRMCProfile::writeWSData(std::ofstream &out,
-                                 API::MatrixWorkspace_const_sptr inputWS) {
+                                 const API::MatrixWorkspace_const_sptr& inputWS) {
   const auto &x = inputWS->points(0);
   const auto &y = inputWS->y(0);
   for (size_t i = 0; i < x.size(); ++i) {

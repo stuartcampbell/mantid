@@ -88,7 +88,7 @@ public:
   }
 
 private:
-  MatrixWorkspace_sptr runAlgorithm(MatrixWorkspace_sptr inputWS,
+  MatrixWorkspace_sptr runAlgorithm(const MatrixWorkspace_sptr& inputWS,
                                     const int index) {
     ExtractSingleSpectrum extractor;
     extractor.initialize();
@@ -106,7 +106,7 @@ private:
     return extractor.getProperty("OutputWorkspace");
   }
 
-  void do_Spectrum_Tests(MatrixWorkspace_sptr outputWS, const specnum_t specID,
+  void do_Spectrum_Tests(const MatrixWorkspace_sptr& outputWS, const specnum_t specID,
                          const detid_t detID) {
     TS_ASSERT_EQUALS(outputWS->getNumberHistograms(), 1);
     TS_ASSERT_THROWS_NOTHING(outputWS->getSpectrum(0));

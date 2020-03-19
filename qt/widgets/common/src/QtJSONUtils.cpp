@@ -59,7 +59,7 @@ public:
     return toString.call(obj).toString();
   }
 
-  QMap<QString, QVariant> decodeInner(QScriptValue object) {
+  QMap<QString, QVariant> decodeInner(const QScriptValue& object) {
     QMap<QString, QVariant> map;
     QScriptValueIterator it(object);
     while (it.hasNext()) {
@@ -80,7 +80,7 @@ public:
     return map;
   }
 
-  QList<QVariant> decodeInnerToList(QScriptValue arrayValue) {
+  QList<QVariant> decodeInnerToList(const QScriptValue& arrayValue) {
     QList<QVariant> list;
     QScriptValueIterator it(arrayValue);
     while (it.hasNext()) {

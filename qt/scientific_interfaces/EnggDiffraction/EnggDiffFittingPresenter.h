@@ -64,7 +64,7 @@ public:
                  const std::string &expectedPeaks);
 
   void plotFocusedFile(bool plotSinglePeaks,
-                       Mantid::API::MatrixWorkspace_sptr focusedPeaksWS);
+                       const Mantid::API::MatrixWorkspace_sptr& focusedPeaksWS);
 
   void plotAlignedWorkspace(const bool plotFittedPeaks);
 
@@ -107,7 +107,7 @@ private:
 
   void savePeakList();
 
-  std::string readPeaksFile(std::string fileDir);
+  std::string readPeaksFile(const std::string& fileDir);
 
   void fittingWriteFile(const std::string &fileDir);
 

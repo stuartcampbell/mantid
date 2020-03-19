@@ -10,6 +10,8 @@
 #include "MantidAPI/MatrixWorkspace.h"
 
 #include <boost/optional.hpp>
+#include <utility>
+
 
 namespace {
 using namespace Mantid::API;
@@ -26,7 +28,7 @@ bool validWorkspace(std::string const &name) {
   return !name.empty() && doesExistInADS(name);
 }
 
-boost::optional<std::size_t> maximumIndex(MatrixWorkspace_sptr workspace) {
+boost::optional<std::size_t> maximumIndex(const MatrixWorkspace_sptr& workspace) {
   if (workspace) {
     const auto numberOfHistograms = workspace->getNumberHistograms();
     if (numberOfHistograms > 0)
@@ -36,7 +38,7 @@ boost::optional<std::size_t> maximumIndex(MatrixWorkspace_sptr workspace) {
 }
 
 QString getIndexString(MatrixWorkspace_sptr workspace) {
-  const auto maximum = maximumIndex(workspace);
+  const auto maximum = maximumIndex(std::move(workspace));
   if (maximum) {
     if (*maximum > 0)
       return QString("0-%1").arg(*maximum);

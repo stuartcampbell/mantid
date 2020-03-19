@@ -47,7 +47,7 @@ public:
                        Kernel::Logger &logger);
   void calculate(Kernel::PseudoRandomNumberGenerator &rng,
                  const Kernel::V3D &finalPos,
-                 Mantid::HistogramData::Points lambdas, double lambdaFixed,
+                 const Mantid::HistogramData::Points& lambdas, double lambdaFixed,
                  Mantid::API::ISpectrum &attenuationFactorsSpectrum);
 
 private:

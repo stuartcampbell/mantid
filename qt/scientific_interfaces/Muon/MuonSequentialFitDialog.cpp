@@ -140,7 +140,7 @@ std::string MuonSequentialFitDialog::isValidLabel(const std::string &label) {
  * @param ws :: Workspace to get title from
  * @return The title, or empty string if unable to get one
  */
-std::string MuonSequentialFitDialog::getRunTitle(Workspace_const_sptr ws) {
+std::string MuonSequentialFitDialog::getRunTitle(const Workspace_const_sptr& ws) {
   auto matrixWS = boost::dynamic_pointer_cast<const MatrixWorkspace>(ws);
 
   if (!matrixWS)
@@ -196,7 +196,7 @@ void MuonSequentialFitDialog::initDiagnosisTable() {
  */
 void MuonSequentialFitDialog::addDiagnosisEntry(const std::string &runTitle,
                                                 double fitQuality,
-                                                IFunction_sptr fittedFunction) {
+                                                const IFunction_sptr& fittedFunction) {
   int newRow = m_ui.diagnosisTable->rowCount();
 
   m_ui.diagnosisTable->insertRow(newRow);

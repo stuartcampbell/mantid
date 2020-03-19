@@ -9,6 +9,8 @@
 #include "MantidQtWidgets/Common/DataProcessorUI/GenericDataProcessorPresenter.h"
 
 #include <QThread>
+#include <utility>
+
 
 namespace MantidQt {
 namespace MantidWidgets {
@@ -27,7 +29,7 @@ public:
   GenericDataProcessorPresenterRowReducerWorker(
       GenericDataProcessorPresenter *presenter, RowData_sptr rowData,
       const int rowIndex, const int groupIndex)
-      : m_presenter(presenter), m_rowData(rowData), m_rowIndex(rowIndex),
+      : m_presenter(presenter), m_rowData(std::move(rowData)), m_rowIndex(rowIndex),
         m_groupIndex(groupIndex) {}
 
 private slots:

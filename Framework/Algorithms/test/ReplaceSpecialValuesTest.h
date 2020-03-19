@@ -247,7 +247,7 @@ public:
     AnalysisDataService::Instance().remove("InputWS");
   }
 
-  void checkValues(MatrixWorkspace_sptr inputWS, MatrixWorkspace_sptr result,
+  void checkValues(const MatrixWorkspace_sptr& inputWS, const MatrixWorkspace_sptr& result,
                    bool naNCheck, bool infCheck) {
 
     for (size_t i = 0; i < result->getNumberHistograms(); ++i) {

@@ -117,7 +117,7 @@ public:
    */
   ImportASCIIDialog(bool new_windows_only, QWidget *parent = nullptr,
                     bool extended = true,
-                    Qt::WFlags flags = Qt::WindowCloseButtonHint |
+                    const Qt::WFlags& flags = Qt::WindowCloseButtonHint |
                                        Qt::WindowType::WindowTitleHint);
 
   //! Return the selected import mode

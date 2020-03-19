@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidLiveData/Kafka/KafkaBroker.h"
 #include "MantidLiveData/Kafka/KafkaTopicSubscriber.h"
 
@@ -15,7 +19,7 @@ namespace LiveData {
  * @param address The address of a broker in the form host:port
  */
 KafkaBroker::KafkaBroker(std::string address)
-    : IKafkaBroker(), m_address(address) {}
+    : IKafkaBroker(), m_address(std::move(address)) {}
 
 /**
  * Create an object to provide access to a topic stream from this broker

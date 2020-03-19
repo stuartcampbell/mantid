@@ -23,6 +23,8 @@
 #include <boost/regex.hpp>
 #include <ostream>
 #include <stdexcept>
+#include <utility>
+
 
 namespace Mantid {
 namespace Geometry {
@@ -548,7 +550,7 @@ void GridDetector::initializeValues(boost::shared_ptr<IObject> shape,
   m_xstep = xstep;
   m_ystep = ystep;
   m_zstep = zstep;
-  m_shape = shape;
+  m_shape = std::move(shape);
 
   /// IDs start here
   m_idstart = idstart;
@@ -609,7 +611,7 @@ void GridDetector::initialize(boost::shared_ptr<IObject> shape, int xpixels,
     throw std::runtime_error("GridDetector::initialize() called for a "
                              "parametrized GridDetector");
 
-  initializeValues(shape, xpixels, xstart, xstep, ypixels, ystart, ystep,
+  initializeValues(std::move(shape), xpixels, xstart, xstep, ypixels, ystart, ystep,
                    zpixels, zstart, zstep, idstart, idFillOrder, idstepbyrow,
                    idstep);
 

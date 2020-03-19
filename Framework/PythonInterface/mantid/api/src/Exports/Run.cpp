@@ -16,6 +16,8 @@
 #include <boost/python/list.hpp>
 #include <boost/python/overloads.hpp>
 #include <boost/python/register_ptr_to_python.hpp>
+#include <utility>
+
 
 using Mantid::API::LogManager;
 using Mantid::API::Run;
@@ -103,7 +105,7 @@ void addOrReplaceProperty(Run &self, const std::string &name,
  * @param key The key
  * @param default_ The default to return if it does not exist
  */
-bpl::object getWithDefault(bpl::object self, bpl::object key,
+bpl::object getWithDefault(bpl::object self, const bpl::object& key,
                            bpl::object default_) {
   bpl::object exists(self.attr("__contains__"));
   if (extract<bool>(exists(key))()) {
@@ -120,7 +122,7 @@ bpl::object getWithDefault(bpl::object self, bpl::object key,
  * @param key The key
  */
 bpl::object get(bpl::object self, bpl::object key) {
-  return getWithDefault(self, key, bpl::object());
+  return getWithDefault(std::move(self), std::move(key), bpl::object());
 }
 
 /**

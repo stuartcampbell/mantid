@@ -226,7 +226,7 @@ public:
   void setTip(const QString &txt);
 
   /// alter text of Plot Guess
-  void setTextPlotGuess(const QString text);
+  void setTextPlotGuess(const QString& text);
 
   /// Creates the "Ties" property value for the Fit algorithm
   QString getTieString() const;
@@ -466,7 +466,7 @@ protected:
   ///
   void updateDecimals();
   /// Sets the workspace to a function
-  void setWorkspace(boost::shared_ptr<Mantid::API::IFunction> f) const;
+  void setWorkspace(const boost::shared_ptr<Mantid::API::IFunction>& f) const;
   /// Display properties relevant to the selected workspace
   void setWorkspaceProperties();
   /// Adds the workspace index property to the browser.
@@ -486,7 +486,7 @@ protected:
   /// Catches unexpected not found exceptions
   Mantid::API::IFunction_sptr tryCreateFitFunction(const QString &str);
   /// Create CompositeFunction from pointer
-  void createCompositeFunction(const Mantid::API::IFunction_sptr func);
+  void createCompositeFunction(const Mantid::API::IFunction_sptr& func);
 
   /// Property managers:
   QtGroupPropertyManager *m_groupManager;

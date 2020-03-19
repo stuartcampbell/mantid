@@ -23,6 +23,8 @@
 #include <cmath>
 #include <fstream>
 #include <sstream>
+#include <utility>
+
 
 namespace Mantid {
 namespace Crystal {
@@ -74,7 +76,7 @@ SCDPanelErrors::SCDPanelErrors() : m_setupFinished(false) {
 void SCDPanelErrors::moveDetector(double x, double y, double z, double rotx,
                                   double roty, double rotz, double scalex,
                                   double scaley, std::string detname,
-                                  Workspace_sptr inputW) const {
+                                  const Workspace_sptr& inputW) const {
   if (detname.compare("none") == 0.0)
     return;
   // CORELLI has sixteenpack under bank
@@ -340,7 +342,7 @@ void SCDPanelErrors::loadWorkspace(const std::string &wsName) const {
  * @param ws :: The workspace to load from
  */
 void SCDPanelErrors::loadWorkspace(boost::shared_ptr<API::Workspace> ws) const {
-  m_workspace = ws;
+  m_workspace = std::move(ws);
   m_setupFinished = false;
 }
 

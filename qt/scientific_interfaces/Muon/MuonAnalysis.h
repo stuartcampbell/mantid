@@ -241,7 +241,7 @@ private slots:
   /// Called when "overwrite" is changed
   void updateDataPresenterOverwrite(int state);
   // update the displayed normalization
-  void updateNormalization(QString name);
+  void updateNormalization(const QString& name);
 
 private:
   void moveUnNormWS(const std::string &name, std::vector<std::string> &wsNames,
@@ -270,7 +270,7 @@ private:
 
   /// Get grouping for the loaded workspace
   boost::shared_ptr<Muon::GroupResult>
-  getGrouping(boost::shared_ptr<Muon::LoadResult> loadResult) const;
+  getGrouping(const boost::shared_ptr<Muon::LoadResult>& loadResult) const;
 
   /// Set whether the loading buttons and MWRunFiles widget are enabled.
   void allowLoading(bool enabled);

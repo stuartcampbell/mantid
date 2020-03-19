@@ -6,6 +6,8 @@
 // SPDX - License - Identifier: GPL - 3.0 +
 
 #include <cmath>
+#include <utility>
+
 
 #include "MantidQtWidgets/SpectrumViewer/ArrayDataSource.h"
 #include "MantidQtWidgets/SpectrumViewer/SVUtils.h"
@@ -39,7 +41,7 @@ ArrayDataSource::ArrayDataSource(double m_totalXMin, double m_totalXMax,
                                  std::vector<float> data)
     : SpectrumDataSource(m_totalXMin, m_totalXMax, m_totalYMin, m_totalYMax,
                          m_totalRows, m_totalCols),
-      m_data(data) {}
+      m_data(std::move(data)) {}
 
 ArrayDataSource::~ArrayDataSource() {}
 

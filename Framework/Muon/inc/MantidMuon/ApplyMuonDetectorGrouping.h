@@ -70,7 +70,7 @@ private:
   /// MuonProcess.
   void
   setMuonProcessPeriodProperties(API::IAlgorithm &alg,
-                                 API::Workspace_sptr inputWS,
+                                 const API::Workspace_sptr& inputWS,
                                  const Muon::AnalysisOptions &options) const;
 
   void setMuonProcessAlgorithmOutputTypeProperty(

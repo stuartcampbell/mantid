@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidSINQ/PoldiUtilities/PoldiPeakCollection.h"
 #include "MantidAPI/LogManager.h"
 #include "MantidAPI/TableRow.h"
@@ -97,7 +101,7 @@ PoldiPeakCollection::IntensityType PoldiPeakCollection::intensityType() const {
 
 void PoldiPeakCollection::setProfileFunctionName(
     std::string newProfileFunction) {
-  m_profileFunctionName = newProfileFunction;
+  m_profileFunctionName = std::move(newProfileFunction);
 }
 
 std::string PoldiPeakCollection::getProfileFunctionName() const {
@@ -275,7 +279,7 @@ PoldiPeakCollection::getUnitCellStringFromLog(const LogManager_sptr &tableLog) {
 
 std::string
 PoldiPeakCollection::getStringValueFromLog(const LogManager_sptr &logManager,
-                                           std::string valueName) {
+                                           const std::string& valueName) {
   if (logManager->hasProperty(valueName)) {
     return logManager->getPropertyValueAsType<std::string>(valueName);
   }
@@ -297,7 +301,7 @@ std::string PoldiPeakCollection::intensityTypeToString(
 
 PoldiPeakCollection::IntensityType
 PoldiPeakCollection::intensityTypeFromString(std::string typeString) const {
-  std::string lowerCaseType(typeString);
+  std::string lowerCaseType(std::move(typeString));
   std::transform(lowerCaseType.begin(), lowerCaseType.end(),
                  lowerCaseType.begin(), ::tolower);
 

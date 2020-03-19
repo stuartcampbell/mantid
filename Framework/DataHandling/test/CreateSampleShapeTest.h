@@ -83,7 +83,7 @@ public:
     TS_ASSERT_DELTA(2.6989, material.numberDensity(), 1e-04);
   }
 
-  void runStandardTest(std::string xmlShape, double x, double y, double z,
+  void runStandardTest(const std::string& xmlShape, double x, double y, double z,
                        bool inside) {
     // Need a test workspace
     Mantid::API::AnalysisDataService::Instance().add(

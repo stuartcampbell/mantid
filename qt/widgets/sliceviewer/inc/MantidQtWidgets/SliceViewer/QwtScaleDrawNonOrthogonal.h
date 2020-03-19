@@ -32,7 +32,7 @@ public:
   void updateSlicePoint(Mantid::Kernel::VMD newSlicepoint);
 
 private:
-  void setTransformationMatrices(Mantid::API::IMDWorkspace_sptr workspace);
+  void setTransformationMatrices(const Mantid::API::IMDWorkspace_sptr& workspace);
   qreal getScreenBottomInXyz() const;
   qreal getScreenLeftInXyz() const;
 

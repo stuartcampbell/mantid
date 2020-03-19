@@ -84,7 +84,7 @@ private:
   API::MatrixWorkspace_sptr
   extractSpectrum(const size_t ws_index, const double start, const double end);
   /// Calculate peak width
-  double calculatePeakWidthAtHalfHeight(API::MatrixWorkspace_sptr data_ws,
+  double calculatePeakWidthAtHalfHeight(const API::MatrixWorkspace_sptr& data_ws,
                                         const double prominence,
                                         std::vector<double> &peak_x,
                                         std::vector<double> &peak_y,
@@ -93,7 +93,7 @@ private:
   double calculateFirstMoment(API::MatrixWorkspace_sptr monitor_ws,
                               const double prominence);
   /// Rebin the given workspace using the given parameters
-  API::MatrixWorkspace_sptr rebin(API::MatrixWorkspace_sptr monitor_ws,
+  API::MatrixWorkspace_sptr rebin(const API::MatrixWorkspace_sptr& monitor_ws,
                                   const double first, const double width,
                                   const double end);
   /// Integrate the point data

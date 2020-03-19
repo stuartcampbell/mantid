@@ -11,6 +11,8 @@
 #include <QSizePolicy>
 #include <QSpacerItem>
 #include <QVBoxLayout>
+#include <utility>
+
 
 namespace MantidQt {
 namespace CustomInterfaces {
@@ -91,7 +93,7 @@ void ALFCustomInstrumentView::setupAnalysisPane(
 }
 
 void ALFCustomInstrumentView::addSpectrum(std::string wsName) {
-  m_analysisPane->addSpectrum(wsName);
+  m_analysisPane->addSpectrum(std::move(wsName));
 }
 
 } // namespace CustomInterfaces

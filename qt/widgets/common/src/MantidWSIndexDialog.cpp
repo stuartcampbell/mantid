@@ -20,6 +20,8 @@
 #include <boost/lexical_cast.hpp>
 #include <cstdlib>
 #include <exception>
+#include <utility>
+
 
 namespace MantidQt {
 namespace MantidWidgets {
@@ -48,7 +50,7 @@ const QString MantidWSIndexWidget::CONTOUR_PLOT = "Contour Plot";
  * @param showTiledOption :: true if tiled plot enabled
  * @param isAdvanced :: true if advanced plotting has been selected
  */
-MantidWSIndexWidget::MantidWSIndexWidget(QWidget *parent, Qt::WindowFlags flags,
+MantidWSIndexWidget::MantidWSIndexWidget(QWidget *parent, const Qt::WindowFlags& flags,
                                          const QList<QString> &wsNames,
                                          const bool showWaterfallOption,
                                          const bool showTiledOption,
@@ -830,7 +832,7 @@ bool MantidWSIndexWidget::usingSpectraNumbers() const {
  * @param showTiledOption :: If true the "Tiled" option is created
  * @param isAdvanced :: true if adanced plotting dialog is created
  */
-MantidWSIndexDialog::MantidWSIndexDialog(QWidget *parent, Qt::WindowFlags flags,
+MantidWSIndexDialog::MantidWSIndexDialog(QWidget *parent, const Qt::WindowFlags& flags,
                                          const QList<QString> &wsNames,
                                          const bool showWaterfallOption,
                                          const bool showPlotAll,
@@ -973,7 +975,7 @@ Interval::Interval(int single) { init(single, single); }
 
 Interval::Interval(int start, int end) { init(start, end); }
 
-Interval::Interval(QString intervalString) {
+Interval::Interval(const QString& intervalString) {
   // Check to see if string is of the correct format, and then parse.
   // An interval can either be "n" or "n-m" where n and m are integers
   const QString patternSingle("^\\d+$");     // E.g. "2" or "712"
@@ -1086,9 +1088,9 @@ void Interval::init(int start, int end) {
 //----------------------------------
 IntervalList::IntervalList(void) {}
 
-IntervalList::IntervalList(QString intervals) { addIntervals(intervals); }
+IntervalList::IntervalList(const QString& intervals) { addIntervals(std::move(intervals)); }
 
-IntervalList::IntervalList(Interval interval) { m_list.append(interval); }
+IntervalList::IntervalList(const Interval& interval) { m_list.append(interval); }
 
 IntervalList::IntervalList(const IntervalList &copy) { m_list = copy.m_list; }
 
@@ -1350,7 +1352,7 @@ MantidWSIndexWidget::QLineEditWithErrorMark::QLineEditWithErrorMark(
   setLayout(layout);
 }
 
-void MantidWSIndexWidget::QLineEditWithErrorMark::setError(QString error) {
+void MantidWSIndexWidget::QLineEditWithErrorMark::setError(const QString& error) {
   if (error.isEmpty()) {
     m_validLbl->setVisible(false);
   } else {

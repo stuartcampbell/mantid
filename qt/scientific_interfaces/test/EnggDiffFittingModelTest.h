@@ -16,6 +16,8 @@
 #include "../EnggDiffraction/EnggDiffFittingModel.h"
 
 #include <cxxtest/TestSuite.h>
+#include <utility>
+
 #include <vector>
 
 using namespace Mantid;
@@ -40,19 +42,19 @@ public:
 inline void
 EnggDiffFittingModelAddWSExposed::addWorkspace(const RunLabel &runLabel,
                                                API::MatrixWorkspace_sptr ws) {
-  addFocusedWorkspace(runLabel, ws,
+  addFocusedWorkspace(runLabel, std::move(ws),
                       runLabel.runNumber + "_" + std::to_string(runLabel.bank));
 }
 
 inline void EnggDiffFittingModelAddWSExposed::addFitParams(
     const RunLabel &runLabel, Mantid::API::ITableWorkspace_sptr ws) {
-  addFitResults(runLabel, ws);
+  addFitResults(runLabel, std::move(ws));
 }
 
 inline void EnggDiffFittingModelAddWSExposed::mergeTablesExposed(
     API::ITableWorkspace_sptr tableToCopy,
     API::ITableWorkspace_sptr targetTable) {
-  mergeTables(tableToCopy, targetTable);
+  mergeTables(std::move(tableToCopy), std::move(targetTable));
 }
 
 void addSampleWorkspaceToModel(const RunLabel &runLabel,

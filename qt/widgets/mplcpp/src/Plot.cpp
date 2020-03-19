@@ -5,6 +5,10 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 
+#include <utility>
+
+
+
 #include "MantidQtWidgets/MplCpp/Plot.h"
 #include "MantidPythonInterface/core/CallMethod.h"
 #include "MantidPythonInterface/core/Converters/ToPyList.h"
@@ -104,8 +108,8 @@ Python::Object plot(const Python::Object &args,
                     boost::optional<std::string> windowTitle, bool errors,
                     bool overplot, bool tiled) {
   const auto kwargs =
-      constructKwargs(spectrumNums, wkspIndices, fig, plotKwargs, axProperties,
-                      windowTitle, errors, overplot, tiled);
+      constructKwargs(std::move(spectrumNums), std::move(wkspIndices), std::move(fig), std::move(plotKwargs), std::move(axProperties),
+                      std::move(windowTitle), errors, overplot, tiled);
   try {
     return functionsModule().attr("plot")(*args, **kwargs);
   } catch (Python::ErrorAlreadySet &) {

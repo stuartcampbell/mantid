@@ -351,7 +351,7 @@ namespace MantidQt {
 namespace API {
 
 size_t
-getMissingHKLDimensionIndex(Mantid::API::IMDWorkspace_const_sptr workspace,
+getMissingHKLDimensionIndex(const Mantid::API::IMDWorkspace_const_sptr& workspace,
                             size_t dimX, size_t dimY) {
   for (size_t i = 0; i < workspace->getNumDims(); ++i) {
     auto dimension = workspace->getDimension(i);

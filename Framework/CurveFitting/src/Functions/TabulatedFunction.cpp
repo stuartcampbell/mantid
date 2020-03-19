@@ -18,6 +18,8 @@
 #include <cmath>
 #include <fstream>
 #include <sstream>
+#include <utility>
+
 
 namespace Mantid {
 namespace CurveFitting {
@@ -315,7 +317,7 @@ void TabulatedFunction::loadWorkspace(const std::string &wsName) const {
  */
 void TabulatedFunction::loadWorkspace(
     boost::shared_ptr<API::MatrixWorkspace> ws) const {
-  m_workspace = ws;
+  m_workspace = std::move(ws);
   m_setupFinished = false;
 }
 

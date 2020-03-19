@@ -5,6 +5,10 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "ReductionWorkspaces.h"
+
+
+#include <utility>
+
 #include "Common/Map.h"
 
 namespace MantidQt {
@@ -16,7 +20,7 @@ ReductionWorkspaces::ReductionWorkspaces(
     // cppcheck-suppress passedByValue
     TransmissionRunPair transmissionRuns)
     : m_inputRunNumbers(std::move(inputRunNumbers)),
-      m_transmissionRuns(transmissionRuns), m_iVsLambda(), m_iVsQ(),
+      m_transmissionRuns(std::move(transmissionRuns)), m_iVsLambda(), m_iVsQ(),
       m_iVsQBinned() {}
 
 std::vector<std::string> const &ReductionWorkspaces::inputRunNumbers() const {

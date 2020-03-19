@@ -259,8 +259,8 @@ void SplineInterpolation::exec() {
  * @return The pointer to the newly created workspace
  */
 API::MatrixWorkspace_sptr
-SplineInterpolation::setupOutputWorkspace(API::MatrixWorkspace_sptr mws,
-                                          API::MatrixWorkspace_sptr iws) const {
+SplineInterpolation::setupOutputWorkspace(const API::MatrixWorkspace_sptr& mws,
+                                          const API::MatrixWorkspace_sptr& iws) const {
   const size_t numSpec = iws->getNumberHistograms();
   MatrixWorkspace_sptr outputWorkspace =
       WorkspaceFactory::Instance().create(mws, numSpec);
@@ -300,7 +300,7 @@ SplineInterpolation::convertBinnedData(MatrixWorkspace_sptr workspace) {
  * @param row :: The row of spectra to use
  */
 void SplineInterpolation::setInterpolationPoints(
-    MatrixWorkspace_const_sptr inputWorkspace, const size_t row) const {
+    const MatrixWorkspace_const_sptr& inputWorkspace, const size_t row) const {
   const auto &xIn = inputWorkspace->x(row);
   const auto &yIn = inputWorkspace->y(row);
   const size_t size = xIn.size();
@@ -321,8 +321,8 @@ void SplineInterpolation::setInterpolationPoints(
  * @param order :: The order of derivatives to calculate
  */
 void SplineInterpolation::calculateDerivatives(
-    API::MatrixWorkspace_const_sptr inputWorkspace,
-    API::MatrixWorkspace_sptr outputWorkspace, const size_t order) const {
+    const API::MatrixWorkspace_const_sptr& inputWorkspace,
+    const API::MatrixWorkspace_sptr& outputWorkspace, const size_t order) const {
   // get x and y parameters from workspaces
   const size_t nData = inputWorkspace->y(0).size();
   const double *xValues = &(inputWorkspace->x(0)[0]);
@@ -339,8 +339,8 @@ void SplineInterpolation::calculateDerivatives(
  * @param row :: The row of spectra to use
  */
 void SplineInterpolation::calculateSpline(
-    MatrixWorkspace_const_sptr inputWorkspace,
-    MatrixWorkspace_sptr outputWorkspace, const size_t row) const {
+    const MatrixWorkspace_const_sptr& inputWorkspace,
+    const MatrixWorkspace_sptr& outputWorkspace, const size_t row) const {
   // setup input parameters
   const size_t nData = inputWorkspace->y(0).size();
   const double *xValues = &(inputWorkspace->x(0)[0]);
@@ -360,7 +360,7 @@ void SplineInterpolation::calculateSpline(
  * @param derivs : the vector of derivative workspaces
  */
 void SplineInterpolation::extrapolateFlat(
-    MatrixWorkspace_sptr ows, MatrixWorkspace_const_sptr iwspt,
+    const MatrixWorkspace_sptr& ows, const MatrixWorkspace_const_sptr& iwspt,
     const size_t row, const std::pair<size_t, size_t> &indices,
     const bool doDerivs, std::vector<MatrixWorkspace_sptr> &derivs) const {
 
@@ -394,8 +394,8 @@ void SplineInterpolation::extrapolateFlat(
  * @return : pair of indices for representing the interpolation range
  */
 std::pair<size_t, size_t>
-SplineInterpolation::findInterpolationRange(MatrixWorkspace_const_sptr iwspt,
-                                            MatrixWorkspace_sptr mwspt,
+SplineInterpolation::findInterpolationRange(const MatrixWorkspace_const_sptr& iwspt,
+                                            const MatrixWorkspace_sptr& mwspt,
                                             const size_t row) {
 
   auto xAxisIn = iwspt->x(row).rawData();

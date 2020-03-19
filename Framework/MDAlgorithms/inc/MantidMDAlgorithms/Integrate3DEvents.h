@@ -176,7 +176,7 @@ private:
   /// Find the net integrated intensity of a list of Q's using ellipsoids
   boost::shared_ptr<const Mantid::DataObjects::PeakShapeEllipsoid>
   ellipseIntegrateEvents(
-      std::vector<Kernel::V3D> E1Vec, Kernel::V3D const &peak_q,
+      const std::vector<Kernel::V3D>& E1Vec, Kernel::V3D const &peak_q,
       std::vector<std::pair<std::pair<double, double>,
                             Mantid::Kernel::V3D>> const &ev_list,
       std::vector<Mantid::Kernel::V3D> const &directions,
@@ -185,7 +185,7 @@ private:
       std::vector<double> &axes_radii, double &inti, double &sigi);
 
   /// Compute if a particular Q falls on the edge of a detector
-  double detectorQ(std::vector<Kernel::V3D> E1Vec,
+  double detectorQ(const std::vector<Kernel::V3D>& E1Vec,
                    const Mantid::Kernel::V3D QLabFrame,
                    const std::vector<double> &r);
 

@@ -214,10 +214,10 @@ private:
   //@}
 
   // plots workspace according to the user selection
-  void plotFocusedWorkspace(std::string outWSName);
+  void plotFocusedWorkspace(const std::string& outWSName);
 
-  void plotCalibWorkspace(std::vector<double> difa, std::vector<double> difc,
-                          std::vector<double> tzero, std::string specNos);
+  void plotCalibWorkspace(const std::vector<double>& difa, const std::vector<double>& difc,
+                          const std::vector<double>& tzero, const std::string& specNos);
 
   // algorithms to save the generated workspace
   void saveGSS(const RunLabel &runLabel, const std::string &inputWorkspace);

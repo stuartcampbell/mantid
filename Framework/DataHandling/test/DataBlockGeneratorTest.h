@@ -96,7 +96,7 @@ public:
   }
 
 private:
-  void do_test_interval(std::vector<std::pair<int64_t, int64_t>> interval,
+  void do_test_interval(const std::vector<std::pair<int64_t, int64_t>>& interval,
                         std::vector<int64_t> expectedOutput) {
     Mantid::DataHandling::DataBlockGenerator generator(interval);
 

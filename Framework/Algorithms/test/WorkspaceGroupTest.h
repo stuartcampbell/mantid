@@ -19,6 +19,8 @@
 
 #include <Poco/File.h>
 #include <fstream>
+#include <utility>
+
 
 using namespace Mantid::API;
 using namespace Mantid::Kernel;
@@ -33,12 +35,12 @@ private:
   void checkData(MatrixWorkspace_sptr work_in1, MatrixWorkspace_sptr work_in2,
                  MatrixWorkspace_sptr work_out1) {
     // default to a horizontal loop orientation
-    checkData(work_in1, work_in2, work_out1, 0);
+    checkData(std::move(work_in1), std::move(work_in2), std::move(work_out1), 0);
   }
 
   // loopOrientation 0=Horizontal, 1=Vertical
-  void checkData(MatrixWorkspace_sptr work_in1, MatrixWorkspace_sptr work_in2,
-                 MatrixWorkspace_sptr work_out1, int loopOrientation) {
+  void checkData(const MatrixWorkspace_sptr& work_in1, const MatrixWorkspace_sptr& work_in2,
+                 const MatrixWorkspace_sptr& work_out1, int loopOrientation) {
     if (!work_in1 || !work_in2 || !work_out1) {
       TSM_ASSERT("One or more empty workspace pointers.", 0);
       return;
@@ -63,9 +65,9 @@ private:
     }
   }
 
-  void checkDataItem(MatrixWorkspace_sptr work_in1,
-                     MatrixWorkspace_sptr work_in2,
-                     MatrixWorkspace_sptr work_out1, size_t i,
+  void checkDataItem(const MatrixWorkspace_sptr& work_in1,
+                     const MatrixWorkspace_sptr& work_in2,
+                     const MatrixWorkspace_sptr& work_out1, size_t i,
                      size_t ws2Index) {
     double sig1 =
         work_in1->dataY(i / work_in1->blocksize())[i % work_in1->blocksize()];

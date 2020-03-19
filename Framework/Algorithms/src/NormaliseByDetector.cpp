@@ -73,7 +73,7 @@ void NormaliseByDetector::init() {
 }
 
 const Geometry::FitParameter NormaliseByDetector::tryParseFunctionParameter(
-    Geometry::Parameter_sptr parameter, const Geometry::IDetector &det) {
+    const Geometry::Parameter_sptr& parameter, const Geometry::IDetector &det) {
   if (parameter == nullptr) {
     std::stringstream stream;
     stream << det.getName()
@@ -100,8 +100,8 @@ use.
 @param prog: progress reporting object.
 */
 void NormaliseByDetector::processHistogram(size_t wsIndex,
-                                           MatrixWorkspace_const_sptr inWS,
-                                           MatrixWorkspace_sptr denominatorWS,
+                                           const MatrixWorkspace_const_sptr& inWS,
+                                           const MatrixWorkspace_sptr& denominatorWS,
                                            Progress &prog) {
   const auto &paramMap = inWS->constInstrumentParameters();
   const auto &spectrumInfo = inWS->spectrumInfo();
@@ -164,7 +164,7 @@ sequentially.
 use.
 */
 MatrixWorkspace_sptr
-NormaliseByDetector::processHistograms(MatrixWorkspace_sptr inWS) {
+NormaliseByDetector::processHistograms(const MatrixWorkspace_sptr& inWS) {
   const size_t nHistograms = inWS->getNumberHistograms();
   const auto progress_items = static_cast<size_t>(double(nHistograms) * 1.2);
   Progress prog(this, 0.0, 1.0, progress_items);

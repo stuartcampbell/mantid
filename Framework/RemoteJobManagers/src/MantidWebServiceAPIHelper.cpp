@@ -19,6 +19,8 @@
 
 #include <ostream>
 #include <sstream>
+#include <utility>
+
 
 namespace Mantid {
 namespace RemoteJobManagers {
@@ -172,19 +174,19 @@ void MantidWebServiceAPIHelper::clearSessionCookies() { g_cookies.clear(); }
 void MantidWebServiceAPIHelper::initGetRequest(Poco::Net::HTTPRequest &req,
                                                std::string extraPath,
                                                std::string queryString) const {
-  return initHTTPRequest(req, Poco::Net::HTTPRequest::HTTP_GET, extraPath,
-                         queryString);
+  return initHTTPRequest(req, Poco::Net::HTTPRequest::HTTP_GET, std::move(extraPath),
+                         std::move(queryString));
 }
 
 void MantidWebServiceAPIHelper::initPostRequest(Poco::Net::HTTPRequest &req,
                                                 std::string extraPath) const {
-  return initHTTPRequest(req, Poco::Net::HTTPRequest::HTTP_POST, extraPath);
+  return initHTTPRequest(req, Poco::Net::HTTPRequest::HTTP_POST, std::move(extraPath));
 }
 
 void MantidWebServiceAPIHelper::initHTTPRequest(Poco::Net::HTTPRequest &req,
                                                 const std::string &method,
-                                                std::string extraPath,
-                                                std::string queryString) const {
+                                                const std::string& extraPath,
+                                                const std::string& queryString) const {
   // Set up the session object
   m_session.reset();
 

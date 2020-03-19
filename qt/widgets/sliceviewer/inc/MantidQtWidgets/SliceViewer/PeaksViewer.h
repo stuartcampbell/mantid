@@ -34,14 +34,14 @@ class EXPORT_OPT_MANTIDQT_SLICEVIEWER PeaksViewer : public QWidget,
 public:
   PeaksViewer(QWidget *parent = nullptr);
   void setPeaksWorkspaces(const SetPeaksWorkspaces &workspaces);
-  void setPresenter(boost::shared_ptr<ProxyCompositePeaksPresenter> presenter);
+  void setPresenter(const boost::shared_ptr<ProxyCompositePeaksPresenter>& presenter);
   void performUpdate() override;
   void
   updatePeaksWorkspace(const std::string &toName,
                        boost::shared_ptr<const Mantid::API::IPeaksWorkspace>
                            toWorkspace) override;
   bool removePeaksWorkspace(
-      boost::shared_ptr<const Mantid::API::IPeaksWorkspace> toRemove);
+      const boost::shared_ptr<const Mantid::API::IPeaksWorkspace>& toRemove);
   bool removePeaksWorkspace(const std::string &toRemove);
   void hide();
   ~PeaksViewer() override;
@@ -86,7 +86,7 @@ private:
   void loadPresentedWorkspace(const std::string &section);
   /// Save a presented peaks workspace and settings to a project file
   std::string
-  savePresentedWorkspace(Mantid::API::IPeaksWorkspace_const_sptr ws) const;
+  savePresentedWorkspace(const Mantid::API::IPeaksWorkspace_const_sptr& ws) const;
 
   boost::shared_ptr<ProxyCompositePeaksPresenter> m_presenter;
 };

@@ -70,7 +70,7 @@ private:
   /// presenter's various children
   GSASIIRefineFitPeaksParameters
   collectInputParameters(const RunLabel &runLabel,
-                         const Mantid::API::MatrixWorkspace_sptr ws) const;
+                         const Mantid::API::MatrixWorkspace_sptr& ws) const;
 
   /**
    Perform refinements on a number of runs

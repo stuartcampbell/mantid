@@ -17,6 +17,8 @@
 #include "MantidKernel/MersenneTwister.h"
 
 #include <fstream>
+#include <utility>
+
 
 using Mantid::CurveFitting::Functions::ProcessBackground;
 using namespace Mantid;
@@ -26,7 +28,7 @@ using namespace Mantid::DataObjects;
 using namespace HistogramData;
 
 namespace {
-Workspace2D_sptr createInputWS(std::string name, size_t sizex, size_t sizey) {
+Workspace2D_sptr createInputWS(const std::string& name, size_t sizex, size_t sizey) {
   Workspace2D_sptr inputWS = boost::dynamic_pointer_cast<Workspace2D>(
       WorkspaceFactory::Instance().create("Workspace2D", 1, sizex, sizey));
   AnalysisDataService::Instance().addOrReplace(name, inputWS);
@@ -296,7 +298,7 @@ public:
    */
   Workspace2D_sptr createWorkspace2D(std::string filename) {
     // 1. Read data
-    auto data = importDataFromColumnFile(filename);
+    auto data = importDataFromColumnFile(std::move(filename));
 
     // 2. Create workspace
     size_t datasize = data.x().size();
@@ -314,7 +316,7 @@ public:
 
   /** Import data from a column data file
    */
-  Histogram importDataFromColumnFile(std::string filename) {
+  Histogram importDataFromColumnFile(const std::string& filename) {
     // 1. Open file
     std::ifstream ins;
     ins.open(filename.c_str());

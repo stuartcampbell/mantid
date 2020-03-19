@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidAlgorithms/ReflectometryWorkflowBase.h"
 #include "MantidAPI/BoostOptionalToAlgorithmProperty.h"
 #include "MantidAPI/WorkspaceUnitValidator.h"
@@ -196,12 +200,12 @@ ReflectometryWorkflowBase::OptionalMinMax
 ReflectometryWorkflowBase::getOptionalMinMax(
     Mantid::API::Algorithm *const alg, const std::string &minProperty,
     const std::string &maxProperty,
-    Mantid::Geometry::Instrument_const_sptr inst, std::string minIdfName,
+    const Mantid::Geometry::Instrument_const_sptr& inst, std::string minIdfName,
     std::string maxIdfName) const {
   const auto min = checkForOptionalInstrumentDefault<double>(alg, minProperty,
-                                                             inst, minIdfName);
+                                                             inst, std::move(minIdfName));
   const auto max = checkForOptionalInstrumentDefault<double>(alg, maxProperty,
-                                                             inst, maxIdfName);
+                                                             inst, std::move(maxIdfName));
   if (min.is_initialized() && max.is_initialized()) {
     MinMax result = getMinMax(minProperty, maxProperty);
     return OptionalMinMax(result);
@@ -361,7 +365,7 @@ void ReflectometryWorkflowBase::getTransmissionRunInfo(
  * @return The cropped and corrected monitor workspace.
  */
 MatrixWorkspace_sptr ReflectometryWorkflowBase::toLamMonitor(
-    const MatrixWorkspace_sptr &toConvert, const OptionalInteger monitorIndex,
+    const MatrixWorkspace_sptr &toConvert, const OptionalInteger& monitorIndex,
     const OptionalMinMax &backgroundMinMax) {
   // Convert Units.
   auto convertUnitsAlg = this->createChildAlgorithm("ConvertUnits");
@@ -473,9 +477,9 @@ ReflectometryWorkflowBase::makeUnityWorkspace(const HistogramX &x) {
  * @return Tuple of detector and monitor workspaces
  */
 ReflectometryWorkflowBase::DetectorMonitorWorkspacePair
-ReflectometryWorkflowBase::toLam(MatrixWorkspace_sptr toConvert,
+ReflectometryWorkflowBase::toLam(const MatrixWorkspace_sptr& toConvert,
                                  const std::string &processingCommands,
-                                 const OptionalInteger monitorIndex,
+                                 const OptionalInteger& monitorIndex,
                                  const MinMax &wavelengthMinMax,
                                  const OptionalMinMax &backgroundMinMax) {
   // Detector Workspace Processing

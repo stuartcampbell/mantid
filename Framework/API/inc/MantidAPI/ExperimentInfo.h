@@ -107,7 +107,7 @@ public:
   /// Easy access to the efixed value for this run & detector ID
   double getEFixed(const detid_t detID) const;
   /// Easy access to the efixed value for this run & optional detector
-  double getEFixed(const boost::shared_ptr<const Geometry::IDetector> detector =
+  double getEFixed(const boost::shared_ptr<const Geometry::IDetector>& detector =
                        boost::shared_ptr<const Geometry::IDetector>{
                            nullptr}) const;
   /// Set the efixed value for a given detector ID

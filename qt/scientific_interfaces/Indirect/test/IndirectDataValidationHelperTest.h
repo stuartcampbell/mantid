@@ -45,7 +45,7 @@ std::string emptyWorkspaceGroupError() {
          " is empty.";
 }
 
-MatrixWorkspace_sptr convertWorkspace2DToMatrix(Workspace2D_sptr workspace) {
+MatrixWorkspace_sptr convertWorkspace2DToMatrix(const Workspace2D_sptr& workspace) {
   return boost::dynamic_pointer_cast<MatrixWorkspace>(workspace);
 }
 

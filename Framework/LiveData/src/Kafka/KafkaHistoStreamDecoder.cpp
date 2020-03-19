@@ -29,6 +29,10 @@ GNU_DIAG_ON("conversion")
 
 #include <json/json.h>
 
+
+#include <utility>
+
+
 namespace {
 const std::string PROTON_CHARGE_PROPERTY = "proton_charge";
 const std::string RUN_NUMBER_PROPERTY = "run_number";
@@ -59,7 +63,7 @@ KafkaHistoStreamDecoder::KafkaHistoStreamDecoder(
     std::shared_ptr<IKafkaBroker> broker, const std::string &histoTopic,
     const std::string &runInfoTopic, const std::string &spDetTopic,
     const std::string &sampleEnvTopic, const std::string &chopperTopic)
-    : IKafkaStreamDecoder(broker, histoTopic, runInfoTopic, spDetTopic,
+    : IKafkaStreamDecoder(std::move(broker), histoTopic, runInfoTopic, spDetTopic,
                           sampleEnvTopic, chopperTopic, ""),
       m_workspace() {}
 

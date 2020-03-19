@@ -87,8 +87,8 @@ private:
   void initPostRequest(Poco::Net::HTTPRequest &req,
                        std::string extraPath) const;
   void initHTTPRequest(Poco::Net::HTTPRequest &req, const std::string &method,
-                       std::string extraPath,
-                       std::string queryString = "") const;
+                       const std::string& extraPath,
+                       const std::string& queryString = "") const;
 
   std::string m_displayName;
   std::string

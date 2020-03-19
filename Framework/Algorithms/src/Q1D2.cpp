@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidAlgorithms/Q1D2.h"
 #include "MantidAPI/Axis.h"
 #include "MantidAPI/CommonBinsValidator.h"
@@ -410,11 +414,11 @@ Q1D2::setUpOutputWorkspace(const std::vector<double> &binParams) const {
 void Q1D2::calculateNormalization(
     const size_t wavStart, const size_t wsIndex,
     API::MatrixWorkspace_const_sptr pixelAdj,
-    API::MatrixWorkspace_const_sptr wavePixelAdj, double const *const binNorms,
+    const API::MatrixWorkspace_const_sptr& wavePixelAdj, double const *const binNorms,
     double const *const binNormEs, HistogramData::HistogramY::iterator norm,
     HistogramData::HistogramY::iterator normETo2) const {
   double detectorAdj, detAdjErr;
-  pixelWeight(pixelAdj, wsIndex, detectorAdj, detAdjErr);
+  pixelWeight(std::move(pixelAdj), wsIndex, detectorAdj, detAdjErr);
   // use that the normalization array ends at the start of the error array
   for (auto n = norm, e = normETo2; n != normETo2; ++n, ++e) {
     *n = detectorAdj;
@@ -444,7 +448,7 @@ void Q1D2::calculateNormalization(
  *  @param[out] error the error on the weight, only non-zero if pixelAdj
  *  @throw LogicError if the solid angle is tiny or negative
  */
-void Q1D2::pixelWeight(API::MatrixWorkspace_const_sptr pixelAdj,
+void Q1D2::pixelWeight(const API::MatrixWorkspace_const_sptr& pixelAdj,
                        const size_t wsIndex, double &weight,
                        double &error) const {
   const auto &detectorInfo = m_dataWS->detectorInfo();

@@ -19,6 +19,10 @@
 #include <Poco/File.h>
 #include <cxxtest/TestSuite.h>
 
+
+#include <utility>
+
+
 using namespace Mantid;
 using namespace Mantid::Kernel;
 using namespace Mantid::API;
@@ -58,15 +62,15 @@ class Convert2AnyTestHelper : public ConvertToMD {
 public:
   Convert2AnyTestHelper(){};
   TableWorkspace_const_sptr
-  preprocessDetectorsPositions(Mantid::API::MatrixWorkspace_const_sptr InWS2D,
-                               const std::string dEModeRequested = "Direct",
+  preprocessDetectorsPositions(const Mantid::API::MatrixWorkspace_const_sptr& InWS2D,
+                               const std::string& dEModeRequested = "Direct",
                                bool updateMasks = false) {
     return ConvertToMD::preprocessDetectorsPositions(
         InWS2D, dEModeRequested, updateMasks,
         std::string(this->getProperty("PreprocDetectorsWS")));
   }
   void setSourceWS(Mantid::API::MatrixWorkspace_sptr InWS2D) {
-    m_InWS2D = InWS2D;
+    m_InWS2D = std::move(InWS2D);
   }
 };
 // helper function to provide list of names to test:

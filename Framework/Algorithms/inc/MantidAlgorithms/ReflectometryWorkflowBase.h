@@ -44,9 +44,9 @@ public:
   /// Convert the input workspace to wavelength, splitting according to the
   /// properties provided.
   DetectorMonitorWorkspacePair
-  toLam(Mantid::API::MatrixWorkspace_sptr toConvert,
+  toLam(const Mantid::API::MatrixWorkspace_sptr& toConvert,
         const std::string &processingCommands,
-        const OptionalInteger monitorIndex, const MinMax &wavelengthMinMax,
+        const OptionalInteger& monitorIndex, const MinMax &wavelengthMinMax,
         const OptionalMinMax &backgroundMinMax);
 
   /// Convert the detector spectrum of the input workspace to wavelength
@@ -73,7 +73,7 @@ protected:
   OptionalMinMax getOptionalMinMax(Mantid::API::Algorithm *const alg,
                                    const std::string &minProperty,
                                    const std::string &maxProperty,
-                                   Mantid::Geometry::Instrument_const_sptr inst,
+                                   const Mantid::Geometry::Instrument_const_sptr& inst,
                                    std::string minIdfName,
                                    std::string maxIdfName) const;
   /// Get the transmission correction properties
@@ -102,7 +102,7 @@ private:
   /// Convert the monitor parts of the input workspace to wavelength
   API::MatrixWorkspace_sptr
   toLamMonitor(const API::MatrixWorkspace_sptr &toConvert,
-               const OptionalInteger monitorIndex,
+               const OptionalInteger& monitorIndex,
                const OptionalMinMax &backgroundMinMax);
 
   /// Make a unity workspace

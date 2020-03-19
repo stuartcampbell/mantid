@@ -9,6 +9,10 @@
 #include "MantidTestHelpers/WorkspaceCreationHelper.h"
 #include <cxxtest/TestSuite.h>
 
+
+#include <utility>
+
+
 #include "MantidAPI/AnalysisDataService.h"
 #include "MantidAPI/Axis.h"
 #include "MantidAPI/WorkspaceGroup.h"
@@ -25,8 +29,8 @@ using namespace Mantid::Algorithms;
 using namespace Mantid::DataObjects;
 
 namespace {
-MatrixWorkspace_const_sptr doTest(MatrixWorkspace_sptr inWS,
-                                  std::string wsNameOut, double expectedY,
+MatrixWorkspace_const_sptr doTest(const MatrixWorkspace_sptr& inWS,
+                                  const std::string& wsNameOut, double expectedY,
                                   double expectedE, bool calcPcharge = false,
                                   bool performance = false) {
   NormaliseByCurrent norm1;
@@ -87,7 +91,7 @@ MatrixWorkspace_const_sptr doTest(MatrixWorkspace_sptr inWS,
   return output;
 }
 
-MatrixWorkspace_const_sptr doTest(std::string wsNameIn, std::string wsNameOut,
+MatrixWorkspace_const_sptr doTest(const std::string& wsNameIn, std::string wsNameOut,
                                   const double pCharge, double expectedY,
                                   double expectedE, bool performance = false) {
   MatrixWorkspace_sptr inWS =
@@ -99,13 +103,13 @@ MatrixWorkspace_const_sptr doTest(std::string wsNameIn, std::string wsNameOut,
       Mantid::Kernel::UnitFactory::Instance().create("TOF");
   inWS->setYUnit("Counts");
 
-  return doTest(inWS, wsNameOut, expectedY, expectedE, true, performance);
+  return doTest(inWS, std::move(wsNameOut), expectedY, expectedE, true, performance);
 }
 
 /// Helper method to add necessary log values to simulate multi-period data.
 /// The algorithm uses these logs to determien how to normalise by the
 /// current.
-void addMultiPeriodLogsTo(MatrixWorkspace_sptr ws, int period,
+void addMultiPeriodLogsTo(const MatrixWorkspace_sptr& ws, int period,
                           const std::string &protonCharges) {
   ArrayProperty<double> *chargeProp =
       new ArrayProperty<double>("proton_charge_by_period", protonCharges);
@@ -119,7 +123,7 @@ void addMultiPeriodLogsTo(MatrixWorkspace_sptr ws, int period,
   ws->mutableRun().addLogData(currentPeriodProp);
 }
 
-void addPChargeLogTo(MatrixWorkspace_sptr ws, const double pChargeAccum) {
+void addPChargeLogTo(const MatrixWorkspace_sptr& ws, const double pChargeAccum) {
   auto pchargeLog =
       std::make_unique<Kernel::TimeSeriesProperty<double>>("proton_charge");
 

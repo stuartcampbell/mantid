@@ -243,7 +243,7 @@ void FunctionCurve::loadData(int points) {
  * @param wi :: An index of a histogram with the data.
  * @param peakRadius :: A peak radius to pass to the domain.
  */
-void FunctionCurve::loadMantidData(Mantid::API::MatrixWorkspace_const_sptr ws,
+void FunctionCurve::loadMantidData(const Mantid::API::MatrixWorkspace_const_sptr& ws,
                                    size_t wi, int peakRadius) {
   if (!d_variable.isEmpty() || d_formulas.isEmpty() ||
       d_formulas[0] != "Mantid")

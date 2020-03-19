@@ -22,7 +22,7 @@ public:
   MaskWorkspace(std::size_t numvectors);
   MaskWorkspace(Mantid::Geometry::Instrument_const_sptr instrument,
                 const bool includeMonitors = false);
-  MaskWorkspace(const API::MatrixWorkspace_const_sptr parent);
+  MaskWorkspace(const API::MatrixWorkspace_const_sptr& parent);
 
   /// Returns a clone of the workspace
   std::unique_ptr<MaskWorkspace> clone() const {

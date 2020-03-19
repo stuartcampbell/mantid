@@ -26,17 +26,17 @@ public:
   SANSBackgroundCorrectionWidget(QWidget *parent = nullptr);
 
   void
-  setDarkRunSettingForTimeDetectors(SANSBackgroundCorrectionSettings setting);
+  setDarkRunSettingForTimeDetectors(const SANSBackgroundCorrectionSettings& setting);
   SANSBackgroundCorrectionSettings getDarkRunSettingForTimeDetectors();
   void
-  setDarkRunSettingForUampDetectors(SANSBackgroundCorrectionSettings setting);
+  setDarkRunSettingForUampDetectors(const SANSBackgroundCorrectionSettings& setting);
   SANSBackgroundCorrectionSettings getDarkRunSettingForUampDetectors();
 
   void
-  setDarkRunSettingForTimeMonitors(SANSBackgroundCorrectionSettings setting);
+  setDarkRunSettingForTimeMonitors(const SANSBackgroundCorrectionSettings& setting);
   SANSBackgroundCorrectionSettings getDarkRunSettingForTimeMonitors();
   void
-  setDarkRunSettingForUampMonitors(SANSBackgroundCorrectionSettings setting);
+  setDarkRunSettingForUampMonitors(const SANSBackgroundCorrectionSettings& setting);
   SANSBackgroundCorrectionSettings getDarkRunSettingForUampMonitors();
 
   void resetEntries();

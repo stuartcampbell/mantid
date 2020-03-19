@@ -28,7 +28,7 @@ using ScopedFileHelper::ScopedFile;
 Helper function. Runs LoadParameterAlg, to get an instrument parameter
 definition from a file onto a workspace.
 */
-void apply_instrument_parameter_file_to_workspace(MatrixWorkspace_sptr ws,
+void apply_instrument_parameter_file_to_workspace(const MatrixWorkspace_sptr& ws,
                                                   const ScopedFile &file) {
   // Load the Instrument Parameter file over the existing test workspace +
   // instrument.
@@ -46,7 +46,7 @@ Helper method for running the algorithm and simply verifying that it runs
 without exception producing an output workspace..
 */
 MatrixWorkspace_sptr
-do_test_doesnt_throw_on_execution(MatrixWorkspace_sptr inputWS,
+do_test_doesnt_throw_on_execution(const MatrixWorkspace_sptr& inputWS,
                                   bool parallel = true) {
   NormaliseByDetector alg(parallel);
   alg.setRethrows(true);
@@ -102,7 +102,7 @@ private:
    The fit function is set at the instrument level.
   */
   MatrixWorkspace_sptr create_workspace_with_fitting_functions(
-      const std::string result_unit = "Wavelength") {
+      const std::string& result_unit = "Wavelength") {
     // Create a default workspace with no-fitting functions.
     MatrixWorkspace_sptr ws = create_workspace_with_no_fitting_functions();
     const std::string instrumentName = ws->getInstrument()->getName();
@@ -228,7 +228,7 @@ private:
  */
   MatrixWorkspace_sptr
   create_workspace_with_incomplete_detector_level_only_fit_functions(
-      MatrixWorkspace_sptr original = boost::shared_ptr<MatrixWorkspace>()) {
+      const MatrixWorkspace_sptr& original = boost::shared_ptr<MatrixWorkspace>()) {
     MatrixWorkspace_sptr ws = original;
     if (original == nullptr) {
       // Create a default workspace with no-fitting functions.
@@ -275,7 +275,7 @@ private:
   execution.
   */
   void
-  do_test_throws_invalid_argument_on_execution(MatrixWorkspace_sptr inputWS,
+  do_test_throws_invalid_argument_on_execution(const MatrixWorkspace_sptr& inputWS,
                                                bool parallel = false) {
     NormaliseByDetector alg(parallel);
     alg.setRethrows(true);
@@ -651,7 +651,7 @@ public:
 
 private:
   /// Helper method to run common sanity checks.
-  void do_basic_checks(MatrixWorkspace_sptr normalisedWS) {
+  void do_basic_checks(const MatrixWorkspace_sptr& normalisedWS) {
     TS_ASSERT(normalisedWS != nullptr);
     TS_ASSERT(ws->getNumberHistograms() == normalisedWS->getNumberHistograms());
     TS_ASSERT(ws->x(0).size() == normalisedWS->x(0).size());

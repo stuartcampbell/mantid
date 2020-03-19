@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidQtWidgets/Plotting/Qwt/SafeQwtPlot.h"
 #include "MantidAPI/Workspace.h"
 #include "MantidKernel/ReadLock.h"
@@ -35,7 +39,7 @@ SafeQwtPlot::~SafeQwtPlot() {}
  *
  * @param ws :: shared ptr to workspace
  */
-void SafeQwtPlot::setWorkspace(Mantid::API::Workspace_sptr ws) { m_ws = ws; }
+void SafeQwtPlot::setWorkspace(Mantid::API::Workspace_sptr ws) { m_ws = std::move(ws); }
 
 //----------------------------------------------------------------------------------------------
 /** Overridden drawCanvas() that protects the

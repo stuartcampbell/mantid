@@ -24,6 +24,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <utility>
+
 
 using namespace Mantid::Kernel;
 using namespace Mantid::API;
@@ -41,7 +43,7 @@ namespace { // anonymous namespace
 
 class ConversionFactors {
 public:
-  explicit ConversionFactors(ITableWorkspace_const_sptr table)
+  explicit ConversionFactors(const ITableWorkspace_const_sptr& table)
       : m_difcCol(table->getColumn("difc")),
         m_difaCol(table->getColumn("difa")),
         m_tzeroCol(table->getColumn("tzero")) {
@@ -70,7 +72,7 @@ public:
   }
 
 private:
-  void generateDetidToRow(ITableWorkspace_const_sptr table) {
+  void generateDetidToRow(const ITableWorkspace_const_sptr& table) {
     ConstColumnVector<int> detIDs = table->getVector("detid");
     const size_t numDets = detIDs.size();
     for (size_t i = 0; i < numDets; ++i) {
@@ -188,7 +190,7 @@ std::map<std::string, std::string> AlignDetectors::validateInputs() {
   return result;
 }
 
-void AlignDetectors::loadCalFile(MatrixWorkspace_sptr inputWS,
+void AlignDetectors::loadCalFile(const MatrixWorkspace_sptr& inputWS,
                                  const std::string &filename) {
   IAlgorithm_sptr alg = createChildAlgorithm("LoadDiffCal");
   alg->setProperty("InputWorkspace", inputWS);
@@ -220,14 +222,14 @@ void AlignDetectors::getCalibrationWS(MatrixWorkspace_sptr inputWS) {
   const std::string calFileName = getPropertyValue("CalibrationFile");
   if (!calFileName.empty()) {
     progress(0.0, "Reading calibration file");
-    loadCalFile(inputWS, calFileName);
+    loadCalFile(std::move(inputWS), calFileName);
     return;
   }
 
   throw std::runtime_error("Failed to determine calibration information");
 }
 
-void setXAxisUnits(API::MatrixWorkspace_sptr outputWS) {
+void setXAxisUnits(const API::MatrixWorkspace_sptr& outputWS) {
   outputWS->getAxis(0)->unit() = UnitFactory::Instance().create("dSpacing");
 }
 

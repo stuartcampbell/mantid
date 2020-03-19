@@ -16,6 +16,10 @@
 #include "MantidTestHelpers/WorkspaceCreationHelper.h"
 #include <cxxtest/TestSuite.h>
 
+
+#include <utility>
+
+
 #include "MantidAPI/FunctionFactory.h"
 #include "MantidAPI/IFunction.h"
 #include "MantidAPI/ITableWorkspace.h"
@@ -90,7 +94,7 @@ ITableWorkspace_sptr genTable() {
   return table;
 }
 
-IAlgorithm_sptr setUpFuncAlg(std::vector<std::string> wsNames,
+IAlgorithm_sptr setUpFuncAlg(const std::vector<std::string>& wsNames,
                              const IFunction_sptr &func) {
   IAlgorithm_sptr asymmAlg = AlgorithmManager::Instance().create(
       "ConvertFitFunctionForMuonTFAsymmetry");
@@ -106,7 +110,7 @@ IAlgorithm_sptr setUpFuncAlg(std::vector<std::string> wsNames,
 IFunction_sptr genSingleFunc(std::vector<std::string> wsNames) {
   IFunction_sptr func = FunctionFactory::Instance().createInitialized(
       "name=GausOsc,Frequency=3.0");
-  IAlgorithm_sptr alg = setUpFuncAlg(wsNames, func);
+  IAlgorithm_sptr alg = setUpFuncAlg(std::move(wsNames), func);
   alg->execute();
   IFunction_sptr funcOut = alg->getProperty("OutputFunction");
   return funcOut;
@@ -118,16 +122,16 @@ IFunction_sptr genDoubleFunc(std::vector<std::string> wsNames) {
   multiFuncString += "name=GausOsc,$domains=i,Frequency=3.0;";
   IFunction_sptr func =
       FunctionFactory::Instance().createInitialized(multiFuncString);
-  IAlgorithm_sptr alg = setUpFuncAlg(wsNames, func);
+  IAlgorithm_sptr alg = setUpFuncAlg(std::move(wsNames), func);
   alg->execute();
   IFunction_sptr funcOut = alg->getProperty("OutputFunction");
   std::cout << funcOut << std::endl;
   return funcOut;
 }
 
-IAlgorithm_sptr setUpAlg(ITableWorkspace_sptr &table, IFunction_sptr func,
-                         std::vector<std::string> wsNamesNorm,
-                         std::vector<std::string> wsOut) {
+IAlgorithm_sptr setUpAlg(ITableWorkspace_sptr &table, const IFunction_sptr& func,
+                         const std::vector<std::string>& wsNamesNorm,
+                         const std::vector<std::string>& wsOut) {
   IAlgorithm_sptr asymmAlg =
       AlgorithmManager::Instance().create("CalculateMuonAsymmetry");
   asymmAlg->initialize();

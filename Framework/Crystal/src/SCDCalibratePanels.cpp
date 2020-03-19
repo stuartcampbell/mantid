@@ -280,8 +280,8 @@ void SCDCalibratePanels::exec() {
   saveNexus(tofFilename, TofWksp);
 }
 
-void SCDCalibratePanels::saveNexus(std::string outputFile,
-                                   MatrixWorkspace_sptr outputWS) {
+void SCDCalibratePanels::saveNexus(const std::string& outputFile,
+                                   const MatrixWorkspace_sptr& outputWS) {
   IAlgorithm_sptr save = this->createChildAlgorithm("SaveNexus");
   save->setProperty("InputWorkspace", outputWS);
   save->setProperty("FileName", outputFile);
@@ -289,7 +289,7 @@ void SCDCalibratePanels::saveNexus(std::string outputFile,
 }
 
 void SCDCalibratePanels::findL1(int nPeaks,
-                                DataObjects::PeaksWorkspace_sptr peaksWs) {
+                                const DataObjects::PeaksWorkspace_sptr& peaksWs) {
   MatrixWorkspace_sptr L1WS = boost::dynamic_pointer_cast<MatrixWorkspace>(
       API::WorkspaceFactory::Instance().create("Workspace2D", 1, 3 * nPeaks,
                                                3 * nPeaks));
@@ -330,7 +330,7 @@ void SCDCalibratePanels::findL1(int nPeaks,
 }
 
 void SCDCalibratePanels::findT0(int nPeaks,
-                                DataObjects::PeaksWorkspace_sptr peaksWs) {
+                                const DataObjects::PeaksWorkspace_sptr& peaksWs) {
   MatrixWorkspace_sptr T0WS = boost::dynamic_pointer_cast<MatrixWorkspace>(
       API::WorkspaceFactory::Instance().create("Workspace2D", 1, 3 * nPeaks,
                                                3 * nPeaks));
@@ -385,7 +385,7 @@ void SCDCalibratePanels::findT0(int nPeaks,
   }
 }
 
-void SCDCalibratePanels::findU(DataObjects::PeaksWorkspace_sptr peaksWs) {
+void SCDCalibratePanels::findU(const DataObjects::PeaksWorkspace_sptr& peaksWs) {
   IAlgorithm_sptr ub_alg;
   try {
     ub_alg = createChildAlgorithm("CalculateUMatrix", -1, -1, false);
@@ -442,7 +442,7 @@ void SCDCalibratePanels::findU(DataObjects::PeaksWorkspace_sptr peaksWs) {
 void SCDCalibratePanels::saveIsawDetCal(
     boost::shared_ptr<Instrument> &instrument,
     boost::container::flat_set<string> &AllBankName, double T0,
-    string filename) {
+    const string& filename) {
   // having a filename triggers doing the work
   if (filename.empty())
     return;
@@ -634,7 +634,7 @@ void SCDCalibratePanels::saveXmlFile(
   oss3.close();
 }
 void SCDCalibratePanels::findL2(boost::container::flat_set<string> MyBankNames,
-                                DataObjects::PeaksWorkspace_sptr peaksWs) {
+                                const DataObjects::PeaksWorkspace_sptr& peaksWs) {
   bool changeSize = getProperty("ChangePanelSize");
   Geometry::Instrument_const_sptr inst = peaksWs->getInstrument();
 

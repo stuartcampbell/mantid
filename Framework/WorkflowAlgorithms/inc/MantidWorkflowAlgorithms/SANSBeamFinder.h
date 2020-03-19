@@ -40,7 +40,7 @@ private:
   void exec() override;
   API::MatrixWorkspace_sptr
   loadBeamFinderFile(const std::string &beamCenterFile);
-  void maskEdges(API::MatrixWorkspace_sptr beamCenterWS, int high, int low,
+  void maskEdges(const API::MatrixWorkspace_sptr& beamCenterWS, int high, int low,
                  int left, int right,
                  const std::string &componentName = "detector1");
 

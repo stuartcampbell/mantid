@@ -45,7 +45,7 @@ struct WindowInfo {
 class EXPORT_OPT_MANTIDQT_COMMON ProjectSaveModel {
 public:
   /// Construct a new model instance with vector of window handles
-  ProjectSaveModel(std::vector<MantidQt::API::IProjectSerialisable *> windows,
+  ProjectSaveModel(const std::vector<MantidQt::API::IProjectSerialisable *>& windows,
                    std::vector<std::string> activePythonInterfaces =
                        std::vector<std::string>());
 
@@ -80,7 +80,7 @@ public:
 private:
   /// Create a workspace info object for this workspace
   WorkspaceInfo
-  makeWorkspaceInfoObject(Mantid::API::Workspace_const_sptr ws) const;
+  makeWorkspaceInfoObject(const Mantid::API::Workspace_const_sptr& ws) const;
 
   WindowInfo
   makeWindowInfoObject(MantidQt::API::IProjectSerialisable *window) const;

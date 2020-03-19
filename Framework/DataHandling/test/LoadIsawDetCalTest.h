@@ -48,7 +48,7 @@ void loadEmptyInstrument(const std::string &filename,
 
 class LoadIsawDetCalTest : public CxxTest::TestSuite {
 public:
-  void checkPosition(IComponent_const_sptr det, const double x, const double y,
+  void checkPosition(const IComponent_const_sptr& det, const double x, const double y,
                      const double z) {
     if (det != nullptr) {
       const auto detPos = det->getPos();
@@ -59,7 +59,7 @@ public:
     }
   }
 
-  void checkRotation(IComponent_const_sptr det, const double w, const double a,
+  void checkRotation(const IComponent_const_sptr& det, const double w, const double a,
                      const double b, const double c) {
     if (det != nullptr) {
       const auto detRot = det->getRotation();

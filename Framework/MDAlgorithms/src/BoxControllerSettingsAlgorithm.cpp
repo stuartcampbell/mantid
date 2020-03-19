@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidMDAlgorithms/BoxControllerSettingsAlgorithm.h"
 #include "MantidKernel/ArrayProperty.h"
 #include "MantidKernel/BoundedValidator.h"
@@ -75,7 +79,7 @@ void BoxControllerSettingsAlgorithm::initBoxControllerProps(
  * @param ndims : Number of dimensions in output workspace.
  */
 void BoxControllerSettingsAlgorithm::takeDefaultsFromInstrument(
-    Mantid::Geometry::Instrument_const_sptr instrument, const size_t ndims) {
+    const Mantid::Geometry::Instrument_const_sptr& instrument, const size_t ndims) {
   const std::string splitThresholdName = "SplitThreshold";
   const std::string splitIntoName = "SplitInto";
   const std::string maxRecursionDepthName = "MaxRecursionDepth";
@@ -117,10 +121,10 @@ void BoxControllerSettingsAlgorithm::takeDefaultsFromInstrument(
  * @param instrument :: instrument to read parameters from.
  */
 void BoxControllerSettingsAlgorithm::setBoxController(
-    BoxController_sptr bc, Mantid::Geometry::Instrument_const_sptr instrument) {
+    const BoxController_sptr& bc, Mantid::Geometry::Instrument_const_sptr instrument) {
   size_t nd = bc->getNDims();
 
-  takeDefaultsFromInstrument(instrument, nd);
+  takeDefaultsFromInstrument(std::move(instrument), nd);
 
   setBoxController(bc);
 }
@@ -131,7 +135,7 @@ void BoxControllerSettingsAlgorithm::setBoxController(
  *
  * @param bc :: box controller to modify
  */
-void BoxControllerSettingsAlgorithm::setBoxController(BoxController_sptr bc) {
+void BoxControllerSettingsAlgorithm::setBoxController(const BoxController_sptr& bc) {
   size_t nd = bc->getNDims();
 
   int val;

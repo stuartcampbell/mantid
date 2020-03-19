@@ -47,20 +47,20 @@ private:
   performFit(const std::vector<API::MatrixWorkspace_sptr> &workspaces,
              const std::string &output);
   API::WorkspaceGroup_sptr
-  processIndirectFitParameters(API::ITableWorkspace_sptr parameterWorkspace,
+  processIndirectFitParameters(const API::ITableWorkspace_sptr& parameterWorkspace,
                                const std::vector<std::size_t> &grouping);
-  void copyLogs(API::WorkspaceGroup_sptr resultWorkspace,
+  void copyLogs(const API::WorkspaceGroup_sptr& resultWorkspace,
                 const std::vector<API::MatrixWorkspace_sptr> &workspaces);
-  void copyLogs(API::MatrixWorkspace_sptr resultWorkspace,
-                API::WorkspaceGroup_sptr resultGroup);
+  void copyLogs(const API::MatrixWorkspace_sptr& resultWorkspace,
+                const API::WorkspaceGroup_sptr& resultGroup);
   void extractMembers(API::WorkspaceGroup_sptr resultGroupWs,
                       const std::vector<API::MatrixWorkspace_sptr> &workspaces,
                       const std::string &outputWsName);
-  void addAdditionalLogs(API::WorkspaceGroup_sptr group);
-  void addAdditionalLogs(API::Workspace_sptr result);
+  void addAdditionalLogs(const API::WorkspaceGroup_sptr& group);
+  void addAdditionalLogs(const API::Workspace_sptr& result);
 
   API::IAlgorithm_sptr
-  extractMembersAlgorithm(API::WorkspaceGroup_sptr resultGroupWs,
+  extractMembersAlgorithm(const API::WorkspaceGroup_sptr& resultGroupWs,
                           const std::string &outputWsName) const;
 
   std::string getOutputBaseName() const;

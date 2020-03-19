@@ -40,8 +40,8 @@ private:
   void exec() override;
 
   void
-  CalculateDspaceFromCal(Mantid::DataObjects::OffsetsWorkspace_sptr offsetsWS,
-                         std::string DFileName);
+  CalculateDspaceFromCal(const Mantid::DataObjects::OffsetsWorkspace_sptr& offsetsWS,
+                         const std::string& DFileName);
 };
 
 } // namespace DataHandling

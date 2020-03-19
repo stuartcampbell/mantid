@@ -26,6 +26,8 @@
 #include <algorithm>
 #include <memory>
 #include <random>
+#include <utility>
+
 
 using Mantid::Algorithms::ExtractQENSMembers;
 
@@ -94,7 +96,7 @@ public:
   }
 
 private:
-  void checkMembersOutput(WorkspaceGroup_sptr membersWorkspace,
+  void checkMembersOutput(const WorkspaceGroup_sptr& membersWorkspace,
                           const std::vector<std::string> &members,
                           const std::string &outputName, size_t numSpectra,
                           const std::vector<double> &dataX) const {
@@ -116,7 +118,7 @@ private:
                                      WorkspaceGroup_sptr resultGroupWs,
                                      const std::string &outputWsName) const {
     auto extractAlgorithm =
-        extractMembersAlgorithm(inputWs, resultGroupWs, outputWsName);
+        extractMembersAlgorithm(std::move(inputWs), std::move(resultGroupWs), outputWsName);
     extractAlgorithm->execute();
     return AnalysisDataService::Instance().retrieveWS<WorkspaceGroup>(
         outputWsName);
@@ -128,15 +130,15 @@ private:
                  const std::vector<std::string> &convolvedMembers,
                  const std::string &outputWsName) const {
     auto extractAlgorithm = extractMembersAlgorithm(
-        inputWs, resultGroupWs, convolvedMembers, outputWsName);
+        std::move(inputWs), std::move(resultGroupWs), convolvedMembers, outputWsName);
     extractAlgorithm->execute();
     return AnalysisDataService::Instance().retrieveWS<WorkspaceGroup>(
         outputWsName);
   }
 
   IAlgorithm_sptr
-  extractMembersAlgorithm(MatrixWorkspace_sptr inputWs,
-                          WorkspaceGroup_sptr resultGroupWs,
+  extractMembersAlgorithm(const MatrixWorkspace_sptr& inputWs,
+                          const WorkspaceGroup_sptr& resultGroupWs,
                           const std::string &outputWsName) const {
     auto extractMembersAlg =
         AlgorithmManager::Instance().create("ExtractQENSMembers");
@@ -147,8 +149,8 @@ private:
   }
 
   IAlgorithm_sptr
-  extractMembersAlgorithm(MatrixWorkspace_sptr inputWs,
-                          WorkspaceGroup_sptr resultGroupWs,
+  extractMembersAlgorithm(const MatrixWorkspace_sptr& inputWs,
+                          const WorkspaceGroup_sptr& resultGroupWs,
                           const std::vector<std::string> &convolvedMembers,
                           const std::string &outputWsName) const {
     auto extractMembersAlg =
@@ -207,7 +209,7 @@ private:
 
   MatrixWorkspace_sptr appendSpectra(MatrixWorkspace_sptr workspace,
                                      MatrixWorkspace_sptr spectraWS) const {
-    auto appendAlgorithm = appendSpectraAlgorithm(workspace, spectraWS);
+    auto appendAlgorithm = appendSpectraAlgorithm(std::move(workspace), std::move(spectraWS));
     appendAlgorithm->execute();
     return appendAlgorithm->getProperty("OutputWorkspace");
   }
@@ -257,8 +259,8 @@ private:
     return createWorkspace;
   }
 
-  IAlgorithm_sptr appendSpectraAlgorithm(MatrixWorkspace_sptr workspace,
-                                         MatrixWorkspace_sptr spectraWS) const {
+  IAlgorithm_sptr appendSpectraAlgorithm(const MatrixWorkspace_sptr& workspace,
+                                         const MatrixWorkspace_sptr& spectraWS) const {
     auto appendAlgorithm = AlgorithmManager::Instance().create("AppendSpectra");
     appendAlgorithm->setChild(true);
     appendAlgorithm->setProperty("InputWorkspace1", workspace);

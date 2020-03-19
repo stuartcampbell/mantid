@@ -33,7 +33,7 @@ it is rewritten.
 class DLLExport LeBailFunction {
 public:
   /// Constructor
-  LeBailFunction(std::string peaktype);
+  LeBailFunction(const std::string& peaktype);
 
   /// Destructor
   virtual ~LeBailFunction();
@@ -42,14 +42,14 @@ public:
   void setProfileParameterValues(std::map<std::string, double> parammap);
 
   /// Set up a parameter to fit but tied among all peaks
-  void setFitProfileParameter(std::string paramname, double minvalue,
+  void setFitProfileParameter(const std::string& paramname, double minvalue,
                               double maxvalue);
 
   /// Function
-  void setPeakHeights(std::vector<double> inheights);
+  void setPeakHeights(const std::vector<double>& inheights);
 
   /// Check whether a parameter is a profile parameter
-  bool hasProfileParameter(std::string paramname);
+  bool hasProfileParameter(const std::string& paramname);
 
   /// Check whether the newly set parameters are correct, i.e., all peaks are
   /// physical
@@ -62,7 +62,7 @@ public:
   void addPeaks(std::vector<std::vector<int>> peakhkls);
 
   /// Add background function
-  void addBackgroundFunction(std::string backgroundtype,
+  void addBackgroundFunction(const std::string& backgroundtype,
                              const unsigned int &order,
                              const std::vector<std::string> &vecparnames,
                              const std::vector<double> &vecparvalues,
@@ -96,7 +96,7 @@ public:
   double getPeakParameter(std::vector<int> hkl, std::string parname) const;
 
   /// Set up a parameter to be fixed
-  void fixPeakParameter(std::string paramname, double paramvalue);
+  void fixPeakParameter(const std::string& paramname, double paramvalue);
 
   /// Fix all background parameters
   void fixBackgroundParameters();
@@ -115,13 +115,13 @@ public:
 
 private:
   /// Set peak parameters
-  void setPeakParameters(API::IPowderDiffPeakFunction_sptr peak,
-                         std::map<std::string, double> parammap,
+  void setPeakParameters(const API::IPowderDiffPeakFunction_sptr& peak,
+                         const std::map<std::string, double>& parammap,
                          double peakheight, bool setpeakheight);
 
   /// Retrieve peak's parameter.  may be native or calculated
-  double getPeakParameterValue(API::IPowderDiffPeakFunction_sptr peak,
-                               std::string parname) const;
+  double getPeakParameterValue(const API::IPowderDiffPeakFunction_sptr& peak,
+                               const std::string& parname) const;
 
   /// Calculate all peaks' parameter value
   void calculatePeakParameterValues() const;

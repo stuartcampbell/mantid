@@ -12,6 +12,8 @@
 #include "MantidKernel/Logger.h"
 #include "MantidQtWidgets/Common/FunctionBrowser/FunctionBrowserUtils.h"
 #include <iostream>
+#include <utility>
+
 
 namespace {
 Mantid::Kernel::Logger g_log("ConvolutionFunctionModel");
@@ -112,7 +114,7 @@ void ConvolutionFunctionModel::setModel(
 
 CompositeFunction_sptr
 ConvolutionFunctionModel::addBackground(CompositeFunction_sptr domainFunction,
-                                        std::string background) {
+                                        const std::string& background) {
   if (background.empty())
     return domainFunction;
 
@@ -126,7 +128,7 @@ ConvolutionFunctionModel::addBackground(CompositeFunction_sptr domainFunction,
 }
 
 CompositeFunction_sptr ConvolutionFunctionModel::createInnerFunction(
-    std::string peaksFunction, bool hasDeltaFunction, bool isQDependent,
+    const std::string& peaksFunction, bool hasDeltaFunction, bool isQDependent,
     double qValue, bool hasTempCorrection, double tempValue) {
   auto functionSpecified = !peaksFunction.empty();
   CompositeFunction_sptr innerFunction =
@@ -169,7 +171,7 @@ CompositeFunction_sptr ConvolutionFunctionModel::createInnerFunction(
 }
 
 CompositeFunction_sptr ConvolutionFunctionModel::addTempCorrection(
-    CompositeFunction_sptr peaksFunction, double tempValue) {
+    const CompositeFunction_sptr& peaksFunction, double tempValue) {
   CompositeFunction_sptr productFunction =
       boost::dynamic_pointer_cast<CompositeFunction>(
           FunctionFactory::Instance().createFunction("ProductFunction"));
@@ -194,11 +196,11 @@ ConvolutionFunctionModel::createTemperatureCorrection(double correction) {
 }
 
 CompositeFunction_sptr ConvolutionFunctionModel::createConvolutionFunction(
-    IFunction_sptr resolutionFunction, IFunction_sptr innerFunction) {
+    IFunction_sptr resolutionFunction, const IFunction_sptr& innerFunction) {
   CompositeFunction_sptr convolution =
       boost::dynamic_pointer_cast<CompositeFunction>(
           FunctionFactory::Instance().createFunction("Convolution"));
-  convolution->addFunction(resolutionFunction);
+  convolution->addFunction(std::move(resolutionFunction));
 
   if (innerFunction->nFunctions() > 0)
     convolution->addFunction(innerFunction);
@@ -207,7 +209,7 @@ CompositeFunction_sptr ConvolutionFunctionModel::createConvolutionFunction(
 }
 
 IFunction_sptr
-ConvolutionFunctionModel::createResolutionFunction(std::string workspaceName,
+ConvolutionFunctionModel::createResolutionFunction(const std::string& workspaceName,
                                                    int workspaceIndex) {
   std::string resolution =
       workspaceName.empty()

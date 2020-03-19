@@ -15,6 +15,8 @@
 #include "EnggDiffFittingViewMock.h"
 #include "EnggDiffractionParamMock.h"
 #include <cxxtest/TestSuite.h>
+#include <utility>
+
 #include <vector>
 
 using namespace MantidQt::CustomInterfaces;
@@ -41,7 +43,7 @@ public:
   EnggDiffFittingPresenterNoThread(
       IEnggDiffFittingView *view, std::unique_ptr<IEnggDiffFittingModel> model,
       boost::shared_ptr<IEnggDiffractionParam> mainParam)
-      : EnggDiffFittingPresenter(view, std::move(model), nullptr, mainParam) {}
+      : EnggDiffFittingPresenter(view, std::move(model), nullptr, std::move(mainParam)) {}
 
 private:
   // not async at all

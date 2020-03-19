@@ -15,6 +15,10 @@
 #include "MantidKernel/MandatoryValidator.h"
 #include <Poco/Path.h>
 
+
+#include <utility>
+
+
 using namespace Mantid::Kernel;
 using namespace Mantid::API;
 using namespace Mantid::DataObjects;
@@ -308,7 +312,7 @@ Mantid::API::Workspace_sptr CreateMD::loadWs(const std::string &filename,
  * @param log_name :: the name of the log
  * @param log_number :: the value to record in the log
  */
-void CreateMD::addSampleLog(Mantid::API::MatrixWorkspace_sptr workspace,
+void CreateMD::addSampleLog(const Mantid::API::MatrixWorkspace_sptr& workspace,
                             const std::string &log_name, double log_number) {
   Algorithm_sptr log_alg = createChildAlgorithm("AddSampleLog");
 
@@ -327,7 +331,7 @@ void CreateMD::addSampleLog(Mantid::API::MatrixWorkspace_sptr workspace,
  *
  * @param workspace :: the workspace to set the goniometer values in
  */
-void CreateMD::setGoniometer(Mantid::API::MatrixWorkspace_sptr workspace) {
+void CreateMD::setGoniometer(const Mantid::API::MatrixWorkspace_sptr& workspace) {
   Algorithm_sptr log_alg = createChildAlgorithm("SetGoniometer");
   if (!workspace->run().getProperty("gl")) {
     std::ostringstream temp_ss;
@@ -356,7 +360,7 @@ void CreateMD::setGoniometer(Mantid::API::MatrixWorkspace_sptr workspace) {
  * @param u :: lattice vector parallel to incident neutron beam
  * @param v :: lattice vector perpendicular to u in the horizontal plane
  */
-void CreateMD::setUB(Mantid::API::MatrixWorkspace_sptr workspace, double a,
+void CreateMD::setUB(const Mantid::API::MatrixWorkspace_sptr& workspace, double a,
                      double b, double c, double alpha, double beta,
                      double gamma, const std::vector<double> &u,
                      const std::vector<double> &v) {
@@ -384,9 +388,9 @@ void CreateMD::setUB(Mantid::API::MatrixWorkspace_sptr workspace, double a,
  * @returns the output converted workspace
  */
 Mantid::API::IMDEventWorkspace_sptr CreateMD::convertToMD(
-    Mantid::API::Workspace_sptr workspace, const std::string &analysis_mode,
+    const Mantid::API::Workspace_sptr& workspace, const std::string &analysis_mode,
     bool in_place, const std::string &filebackend_filename,
-    const bool filebackend, Mantid::API::IMDEventWorkspace_sptr out_mdws) {
+    const bool filebackend, const Mantid::API::IMDEventWorkspace_sptr& out_mdws) {
   Algorithm_sptr min_max_alg = createChildAlgorithm("ConvertToMDMinMaxGlobal");
   min_max_alg->setProperty("InputWorkspace", workspace);
   min_max_alg->setProperty("QDimensions", "Q3D");
@@ -462,7 +466,7 @@ CreateMD::merge_runs(const std::vector<std::string> &to_merge) {
  * @param out_mdws :output workspace to use if merge step is carried out
  */
 Mantid::API::IMDEventWorkspace_sptr CreateMD::single_run(
-    Mantid::API::MatrixWorkspace_sptr input_workspace, const std::string &emode,
+    const Mantid::API::MatrixWorkspace_sptr& input_workspace, const std::string &emode,
     double efix, double psi, double gl, double gs, bool in_place,
     const std::vector<double> &alatt, const std::vector<double> &angdeg,
     const std::vector<double> &u, const std::vector<double> &v,
@@ -493,7 +497,7 @@ Mantid::API::IMDEventWorkspace_sptr CreateMD::single_run(
     setGoniometer(input_workspace);
 
     return convertToMD(input_workspace, emode, in_place, filebackend_filename,
-                       filebackend, out_mdws);
+                       filebackend, std::move(out_mdws));
   }
 }
 

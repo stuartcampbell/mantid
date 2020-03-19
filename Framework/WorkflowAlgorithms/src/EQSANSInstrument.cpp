@@ -7,6 +7,10 @@
 //----------------------------------------------------------------------
 // Includes
 //----------------------------------------------------------------------
+#include <utility>
+
+
+
 #include "MantidWorkflowAlgorithms/EQSANSInstrument.h"
 #include "MantidDataObjects/EventWorkspace.h"
 #include "MantidGeometry/Instrument.h"
@@ -24,7 +28,7 @@ namespace EQSANSInstrument {
  * Read a parameter from the instrument description
  */
 double readInstrumentParameter(const std::string &parameter,
-                               API::MatrixWorkspace_sptr dataWS) {
+                               const API::MatrixWorkspace_sptr& dataWS) {
   std::vector<double> pars =
       dataWS->getInstrument()->getNumberParameter(parameter);
   if (pars.empty())
@@ -39,7 +43,7 @@ double readInstrumentParameter(const std::string &parameter,
 int getDetectorFromPixel(const int &pixel_x, const int &pixel_y,
                          API::MatrixWorkspace_sptr dataWS) {
   int ny_pixels =
-      static_cast<int>(readInstrumentParameter("number-of-y-pixels", dataWS));
+      static_cast<int>(readInstrumentParameter("number-of-y-pixels", std::move(dataWS)));
   return ny_pixels * pixel_x + pixel_y;
 }
 
@@ -48,7 +52,7 @@ int getDetectorFromPixel(const int &pixel_x, const int &pixel_y,
  * given pixel coordinates [m].
  */
 void getCoordinateFromPixel(const double &pixel_x, const double &pixel_y,
-                            API::MatrixWorkspace_sptr dataWS, double &x,
+                            const API::MatrixWorkspace_sptr& dataWS, double &x,
                             double &y) {
   const int nx_pixels =
       static_cast<int>(readInstrumentParameter("number-of-x-pixels", dataWS));
@@ -68,7 +72,7 @@ void getCoordinateFromPixel(const double &pixel_x, const double &pixel_y,
  * @param y: real-space y coordinate [m]
  */
 void getPixelFromCoordinate(const double &x, const double &y,
-                            API::MatrixWorkspace_sptr dataWS, double &pixel_x,
+                            const API::MatrixWorkspace_sptr& dataWS, double &pixel_x,
                             double &pixel_y) {
   const int nx_pixels =
       static_cast<int>(readInstrumentParameter("number-of-x-pixels", dataWS));
@@ -86,7 +90,7 @@ void getPixelFromCoordinate(const double &x, const double &y,
  */
 void getDefaultBeamCenter(API::MatrixWorkspace_sptr dataWS, double &pixel_x,
                           double &pixel_y) {
-  getPixelFromCoordinate(0.0, 0.0, dataWS, pixel_x, pixel_y);
+  getPixelFromCoordinate(0.0, 0.0, std::move(dataWS), pixel_x, pixel_y);
 }
 
 } // namespace EQSANSInstrument

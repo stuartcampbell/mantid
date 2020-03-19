@@ -75,7 +75,7 @@ public:
    */
   ImageExportDialog(QWidget *parent = nullptr, bool vector_options = true,
                     bool extended = true,
-                    Qt::WFlags flags = Qt::WindowCloseButtonHint |
+                    const Qt::WFlags& flags = Qt::WindowCloseButtonHint |
                                        Qt::WindowType::WindowTitleHint);
   //! For vector formats: returns the output resolution the user selected,
   // defaulting to the screen resolution.

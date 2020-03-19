@@ -40,11 +40,11 @@ private:
   void exec() override;
   std::string _findFile(std::string dataRun);
   void
-  setupSensitivity(boost::shared_ptr<Kernel::PropertyManager> reductionManager);
+  setupSensitivity(const boost::shared_ptr<Kernel::PropertyManager>& reductionManager);
   void setupTransmission(
-      boost::shared_ptr<Kernel::PropertyManager> reductionManager);
+      const boost::shared_ptr<Kernel::PropertyManager>& reductionManager);
   void
-  setupBackground(boost::shared_ptr<Kernel::PropertyManager> reductionManager);
+  setupBackground(const boost::shared_ptr<Kernel::PropertyManager>& reductionManager);
 };
 
 } // namespace WorkflowAlgorithms

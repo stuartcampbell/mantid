@@ -44,8 +44,8 @@ private:
   API::ITableWorkspace_sptr performFit(const std::string &input,
                                        const std::string &output);
   void deleteTemporaryWorkspaces(const std::string &outputBaseName);
-  void addAdditionalLogs(API::WorkspaceGroup_sptr resultWorkspace);
-  void addAdditionalLogs(API::Workspace_sptr result);
+  void addAdditionalLogs(const API::WorkspaceGroup_sptr& resultWorkspace);
+  void addAdditionalLogs(const API::Workspace_sptr& result);
 
   virtual bool throwIfElasticQConversionFails() const;
   virtual bool isFitParameter(const std::string &parameterName) const;
@@ -56,7 +56,7 @@ private:
   std::vector<std::size_t> getDatasetGrouping(
       const std::vector<API::MatrixWorkspace_sptr> &workspaces) const;
   API::WorkspaceGroup_sptr
-  processIndirectFitParameters(API::ITableWorkspace_sptr parameterWorkspace,
+  processIndirectFitParameters(const API::ITableWorkspace_sptr& parameterWorkspace,
                                const std::vector<std::size_t> &grouping);
 
   std::vector<API::MatrixWorkspace_sptr> convertInputToElasticQ(
@@ -75,20 +75,20 @@ private:
                             std::vector<std::string> const &spectra,
                             std::string const &outputBaseName,
                             std::string const &endOfSuffix);
-  void copyLogs(API::WorkspaceGroup_sptr resultWorkspaces,
+  void copyLogs(const API::WorkspaceGroup_sptr& resultWorkspaces,
                 std::vector<API::MatrixWorkspace_sptr> const &workspaces);
-  void copyLogs(API::Workspace_sptr resultWorkspace,
+  void copyLogs(const API::Workspace_sptr& resultWorkspace,
                 std::vector<API::MatrixWorkspace_sptr> const &workspaces);
-  void copyLogs(API::MatrixWorkspace_sptr resultWorkspace,
-                API::WorkspaceGroup_sptr resultGroup);
-  void copyLogs(API::MatrixWorkspace_sptr resultWorkspace,
-                API::Workspace_sptr resultGroup);
+  void copyLogs(const API::MatrixWorkspace_sptr& resultWorkspace,
+                const API::WorkspaceGroup_sptr& resultGroup);
+  void copyLogs(const API::MatrixWorkspace_sptr& resultWorkspace,
+                const API::Workspace_sptr& resultGroup);
   void extractMembers(API::WorkspaceGroup_sptr resultGroupWs,
                       const std::vector<API::MatrixWorkspace_sptr> &workspaces,
                       const std::string &outputWsName);
 
   API::IAlgorithm_sptr
-  extractMembersAlgorithm(API::WorkspaceGroup_sptr resultGroupWs,
+  extractMembersAlgorithm(const API::WorkspaceGroup_sptr& resultGroupWs,
                           const std::string &outputWsName) const;
 
   std::string getTemporaryName() const;

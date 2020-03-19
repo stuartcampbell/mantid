@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidAlgorithms/Qhelper.h"
 #include "MantidAPI/MatrixWorkspace.h"
 #include "MantidAPI/SpectrumInfo.h"
@@ -25,13 +29,13 @@ using namespace Geometry;
   @param qResolution: the QResolution workspace
   @throw invalid_argument if the workspaces are not mututially compatible
 */
-void Qhelper::examineInput(API::MatrixWorkspace_const_sptr dataWS,
+void Qhelper::examineInput(const API::MatrixWorkspace_const_sptr& dataWS,
                            API::MatrixWorkspace_const_sptr binAdj,
                            API::MatrixWorkspace_const_sptr detectAdj,
-                           API::MatrixWorkspace_const_sptr qResolution) {
+                           const API::MatrixWorkspace_const_sptr& qResolution) {
 
   // Check the compatibility of dataWS, binAdj and detectAdj
-  examineInput(dataWS, binAdj, detectAdj);
+  examineInput(dataWS, std::move(binAdj), std::move(detectAdj));
 
   // Check the compatibility of the QResolution workspace
   if (qResolution) {
@@ -64,9 +68,9 @@ void Qhelper::examineInput(API::MatrixWorkspace_const_sptr dataWS,
   one bin
   @throw invalid_argument if the workspaces are not mututially compatible
 */
-void Qhelper::examineInput(API::MatrixWorkspace_const_sptr dataWS,
-                           API::MatrixWorkspace_const_sptr binAdj,
-                           API::MatrixWorkspace_const_sptr detectAdj) {
+void Qhelper::examineInput(const API::MatrixWorkspace_const_sptr& dataWS,
+                           const API::MatrixWorkspace_const_sptr& binAdj,
+                           const API::MatrixWorkspace_const_sptr& detectAdj) {
   if (dataWS->getNumberHistograms() < 1) {
     throw std::invalid_argument(
         "Empty data workspace passed, can not continue");
@@ -152,7 +156,7 @@ void Qhelper::examineInput(API::MatrixWorkspace_const_sptr dataWS,
  *  @param wsInd spectrum that is being analysed
  *  @return index number of the first bin to include in the calculation
  */
-size_t Qhelper::waveLengthCutOff(API::MatrixWorkspace_const_sptr dataWS,
+size_t Qhelper::waveLengthCutOff(const API::MatrixWorkspace_const_sptr& dataWS,
                                  const SpectrumInfo &spectrumInfo,
                                  const double RCut, const double WCut,
                                  const size_t wsInd) const {
@@ -188,8 +192,8 @@ sumOfCounts/sumOfNormFactors equals the
 *  @param sumOfNormFactors sum of normalisation factors
 */
 void Qhelper::outputParts(API::Algorithm *alg,
-                          API::MatrixWorkspace_sptr sumOfCounts,
-                          API::MatrixWorkspace_sptr sumOfNormFactors) {
+                          const API::MatrixWorkspace_sptr& sumOfCounts,
+                          const API::MatrixWorkspace_sptr& sumOfNormFactors) {
   std::string baseName = alg->getPropertyValue("OutputWorkspace");
 
   alg->declareProperty(

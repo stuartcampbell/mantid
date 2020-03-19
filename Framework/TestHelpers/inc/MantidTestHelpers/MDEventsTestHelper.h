@@ -172,17 +172,17 @@ makeFakeMDHistoWorkspace(double signal, size_t numDims, size_t numBins = 10,
 Mantid::DataObjects::MDHistoWorkspace_sptr makeFakeMDHistoWorkspaceWithMDFrame(
     double signal, size_t numDims, const Mantid::Geometry::MDFrame &frame,
     size_t numBins = 10, coord_t max = 10.0, double errorSquared = 1.0,
-    std::string name = "", double numEvents = 1.0);
+    const std::string &name = "", double numEvents = 1.0);
 
 /// More general fake n-dimensionsal MDHistoWorkspace
 Mantid::DataObjects::MDHistoWorkspace_sptr makeFakeMDHistoWorkspaceGeneral(
     size_t numDims, double signal, double errorSquared, size_t *numBins,
-    coord_t *min, coord_t *max, std::string name = "");
+    coord_t *min, coord_t *max, const std::string &name = "");
 /// More general fake n-dimensionsal MDHistoWorkspace
 Mantid::DataObjects::MDHistoWorkspace_sptr makeFakeMDHistoWorkspaceGeneral(
     size_t numDims, double signal, double errorSquared, size_t *numBins,
     coord_t *min, coord_t *max, std::vector<std::string> names,
-    std::string name = "");
+    const std::string &name = "");
 
 //-------------------------------------------------------------------------------------
 /** Create a test MDEventWorkspace<nd> . Dimensions are names Axis0, Axis1, etc.
@@ -499,7 +499,7 @@ static void extents_match(MDBOX box, size_t dim, double min, double max) {
   TSM_ASSERT_DELTA(dim, box->getExtents(dim).getMax(), max, 1e-6);
 }
 
-void checkAndDeleteFile(std::string filename);
+void checkAndDeleteFile(const std::string &filename);
 
 //=====================================================================================
 //===================================== TEST METHODS

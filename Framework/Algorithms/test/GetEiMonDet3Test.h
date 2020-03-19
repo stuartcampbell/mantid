@@ -8,6 +8,10 @@
 
 #include <cxxtest/TestSuite.h>
 
+
+#include <utility>
+
+
 #include "MantidAPI/Axis.h"
 #include "MantidAPI/FrameworkManager.h"
 #include "MantidAlgorithms/ExtractSpectra2.h"
@@ -170,7 +174,7 @@ private:
     detectorRs.emplace_back(-MONITOR_DISTANCE, 0., 0.);
     // Add more detectors --- these should be treated as the real ones.
     detectorRs.emplace_back(0., 0., DETECTOR_DISTANCE);
-    createInstrumentForWorkspaceWithDistances(targetWs, sampleR, sourceR,
+    createInstrumentForWorkspaceWithDistances(std::move(targetWs), sampleR, sourceR,
                                               detectorRs);
   }
 
@@ -215,7 +219,7 @@ private:
   }
 
   // Mininum setup for GetEiMonDet3.
-  static void setupSimple(MatrixWorkspace_sptr ws, GetEiMonDet3 &algorithm) {
+  static void setupSimple(const MatrixWorkspace_sptr& ws, GetEiMonDet3 &algorithm) {
     algorithm.setRethrows(true);
     TS_ASSERT_THROWS_NOTHING(algorithm.initialize())
     TS_ASSERT(algorithm.isInitialized())

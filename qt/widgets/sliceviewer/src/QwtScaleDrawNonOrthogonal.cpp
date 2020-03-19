@@ -15,6 +15,8 @@
 #include <QMatrix>
 #include <QPainter>
 #include <QPalette>
+#include <utility>
+
 
 QwtScaleDrawNonOrthogonal::QwtScaleDrawNonOrthogonal(
     QwtPlot *plot, ScreenDimension screenDimension,
@@ -24,9 +26,9 @@ QwtScaleDrawNonOrthogonal::QwtScaleDrawNonOrthogonal(
     : m_fromHklToXyz({{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0}}),
       m_fromXyzToHkl({{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0}}),
       m_plot(plot), m_screenDimension(screenDimension), m_dimX(dimX),
-      m_dimY(dimY), m_slicePoint(slicePoint), m_gridPlot(gridPlot) {
+      m_dimY(dimY), m_slicePoint(std::move(slicePoint)), m_gridPlot(gridPlot) {
   // Set up the transformation matrix
-  setTransformationMatrices(workspace);
+  setTransformationMatrices(std::move(workspace));
 
   // Set up the angles
   // set the angles for the two dimensions
@@ -289,7 +291,7 @@ QwtScaleDrawNonOrthogonal::fromHklToXyz(const Mantid::Kernel::VMD &hkl) const {
 }
 
 void QwtScaleDrawNonOrthogonal::setTransformationMatrices(
-    Mantid::API::IMDWorkspace_sptr workspace) {
+    const Mantid::API::IMDWorkspace_sptr& workspace) {
   m_missingDimension =
       MantidQt::API::getMissingHKLDimensionIndex(workspace, m_dimX, m_dimY);
 
@@ -315,5 +317,5 @@ qreal QwtScaleDrawNonOrthogonal::getScreenLeftInXyz() const {
 
 void QwtScaleDrawNonOrthogonal::updateSlicePoint(
     Mantid::Kernel::VMD newSlicepoint) {
-  m_slicePoint = newSlicepoint;
+  m_slicePoint = std::move(newSlicepoint);
 }

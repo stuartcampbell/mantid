@@ -39,7 +39,7 @@ public:
   //-----------------------------------------------------------------
 
   bool
-  addFunction(Mantid::Geometry::MDImplicitFunction_sptr constituentFunction);
+  addFunction(const Mantid::Geometry::MDImplicitFunction_sptr& constituentFunction);
   std::string getName() const override;
   std::string toXMLString() const override;
   int getNFunctions() const;

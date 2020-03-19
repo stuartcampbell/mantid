@@ -67,11 +67,11 @@ public:
    *parameters) and time adjusted.
    */
   static DataObjects::Peak createNewPeak(const Geometry::IPeak &peak_old,
-                                         Geometry::Instrument_sptr instrNew,
+                                         const Geometry::Instrument_sptr& instrNew,
                                          double T0, double L0);
 
   static void cLone(boost::shared_ptr<Geometry::ParameterMap> &pmap,
-                    boost::shared_ptr<const Geometry::IComponent> component,
+                    const boost::shared_ptr<const Geometry::IComponent>& component,
                     boost::shared_ptr<const Geometry::ParameterMap> &pmapSv);
 
   void getRun2MatMap(DataObjects::PeaksWorkspace_sptr &Peaks,
@@ -86,7 +86,7 @@ public:
                                                            char axis);
 
   boost::shared_ptr<Geometry::Instrument>
-  getNewInstrument(DataObjects::PeaksWorkspace_sptr Peaks) const;
+  getNewInstrument(const DataObjects::PeaksWorkspace_sptr& Peaks) const;
 
   std::vector<std::string> getAttributeNames() const override {
     return {"OptRuns", "PeakWorkspaceName"};

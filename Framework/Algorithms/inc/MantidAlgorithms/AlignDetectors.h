@@ -73,7 +73,7 @@ private:
   void align(const ConversionFactors &converter, API::Progress &progress,
              DataObjects::EventWorkspace &outputWS);
 
-  void loadCalFile(API::MatrixWorkspace_sptr inputWS,
+  void loadCalFile(const API::MatrixWorkspace_sptr& inputWS,
                    const std::string &filename);
   void getCalibrationWS(API::MatrixWorkspace_sptr inputWS);
 

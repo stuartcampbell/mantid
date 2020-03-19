@@ -106,7 +106,7 @@ createWorkspaceForHistogram(H5::DataSet &dataSet) {
 
 // ----- LOGS
 
-void loadLogs(H5::Group &entry, Mantid::API::MatrixWorkspace_sptr workspace) {
+void loadLogs(H5::Group &entry, const Mantid::API::MatrixWorkspace_sptr& workspace) {
   auto &run = workspace->mutableRun();
 
   // Load UserFile (optional)
@@ -133,7 +133,7 @@ void loadLogs(H5::Group &entry, Mantid::API::MatrixWorkspace_sptr workspace) {
 }
 
 // ----- INSTRUMENT
-std::string extractIdfFileOnCurrentSystem(std::string idf) {
+std::string extractIdfFileOnCurrentSystem(const std::string& idf) {
   // If the idf is is not empty extract the last element from the file
   if (idf.empty()) {
     return "";
@@ -161,7 +161,7 @@ std::string extractIdfFileOnCurrentSystem(std::string idf) {
 }
 
 void loadInstrument(H5::Group &entry,
-                    Mantid::API::MatrixWorkspace_sptr workspace) {
+                    const Mantid::API::MatrixWorkspace_sptr& workspace) {
   auto instrument = entry.openGroup(sasInstrumentGroupName);
 
   // Get instrument name
@@ -232,7 +232,7 @@ bool hasQDev(H5::Group &dataGroup) {
 }
 
 void loadData1D(H5::Group &dataGroup,
-                Mantid::API::MatrixWorkspace_sptr workspace) {
+                const Mantid::API::MatrixWorkspace_sptr& workspace) {
   // General
   workspace->setDistribution(true);
 
@@ -268,7 +268,7 @@ void loadData1D(H5::Group &dataGroup,
 template <typename Functor>
 void read2DWorkspace(H5::DataSet &dataSet,
                      Mantid::API::MatrixWorkspace_sptr workspace, Functor func,
-                     H5::DataType memoryDataType) {
+                     const H5::DataType& memoryDataType) {
   using namespace Mantid::DataHandling::NXcanSAS;
   auto dimInfo = getDataSpaceInfo(dataSet);
 
@@ -297,8 +297,8 @@ void read2DWorkspace(H5::DataSet &dataSet,
 }
 
 void readQyInto2DWorkspace(H5::DataSet &dataSet,
-                           Mantid::API::MatrixWorkspace_sptr workspace,
-                           H5::DataType memoryDataType) {
+                           const Mantid::API::MatrixWorkspace_sptr& workspace,
+                           const H5::DataType& memoryDataType) {
   using namespace Mantid::DataHandling::NXcanSAS;
 
   // Get info about the data set
@@ -342,13 +342,13 @@ void readQyInto2DWorkspace(H5::DataSet &dataSet,
 }
 
 void loadData2D(H5::Group &dataGroup,
-                Mantid::API::MatrixWorkspace_sptr workspace) {
+                const Mantid::API::MatrixWorkspace_sptr& workspace) {
   // General
   workspace->setDistribution(true);
   //-----------------------------------------
   // Load the I value.
   auto iDataSet = dataGroup.openDataSet(sasDataI);
-  auto iExtractor = [](Mantid::API::MatrixWorkspace_sptr ws,
+  auto iExtractor = [](const Mantid::API::MatrixWorkspace_sptr& ws,
                        size_t index) -> HistogramY & {
     return ws->mutableY(index);
   };
@@ -360,7 +360,7 @@ void loadData2D(H5::Group &dataGroup,
   //-----------------------------------------
   // Load the Idev value
   auto eDataSet = dataGroup.openDataSet(sasDataIdev);
-  auto eExtractor = [](Mantid::API::MatrixWorkspace_sptr ws,
+  auto eExtractor = [](const Mantid::API::MatrixWorkspace_sptr& ws,
                        size_t index) -> HistogramE & {
     return ws->mutableE(index);
   };
@@ -369,7 +369,7 @@ void loadData2D(H5::Group &dataGroup,
   //-----------------------------------------
   // Load the Qx value + units
   auto qxDataSet = dataGroup.openDataSet(sasDataQx);
-  auto qxExtractor = [](Mantid::API::MatrixWorkspace_sptr ws,
+  auto qxExtractor = [](const Mantid::API::MatrixWorkspace_sptr& ws,
                         size_t index) -> HistogramX & {
     return ws->mutableX(index);
   };
@@ -384,7 +384,7 @@ void loadData2D(H5::Group &dataGroup,
   readQyInto2DWorkspace(qyDataSet, workspace, qyDataType);
 }
 
-void loadData(H5::Group &entry, Mantid::API::MatrixWorkspace_sptr workspace) {
+void loadData(H5::Group &entry, const Mantid::API::MatrixWorkspace_sptr& workspace) {
   auto dataGroup = entry.openGroup(sasDataGroupName);
   auto dimensionality = getWorkspaceDimensionality(dataGroup);
   switch (dimensionality) {
@@ -433,7 +433,7 @@ bool hasTransmissionEntry(H5::Group &entry, const std::string &name) {
 }
 
 void loadTransmissionData(H5::Group &transmission,
-                          Mantid::API::MatrixWorkspace_sptr workspace) {
+                          const Mantid::API::MatrixWorkspace_sptr& workspace) {
   //-----------------------------------------
   // Load T
   workspace->mutableY(0) =

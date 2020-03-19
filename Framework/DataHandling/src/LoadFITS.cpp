@@ -678,7 +678,7 @@ void LoadFITS::parseHeader(FITSInfo &headerInfo) {
 Workspace2D_sptr
 LoadFITS::makeWorkspace(const FITSInfo &fileInfo, size_t &newFileNumber,
                         std::vector<char> &buffer, MantidImage &imageY,
-                        MantidImage &imageE, const Workspace2D_sptr parent,
+                        MantidImage &imageE, const Workspace2D_sptr& parent,
                         bool loadAsRectImg, int binSize, double noiseThresh) {
   // Create workspace (taking into account already here if rebinning is
   // going to happen)
@@ -763,7 +763,7 @@ LoadFITS::makeWorkspace(const FITSInfo &fileInfo, size_t &newFileNumber,
  * @param cmpp centimeters per pixel (already taking into account
  * possible rebinning)
  */
-void LoadFITS::addAxesInfoAndLogs(Workspace2D_sptr ws, bool loadAsRectImg,
+void LoadFITS::addAxesInfoAndLogs(const Workspace2D_sptr& ws, bool loadAsRectImg,
                                   const FITSInfo &fileInfo, int binSize,
                                   double cmpp) {
   // add axes
@@ -848,7 +848,7 @@ void LoadFITS::addAxesInfoAndLogs(Workspace2D_sptr ws, bool loadAsRectImg,
  * @throws std::runtime_error if there are file input issues
  */
 void LoadFITS::readDataToWorkspace(const FITSInfo &fileInfo, double cmpp,
-                                   Workspace2D_sptr ws,
+                                   const Workspace2D_sptr& ws,
                                    std::vector<char> &buffer) {
   const size_t bytespp = (fileInfo.bitsPerPixel / 8);
   const size_t len = m_pixelCount * bytespp;

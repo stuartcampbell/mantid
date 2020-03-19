@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidGeometry/Instrument/GridDetectorPixel.h"
 #include "MantidGeometry/Instrument/GridDetector.h"
 #include "MantidKernel/System.h"
@@ -40,7 +44,7 @@ GridDetectorPixel::GridDetectorPixel(const std::string &name, int id,
                                      IComponent *parent,
                                      const GridDetector *panel, size_t col,
                                      size_t row, size_t layer)
-    : Detector(name, id, shape, parent), m_panel(panel), m_col(col), m_row(row),
+    : Detector(name, id, std::move(shape), parent), m_panel(panel), m_col(col), m_row(row),
       m_layer(layer) {
   if (!m_panel)
     throw std::runtime_error("GridDetectorPixel::ctor(): pixel " + name +

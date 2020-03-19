@@ -173,7 +173,7 @@ public:
     TS_ASSERT(ws->run().hasProperty("str3"));
   }
 
-  void do_test_SNSTextFile(std::string names, std::string units, bool willFail,
+  void do_test_SNSTextFile(const std::string& names, const std::string& units, bool willFail,
                            bool createWorkspace = true,
                            std::string expectedLastUnit = "Furlongs") {
     // Create an empty workspace and put it in the AnalysisDataService

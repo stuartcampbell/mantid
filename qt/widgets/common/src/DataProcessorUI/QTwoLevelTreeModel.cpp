@@ -25,7 +25,7 @@ public:
       : m_absoluteIndex(absoluteIndex),
         m_rowData(std::make_shared<RowData>(columnCount)) {}
   // Constructor taking a list of data values
-  RowInfo(const size_t absoluteIndex, QStringList rowDataValues)
+  RowInfo(const size_t absoluteIndex, const QStringList& rowDataValues)
       : m_absoluteIndex(absoluteIndex),
         m_rowData(std::make_shared<RowData>(std::move(rowDataValues))) {}
 
@@ -174,7 +174,7 @@ private:
 @param whitelist : A WhiteList containing information about the
 columns, their indices and descriptions
 */
-QTwoLevelTreeModel::QTwoLevelTreeModel(ITableWorkspace_sptr tableWorkspace,
+QTwoLevelTreeModel::QTwoLevelTreeModel(const ITableWorkspace_sptr& tableWorkspace,
                                        const WhiteList &whitelist)
     : AbstractTreeModel(tableWorkspace, whitelist) {
 
@@ -786,7 +786,7 @@ bool QTwoLevelTreeModel::setData(const QModelIndex &index,
  * whitelist
  * @param table : A table workspace containing the data
  */
-void QTwoLevelTreeModel::setupModelData(ITableWorkspace_sptr table) {
+void QTwoLevelTreeModel::setupModelData(const ITableWorkspace_sptr& table) {
 
   int nrows = static_cast<int>(table->rowCount());
 

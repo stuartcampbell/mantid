@@ -7,6 +7,8 @@
 #include "MantidDataObjects/PeakShapeSpherical.h"
 #include <json/json.h>
 #include <stdexcept>
+#include <utility>
+
 
 namespace Mantid {
 namespace DataObjects {
@@ -22,7 +24,7 @@ PeakShapeSpherical::PeakShapeSpherical(const double &peakRadius,
                                        Kernel::SpecialCoordinateSystem frame,
                                        std::string algorithmName,
                                        int algorithmVersion)
-    : PeakShapeBase(frame, algorithmName, algorithmVersion),
+    : PeakShapeBase(frame, std::move(algorithmName), algorithmVersion),
       m_radius(peakRadius) {}
 
 /**
@@ -40,7 +42,7 @@ PeakShapeSpherical::PeakShapeSpherical(const double &peakRadius,
                                        Kernel::SpecialCoordinateSystem frame,
                                        std::string algorithmName,
                                        int algorithmVersion)
-    : PeakShapeBase(frame, algorithmName, algorithmVersion),
+    : PeakShapeBase(frame, std::move(algorithmName), algorithmVersion),
       m_radius(peakRadius), m_backgroundInnerRadius(peakInnerRadius),
       m_backgroundOuterRadius(peakOuterRadius) {
   if (peakRadius == m_backgroundInnerRadius) {

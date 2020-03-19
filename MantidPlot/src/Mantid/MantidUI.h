@@ -311,12 +311,12 @@ public slots:
 
   // Set properties of a 1d graph which plots data from a workspace
   static void setUpBinGraph(MultiLayer *ml, const QString &wsName,
-                            Mantid::API::MatrixWorkspace_const_sptr workspace);
+                            const Mantid::API::MatrixWorkspace_const_sptr& workspace);
 
   // Copy to a Table Y-values (and Err-values if errs==true) of bins with
   // indeces from i0 to i1 (inclusive) from a workspace
   Table *createTableFromBins(const QString &wsName,
-                             Mantid::API::MatrixWorkspace_const_sptr workspace,
+                             const Mantid::API::MatrixWorkspace_const_sptr& workspace,
                              const QList<int> &bins, bool errs = true,
                              int fromRow = -1, int toRow = -1);
 
@@ -500,7 +500,7 @@ public slots:
 
   // Find the name of the first input workspace for an algorithm
   QString
-  findInputWorkspaceProperty(Mantid::API::IAlgorithm_sptr algorithm) const;
+  findInputWorkspaceProperty(const Mantid::API::IAlgorithm_sptr& algorithm) const;
   // Show Qt critical error message box
   void showCritical(const QString &) override;
   // Show the dialog monitoring currently running algorithms
@@ -595,7 +595,7 @@ private:
 
   /// This creates an algorithm dialog.
   MantidQt::API::AlgorithmDialog *
-  createAlgorithmDialog(Mantid::API::IAlgorithm_sptr alg);
+  createAlgorithmDialog(const Mantid::API::IAlgorithm_sptr& alg);
 
   /// This method accepts user inputs and executes loadraw/load nexus
   /// algorithm

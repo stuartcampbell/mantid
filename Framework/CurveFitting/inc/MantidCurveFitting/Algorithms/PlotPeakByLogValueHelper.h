@@ -41,7 +41,7 @@ getWorkspace(const std::string &name, int period);
 
 /// Create a list of input workspace names
 DLLExport std::vector<InputSpectraToFit>
-makeNames(std::string inputList, int default_wi, int default_spec);
+makeNames(const std::string& inputList, int default_wi, int default_spec);
 
 enum SpecialIndex {
   NOT_SET = -1,

@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidSINQ/PoldiUtilities/PoldiSourceSpectrum.h"
 #include "MantidGeometry/Instrument/FitParameter.h"
 #include "MantidGeometry/Instrument/ParameterMap.h"
@@ -14,12 +18,12 @@ namespace Poldi {
 using namespace Mantid::Kernel;
 using namespace Mantid::Geometry;
 
-PoldiSourceSpectrum::PoldiSourceSpectrum(Interpolation spectrum)
+PoldiSourceSpectrum::PoldiSourceSpectrum(const Interpolation& spectrum)
     : m_spectrum(spectrum) {}
 
 PoldiSourceSpectrum::PoldiSourceSpectrum(Instrument_const_sptr poldiInstrument)
     : m_spectrum() {
-  setSpectrumFromInstrument(poldiInstrument);
+  setSpectrumFromInstrument(std::move(poldiInstrument));
 }
 
 /** Returns the interpolated intensity at the given wavelength
@@ -43,7 +47,7 @@ double PoldiSourceSpectrum::intensity(double wavelength) const {
  *spectrum.
  */
 void PoldiSourceSpectrum::setSpectrumFromInstrument(
-    Instrument_const_sptr poldiInstrument) {
+    const Instrument_const_sptr& poldiInstrument) {
   IComponent_const_sptr source = getSourceComponent(poldiInstrument);
 
   Parameter_sptr spectrumParameter =
@@ -62,7 +66,7 @@ void PoldiSourceSpectrum::setSpectrumFromInstrument(
  * @return Shared pointer to source component
  */
 IComponent_const_sptr
-PoldiSourceSpectrum::getSourceComponent(Instrument_const_sptr poldiInstrument) {
+PoldiSourceSpectrum::getSourceComponent(const Instrument_const_sptr& poldiInstrument) {
   IComponent_const_sptr source = poldiInstrument->getComponentByName("source");
 
   if (!source) {
@@ -86,7 +90,7 @@ PoldiSourceSpectrum::getSourceComponent(Instrument_const_sptr poldiInstrument) {
  * @return Shared pointer to Parameter that contains the spectrum.
  */
 Parameter_sptr PoldiSourceSpectrum::getSpectrumParameter(
-    IComponent_const_sptr source, ParameterMap_sptr instrumentParameterMap) {
+    const IComponent_const_sptr& source, const ParameterMap_sptr& instrumentParameterMap) {
   Parameter_sptr spectrumParameter = instrumentParameterMap->getRecursive(
       &(*source), "WavelengthDistribution", "fitting");
 
@@ -107,7 +111,7 @@ Parameter_sptr PoldiSourceSpectrum::getSpectrumParameter(
  * @param spectrumParameter :: Shared pointer to fitting parameter with lookup
  *table
  */
-void PoldiSourceSpectrum::setSpectrum(Parameter_sptr spectrumParameter) {
+void PoldiSourceSpectrum::setSpectrum(const Parameter_sptr& spectrumParameter) {
   if (!spectrumParameter) {
     throw std::runtime_error("Spectrum parameter pointer is null");
   }

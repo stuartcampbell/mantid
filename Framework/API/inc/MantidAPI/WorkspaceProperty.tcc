@@ -32,7 +32,7 @@ template <typename TYPE>
 WorkspaceProperty<TYPE>::WorkspaceProperty(const std::string &name,
                                            const std::string &wsName,
                                            const unsigned int direction,
-                                           Kernel::IValidator_sptr validator)
+                                           const Kernel::IValidator_sptr& validator)
     : Kernel::PropertyWithValue<boost::shared_ptr<TYPE>>(
           name, boost::shared_ptr<TYPE>(), validator, direction),
       m_workspaceName(wsName), m_initialWSName(wsName),
@@ -55,7 +55,7 @@ WorkspaceProperty<TYPE>::WorkspaceProperty(const std::string &name,
                                            const std::string &wsName,
                                            const unsigned int direction,
                                            const PropertyMode::Type optional,
-                                           Kernel::IValidator_sptr validator)
+                                           const Kernel::IValidator_sptr& validator)
     : Kernel::PropertyWithValue<boost::shared_ptr<TYPE>>(
           name, boost::shared_ptr<TYPE>(), validator, direction),
       m_workspaceName(wsName), m_initialWSName(wsName), m_optional(optional),
@@ -83,7 +83,7 @@ WorkspaceProperty<TYPE>::WorkspaceProperty(const std::string &name,
                                            const unsigned int direction,
                                            const PropertyMode::Type optional,
                                            const LockMode::Type locking,
-                                           Kernel::IValidator_sptr validator)
+                                           const Kernel::IValidator_sptr& validator)
     : Kernel::PropertyWithValue<boost::shared_ptr<TYPE>>(
           name, boost::shared_ptr<TYPE>(), validator, direction),
       m_workspaceName(wsName), m_initialWSName(wsName), m_optional(optional),
@@ -410,7 +410,7 @@ void WorkspaceProperty<TYPE>::setIsMasterRank(bool isMasterRank) {
  */
 template <typename TYPE>
 std::string WorkspaceProperty<TYPE>::isValidGroup(
-    boost::shared_ptr<WorkspaceGroup> wsGroup) const {
+    const boost::shared_ptr<WorkspaceGroup>& wsGroup) const {
   g_log.debug() << " Input WorkspaceGroup found \n";
 
   std::vector<std::string> wsGroupNames = wsGroup->getNames();

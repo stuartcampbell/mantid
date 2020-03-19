@@ -24,6 +24,8 @@
 #include <map>
 #include <memory>
 #include <nexus/NeXusFile.hpp>
+#include <utility>
+
 
 using namespace Mantid;
 using namespace Mantid::Geometry;
@@ -43,7 +45,7 @@ class MDBoxSaveableTest : public CxxTest::TestSuite {
 
   /** Deletes the file created by do_saveNexus */
   static std::string
-  do_deleteNexusFile(std::string barefilename = "MDBoxTest.nxs") {
+  do_deleteNexusFile(const std::string& barefilename = "MDBoxTest.nxs") {
     std::string filename(
         ConfigService::Instance().getString("defaultsave.directory") +
         barefilename);
@@ -69,11 +71,11 @@ public:
    * @return ptr to the NeXus file object
    * */
   void do_createNeXusBackedBox(MDBox<MDLeanEvent<3>, 3> &box,
-                               BoxController_sptr bc,
+                               const BoxController_sptr& bc,
                                std::string barefilename = "MDBoxTest.nxs",
                                bool goofyWeights = true) {
     // Create the NXS file
-    std::string filename = do_createNexus(goofyWeights, barefilename);
+    std::string filename = do_createNexus(goofyWeights, std::move(barefilename));
 
     // Must get ready to load in the data
     auto loader = boost::shared_ptr<API::IBoxControllerIO>(
@@ -118,7 +120,7 @@ public:
     auto Saver = new BoxControllerNeXusIO(sc.get());
     Saver->setDataType(b.getCoordType(), b.getEventType());
 
-    std::string filename = do_deleteNexusFile(barefilename);
+    std::string filename = do_deleteNexusFile(std::move(barefilename));
 
     Saver->openFile(filename, "w");
 

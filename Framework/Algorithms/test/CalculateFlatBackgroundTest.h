@@ -839,7 +839,7 @@ private:
   }
 
   void compareSubtractedAndBackgroundWorkspaces(
-      MatrixWorkspace_sptr originalWS, const std::string &subtractedWSName,
+      const MatrixWorkspace_sptr& originalWS, const std::string &subtractedWSName,
       const std::string &backgroundWSName) {
     const std::string minusWSName("minused");
     MatrixWorkspace_sptr backgroundWS =

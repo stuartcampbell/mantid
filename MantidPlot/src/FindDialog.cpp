@@ -41,7 +41,7 @@
 #include <QRegExp>
 #include <QVBoxLayout>
 
-FindDialog::FindDialog(QWidget *parent, Qt::WFlags fl) : QDialog(parent, fl) {
+FindDialog::FindDialog(QWidget *parent, const Qt::WFlags& fl) : QDialog(parent, fl) {
   setWindowTitle(tr("MantidPlot") + " - " + tr("Find"));
   setSizeGripEnabled(true);
 

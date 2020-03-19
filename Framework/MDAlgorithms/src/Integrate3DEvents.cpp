@@ -18,6 +18,8 @@
 
 extern "C" {
 #include <cstdio>
+#include <utility>
+
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -494,7 +496,7 @@ Integrate3DEvents::ellipseIntegrateEvents(
     return boost::make_shared<NoShape>(); // ellipsoids will be zero.
   }
 
-  return ellipseIntegrateEvents(E1Vec, peak_q, some_events, eigen_vectors,
+  return ellipseIntegrateEvents(std::move(E1Vec), peak_q, some_events, eigen_vectors,
                                 sigmas, specify_size, peak_radius,
                                 back_inner_radius, back_outer_radius,
                                 axes_radii, inti, sigi);
@@ -555,7 +557,7 @@ Integrate3DEvents::ellipseIntegrateModEvents(
     return boost::make_shared<NoShape>(); // ellipsoids will be zero.
   }
 
-  return ellipseIntegrateEvents(E1Vec, peak_q, some_events, eigen_vectors,
+  return ellipseIntegrateEvents(std::move(E1Vec), peak_q, some_events, eigen_vectors,
                                 sigmas, specify_size, peak_radius,
                                 back_inner_radius, back_outer_radius,
                                 axes_radii, inti, sigi);
@@ -1107,7 +1109,7 @@ void Integrate3DEvents::addModEvent(
  *
  */
 PeakShapeEllipsoid_const_sptr Integrate3DEvents::ellipseIntegrateEvents(
-    std::vector<V3D> E1Vec, V3D const &peak_q,
+    const std::vector<V3D>& E1Vec, V3D const &peak_q,
     std::vector<std::pair<std::pair<double, double>, Mantid::Kernel::V3D>> const
         &ev_list,
     std::vector<V3D> const &directions, std::vector<double> const &sigmas,
@@ -1212,7 +1214,7 @@ PeakShapeEllipsoid_const_sptr Integrate3DEvents::ellipseIntegrateEvents(
  * @param QLabFrame: The Peak center.
  * @param r: Peak radius.
  */
-double Integrate3DEvents::detectorQ(std::vector<V3D> E1Vec, const V3D QLabFrame,
+double Integrate3DEvents::detectorQ(const std::vector<V3D>& E1Vec, const V3D QLabFrame,
                                     const std::vector<double> &r) {
   double quot = 1.0;
   for (auto &E1 : E1Vec) {

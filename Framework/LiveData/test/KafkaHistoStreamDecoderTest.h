@@ -95,7 +95,7 @@ public:
 
 private:
   std::unique_ptr<Mantid::LiveData::KafkaHistoStreamDecoder>
-  createTestDecoder(std::shared_ptr<Mantid::LiveData::IKafkaBroker> broker) {
+  createTestDecoder(const std::shared_ptr<Mantid::LiveData::IKafkaBroker>& broker) {
     using namespace Mantid::LiveData;
     return std::make_unique<KafkaHistoStreamDecoder>(broker, "", "", "", "",
                                                      "");

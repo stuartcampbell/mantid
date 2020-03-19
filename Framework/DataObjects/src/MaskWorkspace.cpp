@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidDataObjects/MaskWorkspace.h"
 #include "MantidAPI/WorkspaceFactory.h"
 #include "MantidGeometry/Instrument/DetectorInfo.h"
@@ -53,7 +57,7 @@ MaskWorkspace::MaskWorkspace(std::size_t numvectors) {
  */
 MaskWorkspace::MaskWorkspace(Mantid::Geometry::Instrument_const_sptr instrument,
                              const bool includeMonitors)
-    : SpecialWorkspace2D(instrument, includeMonitors) {
+    : SpecialWorkspace2D(std::move(instrument), includeMonitors) {
   this->clearMask();
 }
 
@@ -63,7 +67,7 @@ MaskWorkspace::MaskWorkspace(Mantid::Geometry::Instrument_const_sptr instrument,
  * It must have an instrument.
  * @return MaskWorkspace
  */
-MaskWorkspace::MaskWorkspace(const API::MatrixWorkspace_const_sptr parent)
+MaskWorkspace::MaskWorkspace(const API::MatrixWorkspace_const_sptr& parent)
     : SpecialWorkspace2D(parent) {
   this->clearMask();
 }

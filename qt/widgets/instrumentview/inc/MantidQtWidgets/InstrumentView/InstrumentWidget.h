@@ -148,7 +148,7 @@ public:
   bool hasWorkspace(const std::string &wsName) const;
   void handleWorkspaceReplacement(
       const std::string &wsName,
-      const boost::shared_ptr<Mantid::API::Workspace> workspace);
+      const boost::shared_ptr<Mantid::API::Workspace>& workspace);
 
   /// Get the currently selected tab index
   int getCurrentTab() const;
@@ -193,7 +193,7 @@ public slots:
   void tabChanged(int /*unused*/);
   void componentSelected(size_t componentIndex);
   void executeAlgorithm(const QString & /*unused*/, const QString & /*unused*/);
-  void executeAlgorithm(Mantid::API::IAlgorithm_sptr /*alg*/);
+  void executeAlgorithm(const Mantid::API::IAlgorithm_sptr& /*alg*/);
 
   void setupColorMap();
 
@@ -327,9 +327,9 @@ private:
   /// overlay a peaks workspace on the projection surface
   void overlayPeaksWorkspace(Mantid::API::IPeaksWorkspace_sptr ws);
   /// overlay a masked workspace on the projection surface
-  void overlayMaskedWorkspace(Mantid::API::IMaskWorkspace_sptr ws);
+  void overlayMaskedWorkspace(const Mantid::API::IMaskWorkspace_sptr& ws);
   /// overlay a table workspace with shape parameters on the projection surface
-  void overlayShapesWorkspace(Mantid::API::ITableWorkspace_sptr /*ws*/);
+  void overlayShapesWorkspace(const Mantid::API::ITableWorkspace_sptr& /*ws*/);
   /// get a workspace from the ADS
   Mantid::API::Workspace_sptr getWorkspaceFromADS(const std::string &name);
   /// get a handle to the unwrapped surface

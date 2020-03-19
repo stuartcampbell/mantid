@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidDataHandling/LoadEventNexusIndexSetup.h"
 #include "MantidAPI/SpectrumDetectorMapping.h"
 #include "MantidGeometry/Instrument.h"
@@ -42,9 +46,9 @@ void setupConsistentSpectrumNumbers(IndexInfo &filtered,
 
 LoadEventNexusIndexSetup::LoadEventNexusIndexSetup(
     MatrixWorkspace_const_sptr instrumentWorkspace, const int32_t min,
-    const int32_t max, const std::vector<int32_t> range,
+    const int32_t max, const std::vector<int32_t>& range,
     const Parallel::Communicator &communicator)
-    : m_instrumentWorkspace(instrumentWorkspace), m_min(min), m_max(max),
+    : m_instrumentWorkspace(std::move(instrumentWorkspace)), m_min(min), m_max(max),
       m_range(range), m_communicator(communicator) {}
 
 std::pair<int32_t, int32_t> LoadEventNexusIndexSetup::eventIDLimits() const {

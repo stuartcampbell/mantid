@@ -58,11 +58,11 @@ private:
   void exec() override;
 
   // internal functions
-  std::vector<int> runFindDetectorsInShape(API::MatrixWorkspace_sptr workspace,
-                                           const std::string shapeXML,
+  std::vector<int> runFindDetectorsInShape(const API::MatrixWorkspace_sptr& workspace,
+                                           const std::string& shapeXML,
                                            const bool includeMonitors);
   /// Calls MaskDetectors as a Child Algorithm
-  void runMaskDetectors(API::MatrixWorkspace_sptr workspace,
+  void runMaskDetectors(const API::MatrixWorkspace_sptr& workspace,
                         const std::vector<int> &detectorIds);
 };
 

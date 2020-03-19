@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidDataObjects/GroupingWorkspace.h"
 #include "MantidAPI/SpectraAxis.h"
 #include "MantidAPI/WorkspaceFactory.h"
@@ -34,7 +38,7 @@ GroupingWorkspace::GroupingWorkspace(size_t numvectors) {
  * @return created GroupingWorkspace
  */
 GroupingWorkspace::GroupingWorkspace(Geometry::Instrument_const_sptr inst)
-    : SpecialWorkspace2D(inst) {}
+    : SpecialWorkspace2D(std::move(inst)) {}
 
 //----------------------------------------------------------------------------------------------
 /** Fill a map with key = detector ID, value = group number

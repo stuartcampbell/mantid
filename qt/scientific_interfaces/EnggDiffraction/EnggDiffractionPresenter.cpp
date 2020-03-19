@@ -2072,7 +2072,7 @@ void EnggDiffractionPresenter::rebinningFinished() {
  *
  * @param outWSName title of the focused workspace
  */
-void EnggDiffractionPresenter::plotFocusedWorkspace(std::string outWSName) {
+void EnggDiffractionPresenter::plotFocusedWorkspace(const std::string& outWSName) {
   const bool plotFocusedWS = m_view->focusedOutWorkspace();
   enum PlotMode { REPLACING = 0, WATERFALL = 1, MULTIPLE = 2 };
 
@@ -2107,10 +2107,10 @@ void EnggDiffractionPresenter::plotFocusedWorkspace(std::string outWSName) {
  * @param tzero vector of double to plot graph
  * @param specNos string carrying cropped calib info
  */
-void EnggDiffractionPresenter::plotCalibWorkspace(std::vector<double> difa,
-                                                  std::vector<double> difc,
-                                                  std::vector<double> tzero,
-                                                  std::string specNos) {
+void EnggDiffractionPresenter::plotCalibWorkspace(const std::vector<double>& difa,
+                                                  const std::vector<double>& difc,
+                                                  const std::vector<double>& tzero,
+                                                  const std::string& specNos) {
   const bool plotCalibWS = m_view->plotCalibWorkspace();
   if (plotCalibWS) {
     std::string pyCode = vanadiumCurvesPlotFactory();

@@ -38,7 +38,7 @@ public:
   int version() const override { return 1; }
   /// Finding the extents of the first non-zero signals.
   void
-  findFirstNonZeroMinMaxExtents(Mantid::API::IMDHistoWorkspace_sptr inputWs,
+  findFirstNonZeroMinMaxExtents(const Mantid::API::IMDHistoWorkspace_sptr& inputWs,
                                 std::vector<Mantid::coord_t> &minVec,
                                 std::vector<Mantid::coord_t> &maxVec);
 };

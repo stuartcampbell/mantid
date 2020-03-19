@@ -163,7 +163,7 @@ public:
    * @param expectX :: expected x index, -1 if off
    * @param expectY :: expected y index, -1 if off
    */
-  void doTestRectangularDetector(std::string message, Instrument_sptr inst,
+  void doTestRectangularDetector(const std::string& message, const Instrument_sptr& inst,
                                  V3D testDir, int expectX, int expectY) {
     InstrumentRayTracer tracker(inst);
     testDir.normalize();

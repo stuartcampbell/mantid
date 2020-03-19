@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidAlgorithms/TimeAtSampleStrategyElastic.h"
 #include "MantidAPI/MatrixWorkspace.h"
 #include "MantidAPI/SpectrumInfo.h"
@@ -22,7 +26,7 @@ namespace Algorithms {
  */
 TimeAtSampleStrategyElastic::TimeAtSampleStrategyElastic(
     Mantid::API::MatrixWorkspace_const_sptr ws)
-    : m_ws(ws), m_spectrumInfo(m_ws->spectrumInfo()),
+    : m_ws(std::move(ws)), m_spectrumInfo(m_ws->spectrumInfo()),
       m_beamDir(
           m_ws->getInstrument()->getReferenceFrame()->vecPointingAlongBeam()) {}
 

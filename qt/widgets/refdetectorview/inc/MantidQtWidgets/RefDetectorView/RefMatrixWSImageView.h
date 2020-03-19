@@ -29,9 +29,9 @@ class EXPORT_OPT_MANTIDQT_REFDETECTORVIEWER RefMatrixWSImageView {
 
 public:
   /// Construct an image viewer for the specifed MatrixWorkspace
-  RefMatrixWSImageView(Mantid::API::MatrixWorkspace_sptr /*mat_ws*/);
+  RefMatrixWSImageView(const Mantid::API::MatrixWorkspace_sptr& /*mat_ws*/);
 
-  RefMatrixWSImageView(QString wpsName, int peakMin, int peakMax, int backMin,
+  RefMatrixWSImageView(const QString& wpsName, int peakMin, int peakMax, int backMin,
                        int backMax, int tofMin, int tofMax);
 
   RefIVConnections *getConnections();

@@ -51,30 +51,30 @@ private:
   void setFileExtensionsByName(bool filter) override;
 
   void addSaveWorkspace(std::string const &wsName);
-  void addShapeSpecificSampleOptions(Mantid::API::IAlgorithm_sptr alg,
-                                     QString shape);
-  void addShapeSpecificCanOptions(Mantid::API::IAlgorithm_sptr alg,
+  void addShapeSpecificSampleOptions(const Mantid::API::IAlgorithm_sptr& alg,
+                                     const QString& shape);
+  void addShapeSpecificCanOptions(const Mantid::API::IAlgorithm_sptr& alg,
                                   QString const &shape);
 
   void processWavelengthWorkspace();
-  void convertSpectrumAxes(Mantid::API::WorkspaceGroup_sptr correctionsWs);
-  void convertSpectrumAxes(Mantid::API::WorkspaceGroup_sptr correctionsGroup,
-                           Mantid::API::MatrixWorkspace_sptr sample);
-  void convertSpectrumAxes(Mantid::API::MatrixWorkspace_sptr correction,
-                           Mantid::API::MatrixWorkspace_sptr sample);
+  void convertSpectrumAxes(const Mantid::API::WorkspaceGroup_sptr& correctionsWs);
+  void convertSpectrumAxes(const Mantid::API::WorkspaceGroup_sptr& correctionsGroup,
+                           const Mantid::API::MatrixWorkspace_sptr& sample);
+  void convertSpectrumAxes(const Mantid::API::MatrixWorkspace_sptr& correction,
+                           const Mantid::API::MatrixWorkspace_sptr& sample);
 
-  void getParameterDefaults(Mantid::Geometry::Instrument_const_sptr instrument);
-  void setBeamWidthValue(Mantid::Geometry::Instrument_const_sptr instrument,
+  void getParameterDefaults(const Mantid::Geometry::Instrument_const_sptr& instrument);
+  void setBeamWidthValue(const Mantid::Geometry::Instrument_const_sptr& instrument,
                          std::string const &beamWidthParamName) const;
-  void setBeamHeightValue(Mantid::Geometry::Instrument_const_sptr instrument,
+  void setBeamHeightValue(const Mantid::Geometry::Instrument_const_sptr& instrument,
                           std::string const &beamHeightParamName) const;
-  void setWavelengthsValue(Mantid::Geometry::Instrument_const_sptr instrument,
+  void setWavelengthsValue(const Mantid::Geometry::Instrument_const_sptr& instrument,
                            std::string const &wavelengthsParamName) const;
-  void setEventsValue(Mantid::Geometry::Instrument_const_sptr instrument,
+  void setEventsValue(const Mantid::Geometry::Instrument_const_sptr& instrument,
                       std::string const &eventsParamName) const;
-  void setInterpolationValue(Mantid::Geometry::Instrument_const_sptr instrument,
+  void setInterpolationValue(const Mantid::Geometry::Instrument_const_sptr& instrument,
                              std::string const &interpolationParamName) const;
-  void setMaxAttemptsValue(Mantid::Geometry::Instrument_const_sptr instrument,
+  void setMaxAttemptsValue(const Mantid::Geometry::Instrument_const_sptr& instrument,
                            std::string const &maxAttemptsParamName) const;
 
   void setComboBoxOptions(QComboBox *combobox,

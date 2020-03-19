@@ -11,6 +11,8 @@
 #include "MantidKernel/BoundedValidator.h"
 
 #include <algorithm>
+#include <utility>
+
 
 using namespace Mantid::API;
 using namespace Mantid::Kernel;
@@ -18,8 +20,8 @@ using namespace Mantid::HistogramData;
 
 namespace {
 
-void copyDataRange(MatrixWorkspace_const_sptr inputWorkspace,
-                   MatrixWorkspace_sptr destWorkspace, int const &specMin,
+void copyDataRange(const MatrixWorkspace_const_sptr& inputWorkspace,
+                   const MatrixWorkspace_sptr& destWorkspace, int const &specMin,
                    int const &specMax, int const &xMinIndex,
                    int const &xMaxIndex, int yInsertionIndex,
                    int const &xInsertionIndex) {
@@ -36,7 +38,7 @@ void copyDataRange(MatrixWorkspace_const_sptr inputWorkspace,
   }
 }
 
-void copyDataRange(MatrixWorkspace_const_sptr inputWorkspace,
+void copyDataRange(const MatrixWorkspace_const_sptr& inputWorkspace,
                    MatrixWorkspace_sptr destWorkspace, int const &specMin,
                    int const &specMax, double const &xMin, double const &xMax,
                    int yInsertionIndex, int const &xInsertionIndex) {
@@ -45,7 +47,7 @@ void copyDataRange(MatrixWorkspace_const_sptr inputWorkspace,
   auto const xMaxIndex =
       static_cast<int>(inputWorkspace->yIndexOfX(xMax, 0, 0.000001));
 
-  copyDataRange(inputWorkspace, destWorkspace, specMin, specMax, xMinIndex,
+  copyDataRange(inputWorkspace, std::move(destWorkspace), specMin, specMax, xMinIndex,
                 xMaxIndex, yInsertionIndex, xInsertionIndex);
 }
 

@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <boost/algorithm/string/join.hpp>
+#include <utility>
+
 
 namespace MantidQt {
 namespace CustomInterfaces {
@@ -46,7 +48,7 @@ void showAsValid(QLineEdit &lineEdit) {
  * @param parent :: [input] The parent of this widget
  */
 QtExperimentView::QtExperimentView(
-    Mantid::API::IAlgorithm_sptr algorithmForTooltips, QWidget *parent)
+    const Mantid::API::IAlgorithm_sptr& algorithmForTooltips, QWidget *parent)
     : QWidget(parent), m_stitchEdit(nullptr), m_deleteShortcut(),
       m_notifyee(nullptr), m_columnToolTips() {
   initLayout(algorithmForTooltips);
@@ -98,7 +100,7 @@ void QtExperimentView::initLayout(
                                                  m_ui.optionsTable);
   connect(m_deleteShortcut.get(), SIGNAL(activated()), this,
           SLOT(onRemovePerThetaDefaultsRequested()));
-  initOptionsTable(algorithmForTooltips);
+  initOptionsTable(std::move(algorithmForTooltips));
   initFloodControls();
 
   auto blacklist =
@@ -116,7 +118,7 @@ void QtExperimentView::initLayout(
 }
 
 void QtExperimentView::initializeTableColumns(
-    QTableWidget &table, Mantid::API::IAlgorithm_sptr algorithmForTooltips) {
+    QTableWidget &table, const Mantid::API::IAlgorithm_sptr& algorithmForTooltips) {
   for (auto column = 0; column < table.columnCount(); ++column) {
     // Get the tooltip for this column based on the algorithm property
     auto const propertyName = PerThetaDefaults::ColumnPropertyName[column];
@@ -166,7 +168,7 @@ void QtExperimentView::initOptionsTable(
   table->resizeColumnsToContents();
   table->setColumnCount(PerThetaDefaults::OPTIONS_TABLE_COLUMN_COUNT);
   table->setRowCount(1);
-  initializeTableColumns(*table, algorithmForTooltips);
+  initializeTableColumns(*table, std::move(algorithmForTooltips));
   initializeTableItems(*table);
 
   auto header = table->horizontalHeader();
@@ -255,12 +257,12 @@ void QtExperimentView::enableAll() { setEnabledStateForAllWidgets(true); }
 
 void QtExperimentView::registerSettingsWidgets(
     Mantid::API::IAlgorithm_sptr alg) {
-  registerExperimentSettingsWidgets(alg);
+  registerExperimentSettingsWidgets(std::move(alg));
   connectExperimentSettingsWidgets();
 }
 
 void QtExperimentView::registerExperimentSettingsWidgets(
-    Mantid::API::IAlgorithm_sptr alg) {
+    const Mantid::API::IAlgorithm_sptr& alg) {
   registerSettingWidget(*m_ui.analysisModeComboBox, "AnalysisMode", alg);
   registerSettingWidget(*m_ui.startOverlapEdit, "StartOverlap", alg);
   registerSettingWidget(*m_ui.endOverlapEdit, "EndOverlap", alg);
@@ -343,13 +345,13 @@ void QtExperimentView::disableIncludePartialBins() {
 template <typename Widget>
 void QtExperimentView::registerSettingWidget(Widget &widget,
                                              std::string const &propertyName,
-                                             Mantid::API::IAlgorithm_sptr alg) {
+                                             const Mantid::API::IAlgorithm_sptr& alg) {
   setToolTipAsPropertyDocumentation(widget, propertyName, alg);
 }
 
 void QtExperimentView::setToolTipAsPropertyDocumentation(
     QWidget &widget, std::string const &propertyName,
-    Mantid::API::IAlgorithm_sptr alg) {
+    const Mantid::API::IAlgorithm_sptr& alg) {
   widget.setToolTip(QString::fromStdString(
       alg->getPointerToProperty(propertyName)->documentation()));
 }

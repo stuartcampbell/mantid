@@ -92,7 +92,7 @@ public:
   /// Destructor
   ~CompositePeaksPresenter() override;
   /// Add a peaks presenter onto the composite.
-  void addPeaksPresenter(PeaksPresenter_sptr presenter);
+  void addPeaksPresenter(const PeaksPresenter_sptr& presenter);
   /// Get the number of subjects.
   size_t size() const;
   /// Clear the owned presenters.
@@ -109,11 +109,11 @@ public:
   void peakEditMode(EditMode mode) override;
   void
   setForegroundColor(boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
-                     const PeakViewColor /*color*/);
+                     const PeakViewColor& /*color*/);
   /// Change the background representation for the peaks of this workspace
   void
   setBackgroundColor(boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws,
-                     const PeakViewColor /*color*/);
+                     const PeakViewColor& /*color*/);
   /// Get the foreground colour corresponding to the workspace
   PeakViewColor getForegroundPeakViewColor(
       boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const;
@@ -163,7 +163,7 @@ public:
   bool contentsDifferent(PeaksPresenter const *other) const override;
   /// Enter the requested edit mode for the peaks workspace.
   void editCommand(EditMode editMode,
-                   boost::weak_ptr<const Mantid::API::IPeaksWorkspace> target);
+                   const boost::weak_ptr<const Mantid::API::IPeaksWorkspace>& target);
 
 private:
   /// Updateable on demand method.
@@ -179,10 +179,10 @@ private:
   bool useDefault() const { return m_subjects.size() == 0; }
   /// Get the presenter for a given workspace.
   SubjectContainer::iterator getPresenterIteratorFromWorkspace(
-      boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws);
+      const boost::shared_ptr<const Mantid::API::IPeaksWorkspace>& ws);
   /// Get the presenter for a given workspace.
   SubjectContainer::const_iterator getPresenterIteratorFromWorkspace(
-      boost::shared_ptr<const Mantid::API::IPeaksWorkspace> ws) const;
+      const boost::shared_ptr<const Mantid::API::IPeaksWorkspace>& ws) const;
   /// Get the presenter from a workspace name.
   SubjectContainer::iterator getPresenterIteratorFromName(const QString &name);
   /// Color palette

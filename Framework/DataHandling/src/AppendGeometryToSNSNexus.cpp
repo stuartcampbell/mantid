@@ -360,7 +360,7 @@ AppendGeometryToSNSNexus::getInstrumentName(const std::string &nxfilename) {
  */
 
 bool AppendGeometryToSNSNexus::runLoadInstrument(
-    const std::string &idf_filename, API::MatrixWorkspace_sptr localWorkspace,
+    const std::string &idf_filename, const API::MatrixWorkspace_sptr& localWorkspace,
     Algorithm *alg) {
   IAlgorithm_sptr loadInst = createChildAlgorithm("LoadInstrument", 0, 1, true);
 
@@ -399,7 +399,7 @@ bool AppendGeometryToSNSNexus::runLoadInstrument(
  * @return true if successful.
  */
 bool AppendGeometryToSNSNexus::runLoadNexusLogs(
-    const std::string &nexusFileName, API::MatrixWorkspace_sptr localWorkspace,
+    const std::string &nexusFileName, const API::MatrixWorkspace_sptr& localWorkspace,
     Algorithm *alg) {
   IAlgorithm_sptr loadLogs =
       alg->createChildAlgorithm("LoadNexusLogs", 0, 1, true);

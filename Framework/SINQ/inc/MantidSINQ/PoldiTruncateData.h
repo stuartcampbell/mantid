@@ -42,10 +42,10 @@ public:
   size_t getActualBinCount();
 
 protected:
-  void setChopperFromWorkspace(API::MatrixWorkspace_const_sptr workspace);
+  void setChopperFromWorkspace(const API::MatrixWorkspace_const_sptr& workspace);
   void setChopper(PoldiAbstractChopper_sptr chopper);
 
-  void setTimeBinWidthFromWorkspace(API::MatrixWorkspace_const_sptr workspace);
+  void setTimeBinWidthFromWorkspace(const API::MatrixWorkspace_const_sptr& workspace);
   void setTimeBinWidth(double timeBinWidth);
   void setActualBinCount(size_t actualBinCount);
 
@@ -63,11 +63,11 @@ protected:
   getWorkspaceAboveX(API::MatrixWorkspace_sptr workspace, double x);
 
   API::Algorithm_sptr
-  getCropAlgorithmForWorkspace(API::MatrixWorkspace_sptr workspace);
-  API::MatrixWorkspace_sptr getOutputWorkspace(API::Algorithm_sptr algorithm);
+  getCropAlgorithmForWorkspace(const API::MatrixWorkspace_sptr& workspace);
+  API::MatrixWorkspace_sptr getOutputWorkspace(const API::Algorithm_sptr& algorithm);
 
   API::MatrixWorkspace_sptr
-  getSummedSpectra(API::MatrixWorkspace_sptr workspace);
+  getSummedSpectra(const API::MatrixWorkspace_sptr& workspace);
 
   PoldiAbstractChopper_sptr m_chopper;
   double m_timeBinWidth;

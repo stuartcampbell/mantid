@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidAlgorithms/CreateTransmissionWorkspace.h"
 #include "MantidAPI/BoostOptionalToAlgorithmProperty.h"
 
@@ -163,7 +167,7 @@ MatrixWorkspace_sptr CreateTransmissionWorkspace::makeTransmissionCorrection(
   /*make struct of optional inputs to refactor method arguments*/
   /*make a using statements defining OptionalInteger for MonitorIndex*/
   auto trans1InLam =
-      toLam(firstTransmissionRun, processingCommands, i0MonitorIndex,
+      toLam(std::move(firstTransmissionRun), processingCommands, i0MonitorIndex,
             wavelengthInterval, wavelengthMonitorBackgroundInterval);
   MatrixWorkspace_sptr trans1Detector = trans1InLam.get<0>();
   MatrixWorkspace_sptr trans1Monitor = trans1InLam.get<1>();

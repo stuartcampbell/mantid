@@ -17,6 +17,8 @@
 #include <Poco/Thread.h>
 
 #include <boost/lexical_cast.hpp>
+#include <utility>
+
 
 using namespace Mantid::API;
 using namespace Mantid::Kernel;
@@ -121,7 +123,7 @@ public:
   TestProxyObserver()
       : AlgorithmObserver(), start(false), progress(false), finish(false) {}
   TestProxyObserver(IAlgorithm_const_sptr alg)
-      : AlgorithmObserver(alg), start(false), progress(false), finish(false) {}
+      : AlgorithmObserver(std::move(alg)), start(false), progress(false), finish(false) {}
   void startHandle(const IAlgorithm *) override { start = true; }
   void progressHandle(const IAlgorithm *, double p,
                       const std::string &msg) override {

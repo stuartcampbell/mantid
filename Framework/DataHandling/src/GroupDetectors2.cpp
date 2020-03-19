@@ -311,7 +311,7 @@ void GroupDetectors2::execEvent() {
  *  @param workspace :: the user selected input workspace
  *  @param unUsedSpec :: spectra indexes that are not members of any group
  */
-void GroupDetectors2::getGroups(API::MatrixWorkspace_const_sptr workspace,
+void GroupDetectors2::getGroups(const API::MatrixWorkspace_const_sptr& workspace,
                                 std::vector<int64_t> &unUsedSpec) {
   // this is the map that we are going to fill
   m_GroupWsInds.clear();
@@ -455,7 +455,7 @@ void GroupDetectors2::getGroups(API::MatrixWorkspace_const_sptr workspace,
  *  @throw FileError if there's any problem with the file or its format
  */
 void GroupDetectors2::processFile(const std::string &fname,
-                                  API::MatrixWorkspace_const_sptr workspace,
+                                  const API::MatrixWorkspace_const_sptr& workspace,
                                   std::vector<int64_t> &unUsedSpec) {
   // tring to open the file the user told us exists, skip down 20 lines to find
   // out what happens if we can read from it
@@ -546,7 +546,7 @@ void GroupDetectors2::processFile(const std::string &fname,
  *  @throw FileError if there's any problem with the file or its format
  */
 void GroupDetectors2::processXMLFile(const std::string &fname,
-                                     API::MatrixWorkspace_const_sptr workspace,
+                                     const API::MatrixWorkspace_const_sptr& workspace,
                                      std::vector<int64_t> &unUsedSpec) {
   // 1. Get maps for spectrum No and detector ID
   spec2index_map specs2index;
@@ -630,8 +630,8 @@ void GroupDetectors2::processXMLFile(const std::string &fname,
  * in a group (so far)
  */
 void GroupDetectors2::processGroupingWorkspace(
-    GroupingWorkspace_const_sptr groupWS,
-    API::MatrixWorkspace_const_sptr workspace,
+    const GroupingWorkspace_const_sptr& groupWS,
+    const API::MatrixWorkspace_const_sptr& workspace,
     std::vector<int64_t> &unUsedSpec) {
   detid2index_map detIdToWiMap = workspace->getDetectorIDToWorkspaceIndexMap();
 
@@ -683,7 +683,7 @@ void GroupDetectors2::processGroupingWorkspace(
  * a group (so far)
  */
 void GroupDetectors2::processMatrixWorkspace(
-    MatrixWorkspace_const_sptr groupWS, MatrixWorkspace_const_sptr workspace,
+    const MatrixWorkspace_const_sptr& groupWS, const MatrixWorkspace_const_sptr& workspace,
     std::vector<int64_t> &unUsedSpec) {
   detid2index_map detIdToWiMap = workspace->getDetectorIDToWorkspaceIndexMap();
 
@@ -933,8 +933,8 @@ double GroupDetectors2::fileReadProg(
  * indexing after grouping
  *  @return number of new grouped spectra
  */
-size_t GroupDetectors2::formGroups(API::MatrixWorkspace_const_sptr inputWS,
-                                   API::MatrixWorkspace_sptr outputWS,
+size_t GroupDetectors2::formGroups(const API::MatrixWorkspace_const_sptr& inputWS,
+                                   const API::MatrixWorkspace_sptr& outputWS,
                                    const double prog4Copy, const bool keepAll,
                                    const std::set<int64_t> &unGroupedSet,
                                    Indexing::IndexInfo &indexInfo) {
@@ -1057,8 +1057,8 @@ size_t GroupDetectors2::formGroups(API::MatrixWorkspace_const_sptr inputWS,
  *  @return number of new grouped spectra
  */
 size_t
-GroupDetectors2::formGroupsEvent(DataObjects::EventWorkspace_const_sptr inputWS,
-                                 DataObjects::EventWorkspace_sptr outputWS,
+GroupDetectors2::formGroupsEvent(const DataObjects::EventWorkspace_const_sptr& inputWS,
+                                 const DataObjects::EventWorkspace_sptr& outputWS,
                                  const double prog4Copy) {
   if (inputWS->detectorInfo().isScanning())
     throw std::runtime_error("GroupDetectors does not currently support "

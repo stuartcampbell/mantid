@@ -241,7 +241,7 @@ void CalculateTransmissionBeamSpreader::exec() {
  *  @return A Workspace2D containing the sum
  */
 API::MatrixWorkspace_sptr
-CalculateTransmissionBeamSpreader::sumSpectra(API::MatrixWorkspace_sptr WS) {
+CalculateTransmissionBeamSpreader::sumSpectra(const API::MatrixWorkspace_sptr& WS) {
   Algorithm_sptr childAlg = createChildAlgorithm("SumSpectra");
   childAlg->setProperty<MatrixWorkspace_sptr>("InputWorkspace", WS);
   childAlg->setProperty<bool>("IncludeMonitors", false);
@@ -256,7 +256,7 @@ CalculateTransmissionBeamSpreader::sumSpectra(API::MatrixWorkspace_sptr WS) {
  *  @return A Workspace2D containing the extracted spectrum
  */
 API::MatrixWorkspace_sptr
-CalculateTransmissionBeamSpreader::extractSpectrum(API::MatrixWorkspace_sptr WS,
+CalculateTransmissionBeamSpreader::extractSpectrum(const API::MatrixWorkspace_sptr& WS,
                                                    const size_t index) {
   // Check that given spectra are monitors
   if (!WS->spectrumInfo().isMonitor(index)) {
@@ -278,7 +278,7 @@ CalculateTransmissionBeamSpreader::extractSpectrum(API::MatrixWorkspace_sptr WS,
  *  @return A workspace containing the fit
  */
 API::MatrixWorkspace_sptr
-CalculateTransmissionBeamSpreader::fitToData(API::MatrixWorkspace_sptr WS) {
+CalculateTransmissionBeamSpreader::fitToData(const API::MatrixWorkspace_sptr& WS) {
   g_log.information("Fitting the experimental transmission curve");
   Algorithm_sptr childAlg = createChildAlgorithm("Linear", 0.6, 1.0);
   childAlg->setProperty<MatrixWorkspace_sptr>("InputWorkspace", WS);

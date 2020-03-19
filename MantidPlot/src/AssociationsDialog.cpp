@@ -45,8 +45,10 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTableWidget>
+#include <utility>
 
-AssociationsDialog::AssociationsDialog(Graph *g, Qt::WFlags fl)
+
+AssociationsDialog::AssociationsDialog(Graph *g, const Qt::WFlags& fl)
     : QDialog(g, fl) {
   setObjectName("AssociationsDialog");
   setWindowTitle(tr("MantidPlot - Plot Associations"));
@@ -192,7 +194,7 @@ QString AssociationsDialog::plotAssociation(const QString &text) {
 }
 
 void AssociationsDialog::initTablesList(QList<MdiSubWindow *> lst, int curve) {
-  tables = lst;
+  tables = std::move(lst);
   active_table = nullptr;
 
   if (curve < 0 || curve >= static_cast<int>(associations->count()))

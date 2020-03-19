@@ -26,13 +26,13 @@ namespace DataProcessorTestHelper {
 // Add a property value from a list to the given row data with an optional
 // prefix
 DLLExport void
-addPropertyValue(MantidQt::MantidWidgets::DataProcessor::RowData_sptr rowData,
+addPropertyValue(const MantidQt::MantidWidgets::DataProcessor::RowData_sptr& rowData,
                  const std::vector<std::string> &list, const size_t index,
                  const std::string &property, const std::string &prefix = "");
 
 // Add a property value to the given row data
 DLLExport void
-addPropertyValue(MantidQt::MantidWidgets::DataProcessor::RowData_sptr rowData,
+addPropertyValue(const MantidQt::MantidWidgets::DataProcessor::RowData_sptr& rowData,
                  const std::string &property, const std::string &value);
 
 // Utility to create a row data class from a string list of simple inputs

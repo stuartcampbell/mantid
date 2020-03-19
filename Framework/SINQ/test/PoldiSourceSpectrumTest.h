@@ -12,6 +12,8 @@
 #include "MantidSINQ/PoldiUtilities/PoldiSourceSpectrum.h"
 #include <cxxtest/TestSuite.h>
 #include <stdexcept>
+#include <utility>
+
 
 using namespace Mantid::Poldi;
 using namespace Mantid::Kernel;
@@ -97,10 +99,10 @@ private:
     friend class PoldiSourceSpectrumTest;
 
   public:
-    TestablePoldiSourceSpectrum(Interpolation spectrum = Interpolation())
+    TestablePoldiSourceSpectrum(const Interpolation& spectrum = Interpolation())
         : PoldiSourceSpectrum(spectrum) {}
 
     TestablePoldiSourceSpectrum(Instrument_const_sptr poldiInstrument)
-        : PoldiSourceSpectrum(poldiInstrument) {}
+        : PoldiSourceSpectrum(std::move(poldiInstrument)) {}
   };
 };

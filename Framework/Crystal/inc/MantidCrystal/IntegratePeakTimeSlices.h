@@ -276,7 +276,7 @@ private:
                  double &neighborRadius, // from CentDet
                  double Radius, std::string &spec_idList);
 
-  bool getNeighborPixIDs(boost::shared_ptr<Geometry::IComponent> comp,
+  bool getNeighborPixIDs(const boost::shared_ptr<Geometry::IComponent>& comp,
                          Kernel::V3D &Center, double &Radius, int *&ArryofID);
 
   int CalculateTimeChannelSpan(Geometry::IPeak const &peak, const double dQ,

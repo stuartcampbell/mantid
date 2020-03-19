@@ -30,6 +30,8 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <utility>
+
 
 using namespace Mantid::API;
 using namespace Mantid::Kernel;
@@ -49,7 +51,7 @@ OneLevelTreeManager::OneLevelTreeManager(
     DataProcessorPresenter *presenter, Mantid::API::ITableWorkspace_sptr table,
     const WhiteList &whitelist)
     : m_presenter(presenter),
-      m_model(new QOneLevelTreeModel(table, whitelist)) {}
+      m_model(new QOneLevelTreeModel(std::move(table), whitelist)) {}
 
 /**
  * Constructor (no table workspace given)
@@ -323,7 +325,7 @@ std::set<int> OneLevelTreeManager::getRowsToProcess(bool shouldPrompt) const {
  * @return :: All data as a map where keys are units of post-processing (i.e.
  * group indices) and values are a map of row index in the group to row data
  */
-TreeData OneLevelTreeManager::constructTreeData(std::set<int> rows) {
+TreeData OneLevelTreeManager::constructTreeData(const std::set<int>& rows) {
 
   // Return data in the format: map<int, set<RowData_sptr>>, where:
   // int -> row index
@@ -525,7 +527,7 @@ OneLevelTreeManager::createDefaultWorkspace(const WhiteList &whitelist) {
  * @param ws :: the table workspace
  * @param whitelistColumns :: the number of columns as specified in a whitelist
  */
-void OneLevelTreeManager::validateModel(ITableWorkspace_sptr ws,
+void OneLevelTreeManager::validateModel(const ITableWorkspace_sptr& ws,
                                         size_t whitelistColumns) const {
 
   if (!ws)

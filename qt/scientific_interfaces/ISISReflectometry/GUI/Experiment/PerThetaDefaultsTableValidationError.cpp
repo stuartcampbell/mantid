@@ -5,6 +5,10 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "PerThetaDefaultsTableValidationError.h"
+
+
+#include <utility>
+
 #include "ThetaValuesValidationError.h"
 namespace MantidQt {
 namespace CustomInterfaces {
@@ -15,7 +19,7 @@ PerThetaDefaultsTableValidationError::PerThetaDefaultsTableValidationError(
     std::vector<InvalidDefaultsError> validationErrors,
     boost::optional<ThetaValuesValidationError> fullTableError)
     : m_validationErrors(std::move(validationErrors)),
-      m_fullTableError(fullTableError) {}
+      m_fullTableError(std::move(fullTableError)) {}
 
 std::vector<InvalidDefaultsError> const &
 PerThetaDefaultsTableValidationError::errors() const {

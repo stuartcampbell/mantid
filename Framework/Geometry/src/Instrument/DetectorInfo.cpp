@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidGeometry/Instrument/DetectorInfo.h"
 #include "MantidBeamline/DetectorInfo.h"
 #include "MantidGeometry/Instrument.h"
@@ -27,8 +31,8 @@ DetectorInfo::DetectorInfo(
     boost::shared_ptr<const std::vector<detid_t>> detectorIds,
     boost::shared_ptr<const std::unordered_map<detid_t, size_t>>
         detIdToIndexMap)
-    : m_detectorInfo(std::move(detectorInfo)), m_instrument(instrument),
-      m_detectorIDs(detectorIds), m_detIDToIndex(detIdToIndexMap),
+    : m_detectorInfo(std::move(detectorInfo)), m_instrument(std::move(instrument)),
+      m_detectorIDs(std::move(detectorIds)), m_detIDToIndex(std::move(detIdToIndexMap)),
       m_lastDetector(PARALLEL_GET_MAX_THREADS),
       m_lastIndex(PARALLEL_GET_MAX_THREADS, -1) {
 

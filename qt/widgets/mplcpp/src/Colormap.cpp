@@ -4,6 +4,10 @@
 //     NScD Oak Ridge National Laboratory, European Spallation Source
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
+#include <utility>
+
+
+
 #include "MantidQtWidgets/MplCpp/Colormap.h"
 #include "MantidQtWidgets/MplCpp/Colors.h"
 
@@ -21,7 +25,7 @@ namespace MplCpp {
  * @brief Construct a Colormap object given a name
  */
 Colormap::Colormap(Python::Object obj)
-    : Python::InstanceHolder(obj, "is_gray") {}
+    : Python::InstanceHolder(std::move(obj), "is_gray") {}
 
 /**
  * @return A reference to the matplotlib.cm module

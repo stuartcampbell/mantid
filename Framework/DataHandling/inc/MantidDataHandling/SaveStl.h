@@ -6,6 +6,14 @@
 // SPDX - License - Identifier: GPL - 3.0 +
 #pragma once
 
+#include <utility>
+
+
+
+#include <utility>
+
+
+
 #include "MantidDataHandling/MeshFileIO.h"
 #include "MantidKernel/BinaryStreamWriter.h"
 #include "MantidKernel/Logger.h"
@@ -25,9 +33,9 @@ enum class ScaleUnits;
  */
 class DLLExport SaveStl : public MeshFileIO {
 public:
-  SaveStl(const std::string &filename, const std::vector<uint32_t> triangle,
+  SaveStl(const std::string &filename, const std::vector<uint32_t>& triangle,
           std::vector<Kernel::V3D> vertices, ScaleUnits scaleType)
-      : MeshFileIO(scaleType, triangle, vertices), m_filename(filename) {}
+      : MeshFileIO(scaleType, triangle, std::move(std::move(vertices))), m_filename(filename) {}
 
   void writeStl();
 

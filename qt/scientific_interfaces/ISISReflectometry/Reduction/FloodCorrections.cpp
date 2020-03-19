@@ -5,13 +5,17 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "FloodCorrections.h"
+
+
+#include <utility>
+
 namespace MantidQt {
 namespace CustomInterfaces {
 namespace ISISReflectometry {
 
 FloodCorrections::FloodCorrections(FloodCorrectionType correctionType,
                                    boost::optional<std::string> workspace)
-    : m_correctionType(correctionType), m_workspace(workspace) {}
+    : m_correctionType(correctionType), m_workspace(std::move(workspace)) {}
 
 FloodCorrectionType FloodCorrections::correctionType() const {
   return m_correctionType;

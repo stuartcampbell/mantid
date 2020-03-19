@@ -31,7 +31,7 @@ class MANTIDQT_ENGGDIFFRACTION_DLL EnggDiffGSASFittingViewQtWidget
 public:
   EnggDiffGSASFittingViewQtWidget(
       boost::shared_ptr<IEnggDiffractionUserMsg> userMessageProvider,
-      boost::shared_ptr<IEnggDiffractionPythonRunner> pythonRunner,
+      const boost::shared_ptr<IEnggDiffractionPythonRunner>& pythonRunner,
       boost::shared_ptr<IEnggDiffractionParam> mainSettings);
 
   ~EnggDiffGSASFittingViewQtWidget() override;

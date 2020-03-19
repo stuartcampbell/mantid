@@ -68,14 +68,14 @@ private:
   void init() override;
   void exec() override;
 
-  void getGeometry(API::MatrixWorkspace_const_sptr WS, specnum_t mon0Spec,
+  void getGeometry(const API::MatrixWorkspace_const_sptr& WS, specnum_t mon0Spec,
                    specnum_t mon1Spec, double &monitor0Dist,
                    double &monitor1Dist) const;
-  std::vector<size_t> getMonitorWsIndexs(API::MatrixWorkspace_const_sptr WS,
+  std::vector<size_t> getMonitorWsIndexs(const API::MatrixWorkspace_const_sptr& WS,
                                          specnum_t specNum1,
                                          specnum_t specNum2) const;
   double timeToFly(double s, double E_KE) const;
-  double getPeakCentre(API::MatrixWorkspace_const_sptr WS, const size_t monitIn,
+  double getPeakCentre(const API::MatrixWorkspace_const_sptr& WS, const size_t monitIn,
                        const double peakTime);
   void extractSpec(int wsInd, double start, double end);
   void getPeakEstimates(double &height, int64_t &centreInd,

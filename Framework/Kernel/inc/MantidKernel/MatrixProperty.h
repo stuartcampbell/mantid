@@ -24,7 +24,7 @@ class MatrixProperty : public PropertyWithValue<Matrix<TYPE>> {
 public:
   /// Constructor
   MatrixProperty(const std::string &propName,
-                 IValidator_sptr validator = IValidator_sptr(new NullValidator),
+                 const IValidator_sptr& validator = IValidator_sptr(new NullValidator),
                  unsigned int direction = Direction::Input);
   /// Copy constructor
   MatrixProperty(const MatrixProperty &rhs);

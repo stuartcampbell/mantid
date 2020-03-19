@@ -21,7 +21,7 @@ namespace DataObjects {
  * @return a MatrixWorkspace_sptr
  */
 MatrixWorkspace_sptr
-EventWorkspaceHelpers::convertEventTo2D(MatrixWorkspace_sptr inputMatrixW) {
+EventWorkspaceHelpers::convertEventTo2D(const MatrixWorkspace_sptr& inputMatrixW) {
   EventWorkspace_sptr inputW =
       boost::dynamic_pointer_cast<EventWorkspace>(inputMatrixW);
   if (!inputW)

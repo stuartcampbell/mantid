@@ -375,7 +375,7 @@ double twoInputsErrorEstimate10(const double i00, const double e00,
 }
 
 Mantid::API::MatrixWorkspace_sptr
-createWorkspaceWithHistory(Mantid::API::MatrixWorkspace_const_sptr inputWS) {
+createWorkspaceWithHistory(const Mantid::API::MatrixWorkspace_const_sptr& inputWS) {
   Mantid::API::MatrixWorkspace_sptr outputWS =
       Mantid::DataObjects::create<Mantid::DataObjects::Workspace2D>(*inputWS);
   outputWS->history().addHistory(inputWS->getHistory());

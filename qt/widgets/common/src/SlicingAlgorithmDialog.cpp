@@ -103,7 +103,7 @@ SlicingAlgorithmDialog::~SlicingAlgorithmDialog() { saveSettings(); }
  @param dim : dimension to format to string.
 */
 QString
-formattedAlignedDimensionInput(Mantid::Geometry::IMDDimension_const_sptr dim) {
+formattedAlignedDimensionInput(const Mantid::Geometry::IMDDimension_const_sptr& dim) {
   QString min, max, nbins, result;
   QString name(dim->getName().c_str());
   min.setNum(dim->getMinimum());
@@ -133,7 +133,7 @@ formattedAlignedDimensionInput(Mantid::Geometry::IMDDimension_const_sptr dim) {
  @return : empty string.
 */
 QString formatNonAlignedDimensionInput(
-    Mantid::Geometry::IMDDimension_const_sptr /*unused*/) {
+    const Mantid::Geometry::IMDDimension_const_sptr& /*unused*/) {
   // Deliberately return an empty string here, because it's not obvious how the
   // basis vectors could be automatically formed.
   return QString("");
@@ -288,7 +288,7 @@ generated.
 */
 void SlicingAlgorithmDialog::makeDimensionInputs(
     const QString &propertyPrefix, QLayout *owningLayout,
-    QString (*format)(IMDDimension_const_sptr), History history) {
+    QString (*format)(const IMDDimension_const_sptr &), History history) {
   // Remove excess dimensions from the tied properties and the stored property
   // values
   size_t indexRemoved = 0;
@@ -441,7 +441,7 @@ bool SlicingAlgorithmDialog::doAutoFillDimensions() const {
  *Customise the layout for usage in the Vsi
  */
 void SlicingAlgorithmDialog::customiseLayoutForVsi(
-    std::string initialWorkspace) {
+    const std::string& initialWorkspace) {
   // File back-end
   ui.file_backend_layout->setVisible(false);
 
@@ -467,7 +467,7 @@ void SlicingAlgorithmDialog::customiseLayoutForVsi(
  * @param propertyValue The new value of the axis dimension.
  */
 void SlicingAlgorithmDialog::resestAlignedDimProperty(size_t index,
-                                                      QString propertyValue) {
+                                                      const QString& propertyValue) {
   QString alignedDim = "AlignedDim";
 
   const QString propertyName = alignedDim.append(QString().number(index));

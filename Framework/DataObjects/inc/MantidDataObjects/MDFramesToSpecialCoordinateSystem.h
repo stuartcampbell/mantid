@@ -28,7 +28,7 @@ private:
       boost::optional<Mantid::Kernel::SpecialCoordinateSystem> qFrameType)
       const;
   bool
-  isUnknownFrame(Mantid::Geometry::IMDDimension_const_sptr dimension) const;
+  isUnknownFrame(const Mantid::Geometry::IMDDimension_const_sptr& dimension) const;
 };
 
 } // namespace DataObjects

@@ -21,6 +21,8 @@
 #include <boost/regex.hpp>
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
+#include <utility>
+
 
 namespace Mantid {
 namespace WorkflowAlgorithms {
@@ -34,7 +36,7 @@ namespace HFIRInstrument {
  * Read a parameter from the instrument description
  */
 double readInstrumentParameter(const std::string &parameter,
-                               API::MatrixWorkspace_sptr dataWS) {
+                               const API::MatrixWorkspace_sptr& dataWS) {
   std::vector<double> pars =
       dataWS->getInstrument()->getNumberParameter(parameter);
   if (pars.empty())
@@ -47,7 +49,7 @@ double readInstrumentParameter(const std::string &parameter,
  * Return the detector ID corresponding to the [x,y] pixel coordinates.
  */
 int getDetectorFromPixel(const int &pixel_x, const int &pixel_y,
-                         API::MatrixWorkspace_sptr dataWS) {
+                         const API::MatrixWorkspace_sptr& dataWS) {
   UNUSED_ARG(dataWS);
   return 1000000 + 1000 * pixel_x + pixel_y;
 }
@@ -57,7 +59,7 @@ int getDetectorFromPixel(const int &pixel_x, const int &pixel_y,
  * given pixel coordinates [m].
  */
 void getCoordinateFromPixel(const double &pixel_x, const double &pixel_y,
-                            API::MatrixWorkspace_sptr dataWS, double &x,
+                            const API::MatrixWorkspace_sptr& dataWS, double &x,
                             double &y) {
   const int nx_pixels =
       static_cast<int>(readInstrumentParameter("number-of-x-pixels", dataWS));
@@ -78,7 +80,7 @@ void getCoordinateFromPixel(const double &pixel_x, const double &pixel_y,
  *
  */
 void getPixelFromCoordinate(const double &x, const double &y,
-                            API::MatrixWorkspace_sptr dataWS, double &pixel_x,
+                            const API::MatrixWorkspace_sptr& dataWS, double &pixel_x,
                             double &pixel_y) {
   const int nx_pixels =
       static_cast<int>(readInstrumentParameter("number-of-x-pixels", dataWS));
@@ -96,7 +98,7 @@ void getPixelFromCoordinate(const double &x, const double &y,
  */
 void getDefaultBeamCenter(API::MatrixWorkspace_sptr dataWS, double &pixel_x,
                           double &pixel_y) {
-  getPixelFromCoordinate(0.0, 0.0, dataWS, pixel_x, pixel_y);
+  getPixelFromCoordinate(0.0, 0.0, std::move(dataWS), pixel_x, pixel_y);
 }
 
 /*
@@ -106,7 +108,7 @@ void getDefaultBeamCenter(API::MatrixWorkspace_sptr dataWS, double &pixel_x,
  * defined in instrument parameters file as "aperture-distances"
  * and sums "Header/sample_aperture_to_flange"
  */
-double getSourceToSampleDistance(API::MatrixWorkspace_sptr dataWS) {
+double getSourceToSampleDistance(const API::MatrixWorkspace_sptr& dataWS) {
 
   double sourceToSampleDistance;
 

@@ -131,7 +131,7 @@ void PeriodicTableWidget::ColourUnknownProperties(
   }
 }
 
-void PeriodicTableWidget::enableButtonByName(QString elementStr) {
+void PeriodicTableWidget::enableButtonByName(const QString& elementStr) {
   for (auto &AllElementButton : AllElementButtons) {
     for (auto btn_i = AllElementButton.begin(); btn_i != AllElementButton.end();
          btn_i++) {
@@ -143,7 +143,7 @@ void PeriodicTableWidget::enableButtonByName(QString elementStr) {
 }
 
 bool PeriodicTableWidget::compareButtonNameToStr(QPushButton *buttonToCompare,
-                                                 QString stringToCompare) {
+                                                 const QString& stringToCompare) {
   return (strcmp(buttonToCompare->text().toStdString().c_str(),
                  stringToCompare.toStdString().c_str()) == 0);
 }
@@ -162,7 +162,7 @@ void PeriodicTableWidget::disableAllElementButtons() {
   disableButtons(UnknownProperties);
 }
 void PeriodicTableWidget::ColourButton(QPushButton *element,
-                                       QString colourStr) {
+                                       const QString& colourStr) {
   element->setStyleSheet(
       "QPushButton{border:1px solid rgb(0, 0, 0); " + colourStr + ";}" +
       "QPushButton:checked{ background-color:rgb(175,255,255)}" +
@@ -170,7 +170,7 @@ void PeriodicTableWidget::ColourButton(QPushButton *element,
 }
 
 QString
-PeriodicTableWidget::elementsSelectedToString(QVector<QPushButton *> elements) {
+PeriodicTableWidget::elementsSelectedToString(const QVector<QPushButton *>& elements) {
   QString selectedElements = "";
   /* Loop through QPushButtons and if they are checked
    * then retrieve the text on the button i.e the
