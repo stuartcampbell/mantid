@@ -769,8 +769,8 @@ IndirectFittingModel::mapDefaultParameterNames() const {
 }
 
 std::unordered_map<std::string, ParameterValue>
-IndirectFittingModel::createDefaultParameters(
-    TableDatasetIndex /*unused*/) const {
+    IndirectFittingModel::createDefaultParameters(
+        TableDatasetIndex /*unused*/) const {
   return std::unordered_map<std::string, ParameterValue>();
 }
 
@@ -798,7 +798,8 @@ WorkspaceGroup_sptr IndirectFittingModel::getResultGroup() const {
 
 bool IndirectFittingModel::isPreviousModelSelected() const {
   return m_fitFunction &&
-         equivalentFunctions(getFittingFunction(), m_fitFunction);
+         equivalentFunctions(extractFirstInnerFunction(getFittingFunction()),
+                             m_fitFunction);
 }
 
 MultiDomainFunction_sptr IndirectFittingModel::getMultiDomainFunction() const {
