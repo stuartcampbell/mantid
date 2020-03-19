@@ -13,8 +13,10 @@
 namespace Mantid {
 namespace Algorithms {
 
+using namespace API;
+
 class MANTID_ALGORITHMS_DLL ConvertSingleSpectrumLambdaToQ
-    : public API::DistributedAlgorithm {
+    : public DistributedAlgorithm {
 public:
   /// Algorithm's name for identification overriding a virtual method
   const std::string name() const override {
@@ -42,17 +44,16 @@ private:
   void init() override;
   void exec() override;
 
-  void setupMemberVariables(const API::MatrixWorkspace_const_sptr inputWs);
+  void setupMemberVariables(const MatrixWorkspace_const_sptr inputWs);
   /// Checks that the workspace satisfies the condition for this algorithm
-  void checkSingleSpectrumLambda(const API::MatrixWorkspace_sptr inputWs);
+  void checkSingleSpectrumLambda(const MatrixWorkspace_sptr inputWs);
   /// Executes the main part of the algorithm that handles the unit conversion
-  API::MatrixWorkspace_sptr
-  executeUnitConversion(const API::MatrixWorkspace_sptr inputWs);
-  /// Performs the unit conversion on a workspace in lambda to a workspace in Q
   MatrixWorkspace_sptr
-  ConvertSingleSpectrumLambdaToQ::transform(const MatrixWorkspace_sptr inputWs);
+  executeUnitConversion(const MatrixWorkspace_sptr inputWs);
+  /// Performs the unit conversion on a workspace in lambda to a workspace in Q
+  MatrixWorkspace_sptr transform(const MatrixWorkspace_sptr inputWs);
   /// Reverses the workspace if Y and E values are in descending order
-  void reverse(API::MatrixWorkspace_sptr inputWs);
+  void reverse(MatrixWorkspace_sptr inputWs);
 
   std::size_t m_numberOfSpectra{0};
   double m_theta{0};

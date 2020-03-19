@@ -5,10 +5,13 @@
 //     & Institut Laue - Langevin
 // SPDX - License - Identifier: GPL - 3.0 +
 #include "MantidAlgorithms/ConvertSingleSpectrumLambdaToQ.h"
+#include "MantidAPI/Axis.h"
 #include "MantidKernel/UnitFactory.h"
 #include "MantidAPI/MatrixWorkspace.h"
 #include <MantidAPI/WorkspaceUnitValidator.h>
 #include <MantidKernel/CompositeValidator.h>
+#include "MantidKernel/ListValidator.h"
+
 
 namespace Mantid {
 namespace Algorithms {
@@ -22,9 +25,8 @@ using namespace API;
 /// Initialisation method
 void ConvertSingleSpectrumLambdaToQ::init() {
   auto inputWsValidator = std::make_shared<CompositeValidator>();
-  inputWsValidator->add<WorkspaceUnitValidator>("Wavelength");
-  auto targetUnitValidator = std::make_shared<CompositeValidator>();
-  targetUnitValidator->add<WorkspaceUnitValidator>("MomentumTransfer");
+  const std::string inputUnit = std::string("Wavelength");
+  inputWsValidator->add<WorkspaceUnitValidator>(inputUnit);
   declareProperty(std::make_unique<WorkspaceProperty<MatrixWorkspace>>(
                       "InputWorkspace", "", Direction::Input, inputWsValidator),
                   "Name of the input workspace");
@@ -34,9 +36,9 @@ void ConvertSingleSpectrumLambdaToQ::init() {
   declareProperty(std::make_unique<PropertyWithValue<double>>(
                       "ThetaIn", Mantid::EMPTY_DBL(), Direction::Input),
                   "Angle in degrees");
+  std::vector<std::string> targetUnitOptions{"MomentumTransfer"};
   declareProperty(
-      std::make_unique<PropertyWithValue<std::string>>(
-          "Target", "", Direction::Input, targetUnitValidator),
+      "Target", "", std::make_shared<StringListValidator>(targetUnitOptions),
       "The name of the units to convert to (must be MomentumTransfer)");
 }
 
