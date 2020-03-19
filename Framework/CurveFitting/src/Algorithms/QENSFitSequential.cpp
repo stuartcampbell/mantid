@@ -170,9 +170,9 @@ std::vector<MatrixWorkspace_sptr> extractWorkspaces(const std::string &input) {
 
   std::vector<MatrixWorkspace_sptr> workspaces;
 
-  for (const auto &wsName : workspaceNames) {
-    workspaces.emplace_back(getADSMatrixWorkspace(wsName));
-  }
+  std::transform(
+      workspaceNames.begin(), workspaceNames.end(), workspaces.begin(),
+      [](const auto &wsName) { return getADSMatrixWorkspace(wsName); });
 
   return workspaces;
 }
@@ -541,9 +541,9 @@ void QENSFitSequential::exec() {
       getPropertyValue("OutputWorkspace"), resultWs);
 
   if (containsMultipleData(workspaces)) {
-    const auto inputString = getPropertyValue("Input");
+    const auto inputStringProp = getPropertyValue("Input");
     renameWorkspaces(groupWs, spectra, outputBaseName, "_Workspace",
-                     extractWorkspaceNames(inputString));
+                     extractWorkspaceNames(inputStringProp));
   } else {
     renameWorkspaces(groupWs, spectra, outputBaseName, "_Workspace");
   }

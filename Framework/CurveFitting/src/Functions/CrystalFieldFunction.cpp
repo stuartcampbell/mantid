@@ -128,11 +128,13 @@ void CrystalFieldFunction::setSource(IFunction_sptr source) const {
 size_t CrystalFieldFunction::getNumberDomains() const {
   if (!m_target) {
     buildTargetFunction();
+    if (!m_target) {
+      // The call to buildTargetFunction() above may have failed to set
+      // m_target.
+      throw std::runtime_error("Failed to build target function.");
+    }
   }
-  // The call to buildTargetFunction() above may have failed to set m_target.
-  if (!m_target) {
-    throw std::runtime_error("Failed to build target function.");
-  }
+
   return m_target->getNumberDomains();
 }
 
